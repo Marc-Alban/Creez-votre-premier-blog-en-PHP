@@ -1,0 +1,10 @@
+{
+    "name": "marca/code",
+    "authors": [{
+        "name": "Marc-Alban",
+        "email": "millet.marcalban@gmail.com"
+    }],
+    "require": {
+        "filp/whoops": "^2.7"
+    }
+}
