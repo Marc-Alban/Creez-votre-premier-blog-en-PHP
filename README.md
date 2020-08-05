@@ -1,4 +1,6 @@
 # Créez votre premier blog en PHP
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/40bc74ce39cd4c359facfea4abccafb6?branch=develop)]
+(https://www.codacy.com/manual/Marc-Alban/Creez-votre-premier-blog-en-PHP?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Marc-Alban/Creez-votre-premier-blog-en-PHP&amp;utm_campaign=Badge_Grade)
 
 Contexte
 Ça y est, vous avez sauté le pas ! Le monde du développement web avec PHP est à portée de main et vous avez besoin de visibilité pour pouvoir convaincre vos futurs employeurs/clients en un seul regard. Vous êtes développeur PHP, il est donc temps de montrer vos talents au travers d’un blog à vos couleurs.
@@ -53,3 +55,4 @@ les listes des commentaires validés et publiés.
 Sur la page permettant de modifier un blog post, l’utilisateur a la possibilité de modifier les champs titre, chapô, auteur et contenu.
 
 Dans le footer menu, il doit figurer un lien pour accéder à l’administration du blog.
+
