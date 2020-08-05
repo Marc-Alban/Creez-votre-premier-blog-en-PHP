@@ -1,4 +1,5 @@
 # Créez votre premier blog en PHP
+![Codacy Badge](https://app.codacy.com/project/badge/Grade/40bc74ce39cd4c359facfea4abccafb6?branch=develop)
 
 Contexte
 Ça y est, vous avez sauté le pas ! Le monde du développement web avec PHP est à portée de main et vous avez besoin de visibilité pour pouvoir convaincre vos futurs employeurs/clients en un seul regard. Vous êtes développeur PHP, il est donc temps de montrer vos talents au travers d’un blog à vos couleurs.
@@ -54,4 +55,3 @@ Sur la page permettant de modifier un blog post, l’utilisateur a la possibilit
 
 Dans le footer menu, il doit figurer un lien pour accéder à l’administration du blog.
 
-![Codacy Badge](https://app.codacy.com/project/badge/Grade/40bc74ce39cd4c359facfea4abccafb6?branch=develop)
