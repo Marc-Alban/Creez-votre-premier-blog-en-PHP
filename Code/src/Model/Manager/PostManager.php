@@ -9,7 +9,7 @@ use App\Model\Repository\Interfaces\PostRepositoryInterface;
 
 final class PostManager
 {
-    private PostRepositoryInterface $postRepo;
+    private  $postRepo;
 
     public function __construct(PostRepositoryInterface $postRepository)
     {

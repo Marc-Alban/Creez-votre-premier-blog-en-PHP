@@ -12,11 +12,11 @@ use App\View\View;
 // cette classe router est un exemple très basic. Cette façon de faire n'est pas optimale
 final class Router
 {
-    private PostController $postController;
-    private PostManager $postManager;
-    private PostRepository $postRepo;
-    private View $view;
-    private array $get;
+    private  $postController;
+    private  $postManager;
+    private  $postRepo;
+    private  $view;
+    private  $get;
 
     public function __construct()
     {

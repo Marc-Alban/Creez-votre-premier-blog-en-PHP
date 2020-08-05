@@ -53,3 +53,5 @@ les listes des commentaires validés et publiés.
 Sur la page permettant de modifier un blog post, l’utilisateur a la possibilité de modifier les champs titre, chapô, auteur et contenu.
 
 Dans le footer menu, il doit figurer un lien pour accéder à l’administration du blog.
+
+![Codacy Badge](https://app.codacy.com/project/badge/Grade/40bc74ce39cd4c359facfea4abccafb6?branch=develop)

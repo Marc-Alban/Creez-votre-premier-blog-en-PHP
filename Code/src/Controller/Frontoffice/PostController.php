@@ -10,8 +10,8 @@ use App\View\View;
 
 final class PostController
 {
-    private PostManager $postManager;
-    private View $view;
+    private  $postManager;
+    private  $view;
 
     public function __construct(PostManager $postManager, View $view)
     {
