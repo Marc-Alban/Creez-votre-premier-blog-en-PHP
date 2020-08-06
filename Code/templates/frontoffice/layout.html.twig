@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    {#----------------------------Encodage-UTF-8---------------------------#}
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    {#----------------------------Responsive-VIEWPORT-CSS---------------------------#}
+    <meta name="viewport" content="width=device-width, initial-scale=1,
+      shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    {% block head %} {% endblock %}
+    {#----------------------------Font-Awesome----------------------------#}
+    <link rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
+    {#----------------------------Material-Design-Bootstrap----------------------------#}
+    <link href="css/MDB-Free/bootstrap.min.css" rel="stylesheet">
+    <link href="css/MDB-Free/mdb.min.css" rel="stylesheet">
+    {#----------------------------Style-Css---------------------------#}
+    <link href="css/frontend.css" rel="stylesheet">
+  </head>
+
+    <body>
+        <!-- Navigation -->
+        <nav>
+            <h2>Menu</h2>
+        </nav>
+
+        <!-- Page Header -->
+        <header>
+            <h1>{% block title %}{% endblock title %}</h1>
+        </header>
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+        
+        <footer class="footer text-center">
+            <h3>Copyright P5 Openclassroom</h3>
+        </footer>        
+      {#---------------------JQUERY-------------------------#}
+      <script src="js/MDB-Free/jquery.min.js"></script>
+      {#---------------------TOOLTIPS-------------------------#}
+      <script src="js/MDB-Free/popper.min.js"></script>
+      {#---------------------BOOTSTRAP-JS-------------------------#}
+      <script
+        src="js/MDB-Free/bootstrap.min.js"></script>
+      {#--------------------MDB-CORE-JS-------------------------#}
+      <script src="js/MDB-Free/mdb.min.js"></script>
+      {#---------------------IMPORT-JS-------------------------#}
+      {% block js %} {% endblock %}
+    </body>
+  </html>

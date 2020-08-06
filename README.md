@@ -1,4 +1,5 @@
 # Créez votre premier blog en PHP
+![Codacy Badge](https://app.codacy.com/project/badge/Grade/40bc74ce39cd4c359facfea4abccafb6?branch=develop)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7d1ab7ae8a544209b8d85f7cf4aadb77)](https://app.codacy.com/manual/Marc-Alban/Creez-votre-premier-blog-en-PHP?utm_source=github.com&utm_medium=referral&utm_content=Marc-Alban/Creez-votre-premier-blog-en-PHP&utm_campaign=Badge_Grade_Settings)
 
@@ -55,3 +56,4 @@ les listes des commentaires validés et publiés.
 Sur la page permettant de modifier un blog post, l’utilisateur a la possibilité de modifier les champs titre, chapô, auteur et contenu.
 
 Dans le footer menu, il doit figurer un lien pour accéder à l’administration du blog.
+
