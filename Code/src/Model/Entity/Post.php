@@ -6,9 +6,9 @@ namespace App\Model\Entity;
 
 final class Post
 {
-    private  $id;
-    private  $title;
-    private  $text;
+    private int $id;
+    private string $title;
+    private string $text;
 
     public function __construct(int $id, string $title, string $text)
     {

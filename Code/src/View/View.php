@@ -9,7 +9,7 @@ use Twig\Loader\FilesystemLoader;
 
 final class View
 {
-    private  $twig;
+    private Environment $twig;
 
     public function __construct()
     {
