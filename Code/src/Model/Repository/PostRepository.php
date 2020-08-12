@@ -10,7 +10,6 @@ use App\Service\Database;
 
 final class PostRepository implements PostRepositoryInterface
 {
-
     private $pdo;
     private $pdoStatement;
 
@@ -28,7 +27,7 @@ final class PostRepository implements PostRepositoryInterface
         $executeIsOk = $this->pdoStatement->execute($e);
         if ($executeIsOk === true) {
             $idBdd = $this->pdoStatement->fetch();
-            if($idBdd){
+            if ($idBdd) {
                 $data = [
                     'idPost'=>(int) $idBdd['idPost'],
                     'title' => $idBdd['title'],
@@ -53,11 +52,11 @@ final class PostRepository implements PostRepositoryInterface
                     $data['statuPost'],
                     $data['UserId'],
                 );
-            }elseif ($idBdd === false) {
+            } elseif ($idBdd === false) {
                 return null;
             }
             return $idBdd;
-        }else if ($executeIsOk === false){
+        } elseif ($executeIsOk === false) {
             return null;
         }
         return null;

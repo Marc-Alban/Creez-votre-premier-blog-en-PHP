@@ -19,6 +19,6 @@ final class View
 
     public function render(string $path, string $view, ?array $data): void
     {
-        echo $this->twig->render($path.'/'.$view.'.html.twig',['data' =>$data]);
+        echo $this->twig->render($path.'/'.$view.'.html.twig', ['data' =>$data]);
     }
 }

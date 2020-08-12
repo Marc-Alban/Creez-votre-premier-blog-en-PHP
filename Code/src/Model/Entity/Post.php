@@ -17,18 +17,18 @@ final class Post
     private string $statuPost;
     private int $UserId;
 
-    public function __construct(int $idPost,string $title,string $description,string $label,string $imagePost,string $categorie,string $dateCreation,?string $dateUpdate,string $statuPost,int $UserId)
+    public function __construct(int $idPost, string $title, string $description, string $label, string $imagePost, string $categorie, string $dateCreation, ?string $dateUpdate, string $statuPost, int $UserId)
     {
-    $this->idPost = $idPost;
-    $this->title = $title;
-    $this->description = $description;
-    $this->label = $label;
-    $this->imagePost = $imagePost;
-    $this->categorie = $categorie;
-    $this->dateCreation = $dateCreation;
-    $this->dateUpdate = $dateUpdate;
-    $this->statuPost = $statuPost;
-    $this->UserId = $UserId;
+        $this->idPost = $idPost;
+        $this->title = $title;
+        $this->description = $description;
+        $this->label = $label;
+        $this->imagePost = $imagePost;
+        $this->categorie = $categorie;
+        $this->dateCreation = $dateCreation;
+        $this->dateUpdate = $dateUpdate;
+        $this->statuPost = $statuPost;
+        $this->UserId = $UserId;
     }
 
     /**
@@ -214,7 +214,7 @@ final class Post
 
     /**
      * Get the value of UserId
-     */ 
+     */
     public function getUserId(): int
     {
         return $this->UserId;
@@ -224,7 +224,7 @@ final class Post
      * Set the value of UserId
      *
      * @return  self
-     */ 
+     */
     public function setUserId($UserId): self
     {
         $this->UserId = $UserId;

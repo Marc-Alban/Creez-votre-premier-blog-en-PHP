@@ -1,9 +1,10 @@
 <?php
-declare (strict_types = 1);
+declare(strict_types = 1);
 namespace App\Service;
+
 use \PDO;
 
-final class Database 
+final class Database
 {
     private static $database = null;
     private static $DSN;

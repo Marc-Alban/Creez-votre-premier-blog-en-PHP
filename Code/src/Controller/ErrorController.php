@@ -13,6 +13,5 @@ final class ErrorController
     
     public function errorAction(): void
     {
-        
     }
 }

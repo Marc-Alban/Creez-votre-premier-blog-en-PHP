@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace  App\Controller\Frontoffice;
+
 use App\Model\Entity\Post;
 use App\Model\Manager\PostManager;
 use App\View\View;
