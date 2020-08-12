@@ -1,13 +1,10 @@
 <?php
-
 declare(strict_types=1);
-require_once '../vendor/autoload.php';
-
+session_start();
 use App\Service\Router;
-use App\Service\Database;
 
-var_dump(Database::getPdo());
-
+define('ROOT', str_replace('public\index.php', '', $_SERVER['SCRIPT_FILENAME']));
+require_once ROOT.'vendor/autoload.php';
 
 $whoops = new \Whoops\Run;
 $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);

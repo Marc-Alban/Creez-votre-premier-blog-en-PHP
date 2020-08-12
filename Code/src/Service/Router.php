@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 namespace  App\Service;
 
 use App\Controller\Frontoffice\PostController;
@@ -9,7 +7,6 @@ use App\Model\Manager\PostManager;
 use App\Model\Repository\PostRepository;
 use App\View\View;
 
-// cette classe router est un exemple très basic. Cette façon de faire n'est pas optimale
 final class Router
 {
     private PostController $postController;
@@ -17,18 +14,15 @@ final class Router
     private PostRepository $postRepo;
     private View $view;
     private array $get;
-
     public function __construct()
     {
         // dépendance
         $this->postRepo = new PostRepository();
         $this->postManager = new PostManager($this->postRepo);
         $this->view = new View();
-
         // injection des dépendances
         $this->postController = new PostController($this->postManager, $this->view);
-
-        // En attendent de mettre ne place la class App\Service\Http\Request
+        // En attendent de mettre en place la class App\Service\Http\Request --> gestion super global
         $this->get = $_GET;
     }
 

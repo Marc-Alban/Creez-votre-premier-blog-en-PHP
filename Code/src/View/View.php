@@ -17,10 +17,8 @@ final class View
         $this->twig = new Environment($loader);
     }
 
-    public function render(array $data): void
+    public function render(string $path, string $view, ?array $data): void
     {
-        echo $this->twig->render('frontoffice/post.html.twig', [
-            'post' => $data['onepost'],
-        ]);
+        echo $this->twig->render($path.'/'.$view.'.html.twig',['data' =>$data]);
     }
 }

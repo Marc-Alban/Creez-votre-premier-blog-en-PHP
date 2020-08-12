@@ -1,9 +1,6 @@
 <?php
-
 declare(strict_types=1);
-
 namespace  App\Controller\Frontoffice;
-
 use App\Model\Entity\Post;
 use App\Model\Manager\PostManager;
 use App\View\View;
@@ -22,9 +19,8 @@ final class PostController
     public function displayOneAction(int $id): void
     {
         $data = $this->postManager->showOne($id);
-
         if ($data instanceof Post) {
-            $this->view->render(['onepost' => $data]);
+            $this->view->render('frontoffice', 'post', ["post" => $data]);
         } elseif ($data === null) {
             echo '<h1>faire une redirection vers la page d\'erreur, ce post n\'existe pas</h1>';
         }

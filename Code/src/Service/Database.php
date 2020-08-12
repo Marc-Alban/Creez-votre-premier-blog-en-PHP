@@ -1,26 +1,26 @@
 <?php
-declare(strict_types=1);
+declare (strict_types = 1);
 namespace App\Service;
-use Exception;
 use \PDO;
 
-// class pour gérer la connection à la base de donnée
-class Database
+final class Database 
 {
-    const HOST = 'localhost';
-    const USER = 'root';
-    const PASSWORD = '';
-    const DATABASE = 'blog';
-    private static $instance = null;
+    private static $database = null;
+    private static $DSN;
+    private static $dbUser;
+    private static $dbPass;
+    private static $ini;
 
     public static function getPdo(): PDO
     {
-        try{
-            if(self::$instance === null)
-                self::$instance = new PDO('mysql:host='.self::HOST.';dbname='.self::DATABASE.';',self::USER,self::PASSWORD);
-            return self::$instance;
-        }catch (Exception $e ){
-            die('Erreur : ' . $e->getMessage());
+        self::$ini = parse_ini_file(ROOT.'config.ini', false);
+        self::$DSN = self::$ini['dsn'];
+        self::$dbUser = self::$ini['dbUser'];
+        self::$dbPass = self::$ini['dbPass'];
+        if (self::$database === null) {
+            $pdoOptions[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES utf8";
+            self::$database = new PDO(self::$DSN, self::$dbUser, self::$dbPass, $pdoOptions);
         }
+        return self::$database;
     }
 }

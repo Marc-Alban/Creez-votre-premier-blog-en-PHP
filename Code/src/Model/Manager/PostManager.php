@@ -22,7 +22,6 @@ final class PostManager
         if ($id > 600) {
             return null;
         }
-
         return $this->postRepo->findById($id);
     }
 }
