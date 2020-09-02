@@ -1,27 +1,24 @@
 <?php
 declare(strict_types = 1);
 namespace App\Service;
-
 use \PDO;
+use App\Model\Repository\DatabaseProperties;
 
 final class Database
 {
-    private static $database = null;
-    private static $DSN;
-    private static $dbUser;
-    private static $dbPass;
-    private static $ini;
+    private $database;
+    private DatabaseProperties $Dsn;
 
-    public static function getPdo(): PDO
+    public function __construct(DatabaseProperties $DbInfos)
     {
-        self::$ini = parse_ini_file(ROOT.'config.ini', false);
-        self::$DSN = self::$ini['dsn'];
-        self::$dbUser = self::$ini['dbUser'];
-        self::$dbPass = self::$ini['dbPass'];
-        if (self::$database === null) {
-            $pdoOptions[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES utf8";
-            self::$database = new PDO(self::$DSN, self::$dbUser, self::$dbPass, $pdoOptions);
-        }
-        return self::$database;
+        $DbInfosDatabase = $DbInfos->connect();
+        $this->Dsn = $DbInfosDatabase;
+    }
+    
+    public function getPdo(): PDO
+    {
+        $pdoOptions[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES utf8";
+        $this->database = new PDO($this->Dsn, $pdoOptions);
+        return $this->database;
     }
 }

@@ -10,12 +10,13 @@ use App\Service\Database;
 
 final class PostRepository implements PostRepositoryInterface
 {
-    private $pdo;
+    private Database $pdo;
     private $pdoStatement;
 
-    public function __construct()
+    public function __construct(Database $pdo)
     {
-        $this->pdo = Database::getPdo();
+        $db = new $pdo;
+        $this->pdo = $db;
     }
     
     public function findById(int $id): ?Post

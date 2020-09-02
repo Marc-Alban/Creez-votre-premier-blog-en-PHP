@@ -1,51 +1,46 @@
 <!doctype html>
 <html lang="fr">
 	<head>
-		{#----------------------------Encodage-UTF-8---------------------------#}
-		<meta
-		http-equiv="content-type" content="text/html; charset=utf-8"/>
-		{#----------------------------Responsive-VIEWPORT-CSS---------------------------#}
-		<meta name="viewport" content="width=device-width, initial-scale=1,
-						shrink-to-fit=no">
-		<meta http-equiv="x-ua-compatible" content="ie=edge"> {% block head %}{% endblock %}
-	<!-- Bootstrap -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
-		{#----------------------------Style-Css---------------------------#}
+		{#----------------------------Meta---------------------------#}
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<title>
+			{% block title %}{% endblock %}
+		</title>
+		{# ------------- Style ----------------------- #}
+		<!-- Bootstrap -->
+		<link
+		rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+		{#----------------------------Style-personnel-Css---------------------------#}
 		<link href="css/style.css" rel="stylesheet">
 	</head>
-
-	<body>
-		<!-- Navigation -->
-		<nav>
-			<li>
-				<a href="index.php?action=home">Home</a>
-			</li>
-			<li>
-				<a href="index.php?action=post">Blog</a>
-			</li>
-		</nav>
-
-		<!-- Page Header -->
-		<header>
-			<h1>
-				{% block title %}{% endblock title %}
-			</h1>
+	<body class="min-vh-100 mx-auto">
+		<header class="masthead mb-2 p-2 ">
+			{% include 'frontoffice/header.html.twig' %}
 		</header>
+		{# -------------------------------------------------Main-------------------------------------------- #}
+		<main class="container">
+			<div class="row">
+				<h1 class="m-auto">
+					{{ block('title') }}
+				</h1>
+			</div>
+			<div class="container">
+				<div class="row"> {% block content %}{% endblock %}
+					</div>
+				</div>
+			</main>
+			<footer class=" p-4 mt-auto fixed-bottom d-flex flex-row-reverse ">
+				{% include 'frontoffice/footer.html.twig' %}
+			</footer>
 
-		<main>
-			{% block content %}{% endblock %}
-		</main>
-
-		<footer class="footer text-center">
-			<h3>Copyright P5 Openclassroom</h3>
-		</footer>
-		 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+			<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+			<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+			<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 			{#---------------------script js-------------------------#}
-		<script src="js/script.js"></script>
-		{% block js %}{% endblock %}
-	</body>
-</html>
-
+			<script src="js/script.js"></script>
+			{% block js %}{% endblock %}
+		</body>
+	</html>

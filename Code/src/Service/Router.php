@@ -6,18 +6,20 @@ use App\Controller\Frontoffice\PostController;
 use App\Model\Manager\PostManager;
 use App\Model\Repository\PostRepository;
 use App\View\View;
+use App\Service\Database;
 
 final class Router
 {
     private PostController $postController;
     private PostManager $postManager;
     private PostRepository $postRepo;
+    private Database $db;
     private View $view;
     private array $get;
     public function __construct()
     {
         // dépendance
-        $this->postRepo = new PostRepository();
+        $this->postRepo = new PostRepository($this->db);
         $this->postManager = new PostManager($this->postRepo);
         $this->view = new View();
         // injection des dépendances
