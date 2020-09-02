@@ -7,18 +7,18 @@ use App\Model\Repository\DatabaseProperties;
 final class Database
 {
     private $database;
-    private DatabaseProperties $Dsn;
+    private $Dsn;
+    private DatabaseProperties $databaseProperties;
 
-    public function __construct(DatabaseProperties $DbInfos)
+    public function __construct()
     {
-        $DbInfosDatabase = $DbInfos->connect();
-        $this->Dsn = $DbInfosDatabase;
+        $this->databaseProperties = new DatabaseProperties;
+        $this->Dsn = $this->databaseProperties->connect();
     }
-    
+
     public function getPdo(): PDO
     {
-        $pdoOptions[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES utf8";
-        $this->database = new PDO($this->Dsn, $pdoOptions);
+        $this->database = new PDO($this->Dsn);
         return $this->database;
     }
 }

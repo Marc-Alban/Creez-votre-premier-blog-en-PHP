@@ -11,12 +11,13 @@ use App\Service\Database;
 final class PostRepository implements PostRepositoryInterface
 {
     private Database $pdo;
+    private $db;
     private $pdoStatement;
 
-    public function __construct(Database $pdo)
+    public function __construct()
     {
-        $db = new $pdo;
-        $this->pdo = $db;
+        $this->pdo = new Database;
+        $this->db = $this->pdo->getPdo();
     }
     
     public function findById(int $id): ?Post
@@ -24,7 +25,7 @@ final class PostRepository implements PostRepositoryInterface
         $e = [
             ':id' => $id,
         ];
-        $this->pdoStatement = $this->pdo->prepare("SELECT * FROM post WHERE idPost=:id");
+        $this->pdoStatement = $this->db->prepare("SELECT * FROM post WHERE idPost=:id");
         $executeIsOk = $this->pdoStatement->execute($e);
         if ($executeIsOk === true) {
             $idBdd = $this->pdoStatement->fetch();

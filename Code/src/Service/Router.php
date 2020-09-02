@@ -7,6 +7,7 @@ use App\Model\Manager\PostManager;
 use App\Model\Repository\PostRepository;
 use App\View\View;
 use App\Service\Database;
+use App\Model\Repository\DatabaseProperties;
 
 final class Router
 {
@@ -14,11 +15,14 @@ final class Router
     private PostManager $postManager;
     private PostRepository $postRepo;
     private Database $db;
+    private DatabaseProperties $dataInfo;
     private View $view;
     private array $get;
     public function __construct()
     {
         // dépendance
+        $this->dataInfo = new DatabaseProperties;
+        $this->db = new Database($this->dataInfo);
         $this->postRepo = new PostRepository($this->db);
         $this->postManager = new PostManager($this->postRepo);
         $this->view = new View();
