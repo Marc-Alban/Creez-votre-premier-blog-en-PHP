@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 namespace App\Model\Repository;
+use App\Service\Database;
 use App\Model\Entity\Post;
 use App\Model\Repository\Interfaces\PostRepositoryInterface;
-use App\Service\Database;
 final class PostRepository implements PostRepositoryInterface
 {
     private $db;
@@ -15,15 +15,12 @@ final class PostRepository implements PostRepositoryInterface
     
     public function findById(int $id): ?Post
     {
-        $e = [
-            ':id' => $id,
-        ];
-        $pdo = $this->db->prepare("SELECT * FROM post WHERE idPost=:id");
-        $executeIsOk = $pdo->execute($e);
+        $pdo = $this->db->prepare("SELECT * FROM post WHERE idPost=?");
+        $executeIsOk = $pdo->execute([$id]);
         if ($executeIsOk === true) {
-            $idBdd = $pdo->fetchObject();
+            $idBdd = $pdo->fetchObject(Post::class) ;
             if ($idBdd) {
-
+                return $idBdd;
             } elseif ($idBdd === false) {
                 return null;
             }

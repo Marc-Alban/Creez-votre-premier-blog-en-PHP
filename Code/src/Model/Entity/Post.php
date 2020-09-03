@@ -17,20 +17,6 @@ final class Post
     private string $statuPost;
     private int $UserId;
 
-    public function __construct(int $idPost, string $title, string $description, string $label, string $imagePost, string $categorie, string $dateCreation, ?string $dateUpdate, string $statuPost, int $UserId)
-    {
-        $this->idPost = $idPost;
-        $this->title = $title;
-        $this->description = $description;
-        $this->label = $label;
-        $this->imagePost = $imagePost;
-        $this->categorie = $categorie;
-        $this->dateCreation = $dateCreation;
-        $this->dateUpdate = $dateUpdate;
-        $this->statuPost = $statuPost;
-        $this->UserId = $UserId;
-    }
-
     /**
      * Get the value of idPost
      */
@@ -94,7 +80,7 @@ final class Post
     /**
      * Get the value of label
      */
-    public function getLabel(): string
+    public function getLabel(): ?string
     {
         return $this->label;
     }
@@ -174,7 +160,7 @@ final class Post
     /**
      * Get the value of dateUpdate
      */
-    public function getDateUpdate(): string
+    public function getDateUpdate(): ?string
     {
         return $this->dateUpdate;
     }

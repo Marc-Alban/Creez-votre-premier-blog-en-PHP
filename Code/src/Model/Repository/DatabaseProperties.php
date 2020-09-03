@@ -18,11 +18,11 @@ class DatabaseProperties
     }
     public function connect(): array
     {
-        $path = [
+        return [
             'dsn' => 'mysql:host='.$this->DbHost.';dbname='.$this->DbName.'',
             'user' => $this->DbUser,
             'pass' => $this->DbPass
         ];
-        return $path;
+        
     }
 }
