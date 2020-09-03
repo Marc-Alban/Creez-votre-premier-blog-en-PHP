@@ -1,23 +1,16 @@
 <?php
-
 declare(strict_types=1);
-
 namespace App\Model\Repository;
-
 use App\Model\Entity\Post;
 use App\Model\Repository\Interfaces\PostRepositoryInterface;
 use App\Service\Database;
-
 final class PostRepository implements PostRepositoryInterface
 {
-    private Database $pdo;
     private $db;
-    private $pdoStatement;
 
-    public function __construct()
+    public function __construct(Database $instanceDb)
     {
-        $this->pdo = new Database;
-        $this->db = $this->pdo->getPdo();
+        $this->db = $instanceDb->getPdo();
     }
     
     public function findById(int $id): ?Post
@@ -25,35 +18,12 @@ final class PostRepository implements PostRepositoryInterface
         $e = [
             ':id' => $id,
         ];
-        $this->pdoStatement = $this->db->prepare("SELECT * FROM post WHERE idPost=:id");
-        $executeIsOk = $this->pdoStatement->execute($e);
+        $pdo = $this->db->prepare("SELECT * FROM post WHERE idPost=:id");
+        $executeIsOk = $pdo->execute($e);
         if ($executeIsOk === true) {
-            $idBdd = $this->pdoStatement->fetch();
+            $idBdd = $pdo->fetchObject();
             if ($idBdd) {
-                $data = [
-                    'idPost'=>(int) $idBdd['idPost'],
-                    'title' => $idBdd['title'],
-                    'description' => $idBdd['description'],
-                    'label' => $idBdd['label'],
-                    'imagePost' => $idBdd['imagePost'],
-                    'categorie' => $idBdd['categorie'],
-                    'dateCreation' => $idBdd['dateCreation'],
-                    'dateUpdate' => (string) $idBdd['dateUpdate'],
-                    'statuPost' => $idBdd['statuPost'],
-                    'UserId' => (int) $idBdd['UserId']
-                ];
-                return new Post(
-                    $data['idPost'],
-                    $data['title'],
-                    $data['description'],
-                    $data['label'],
-                    $data['imagePost'],
-                    $data['categorie'],
-                    $data['dateCreation'],
-                    $data['dateUpdate'],
-                    $data['statuPost'],
-                    $data['UserId'],
-                );
+
             } elseif ($idBdd === false) {
                 return null;
             }

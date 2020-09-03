@@ -2,16 +2,16 @@
 declare(strict_types=1);
 namespace App\Controller\Frontoffice;
 
+use App\Controller\ErrorController;
 use App\Model\Entity\Post;
 use App\Model\Manager\PostManager;
 use App\View\View;
-use App\Controller\ErrorController;
 
 final class PostController
 {
+    private ErrorController $error;
     private PostManager $postManager;
     private View $view;
-    private ErrorController $error;
 
     public function __construct(PostManager $postManager, View $view)
     {
