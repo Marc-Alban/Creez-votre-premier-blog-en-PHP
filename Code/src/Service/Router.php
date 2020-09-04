@@ -56,10 +56,11 @@ final class Router
         {
             return 'App\Controller\Backoffice\\'.$this->pageMaj.'Controller';
         }
+        return $this->error();
     }
 /************************************End Controller************************************************* */
 /************************************Manager Class************************************************* */
-public function managerClass()
+public function managerClass(): string
 {  
     if(in_array($this->pageMaj, $this->pageFront) || !in_array($this->pageMaj, $this->pageBack))
     {
@@ -69,10 +70,11 @@ public function managerClass()
     {
         return 'App\Model\Manager\Backoffice\\'.$this->pageMaj.'Manager';
     }
+    return $this->error();
 }
 /************************************End Manager Class************************************************* */
 /************************************Manager Class************************************************* */
-public function repositoryClass()
+public function repositoryClass(): string
 {  
     if(in_array($this->pageMaj, $this->pageFront) || !in_array($this->pageMaj, $this->pageBack))
     {
@@ -82,6 +84,7 @@ public function repositoryClass()
     {
         return 'App\Model\Repository\Backoffice\\'.$this->pageMaj.'Repository';
     }
+    return $this->error();
 }
 /************************************End Manager Class************************************************* */
 /************************************Call Method With Controller************************************************* */
@@ -98,8 +101,12 @@ public function repositoryClass()
         $controllerClass = $this->controller();
         $managerClass = $this->managerClass();
         $repoClass = $this->repositoryClass();
-        $repo = new $repoClass($this->database);
-        $manager = new $managerClass($repo);
+        if(file_exists($repoClass)){
+            $repo = new $repoClass($this->database);
+            $manager = new $managerClass($repo);
+        }elseif(!file_exists($repoClass)){
+            $manager = new $managerClass();
+        }
         $view = $this->view ;
         $controllerObject = new $controllerClass($manager,$view);
         $methode = $this->pageMaj.'Action';

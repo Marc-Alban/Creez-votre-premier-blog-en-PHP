@@ -39,7 +39,7 @@ final class PostController
         if ($data instanceof Post) {
             $this->view->render('frontoffice', 'post', ["post" => $data]);
         } elseif ($data === null) {
-        $this->error->ErrorAction();
+            $this->error->ErrorAction();
         }
     }
 }
