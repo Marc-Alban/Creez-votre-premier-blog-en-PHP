@@ -14,7 +14,7 @@ final class ErrorController
         $this->view = new View;
     }
     
-    public function errorPost(): void
+    public function ErrorAction(): void
     {
         $this->view->render('frontoffice','error', []);
     }

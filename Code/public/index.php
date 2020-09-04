@@ -11,4 +11,4 @@ $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
 $whoops->register();
 
 $router = new Router();
-$router->run();
+$router->start();
