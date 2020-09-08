@@ -4,41 +4,43 @@ namespace App\Controller\Frontoffice;
 
 use App\Controller\ErrorController;
 use App\Model\Entity\Post;
-use App\Model\Repository\Frontoffice\PostRepository;
-use App\Model\Manager\Frontoffice\PostManager;
+use App\Model\Repository\PostRepository;
+use App\Model\Manager\PostManager;
 use App\Service\Database;
-use App\Model\Repository\DatabaseProperties;
+use App\Service\ConfigProperties;
 use App\View\View;
 
 final class PostController
 {
     private ErrorController $error;
-    private DatabaseProperties $dbProperties;
+    private ConfigProperties $configProperties;
     private Database $db;
     private PostManager $postManager;
     private PostRepository $postRepo;
     private View $view;
 
-    public function __construct(PostManager $postManager, View $view)
+    public function __construct(PostManager $postManager, View $view, ConfigProperties $configProperties, Database $database)
     {
         $this->postManager = $postManager;
         $this->view = $view;
+        $this->configProperties = $configProperties;
         // Dépendances
-        $this->view = new View();
         $this->error = new ErrorController();
-        $this->dbProperties = new DatabaseProperties();
         // Injection des dépendances
-        $this->db = new Database($this->dbProperties);
+        $database = $database($this->configProperties);
+        $this->db = $database;
         $this->postRepo = new PostRepository($this->db);
-        $this->postManager = new PostManager($this->postRepo);
+        $postManager = $postManager($this->postRepo);
+        $this->postManager = $postManager;
     }
     
     public function PostAction(array $datas): void
     {
-        $data = $this->postManager->showOne($datas['get']['id']);
+        $id = $datas['get']['id'] ?? null;
+        $data = $this->postManager->showOne($id);
         if ($data instanceof Post) {
             $this->view->render('frontoffice', 'post', ["post" => $data]);
-        } elseif ($data === null) {
+        } else if ($data === null || empty($data)){
             $this->error->ErrorAction();
         }
     }

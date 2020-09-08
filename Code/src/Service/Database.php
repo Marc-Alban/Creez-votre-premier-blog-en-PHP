@@ -5,23 +5,24 @@ declare(strict_types=1);
 namespace App\Service;
 
 use \PDO;
-use App\Model\Repository\DatabaseProperties;
+use App\Service\ConfigProperties;
 
 final class Database
 {
     private PDO $database;
     private array $dsn;
-    private DatabaseProperties $databaseProperties;
+    private ConfigProperties $configProperties;
 
-    public function __construct()
+    public function __construct(ConfigProperties $configProperties)
     {
-        $this->databaseProperties = new DatabaseProperties();
-        $this->dsn = $this->databaseProperties->connect();
+        $this->configProperties = $configProperties;
+        $this->dsn = $this->configProperties->connect();
+        $this->database = new PDO($this->dsn['dsn'], $this->dsn['user'], $this->dsn['pass']);
+        
     }
 
     public function getPdo(): PDO
     {
-        $this->database = new PDO($this->dsn['dsn'], $this->dsn['user'], $this->dsn['pass']);
-        return $this->database;
+        return $this->database ;
     }
 }

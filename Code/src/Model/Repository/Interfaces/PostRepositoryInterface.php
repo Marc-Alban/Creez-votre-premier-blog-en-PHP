@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Repository\Interfaces\Frontoffice;
+namespace App\Model\Repository\Interfaces;
 
 use App\Model\Entity\Post;
 

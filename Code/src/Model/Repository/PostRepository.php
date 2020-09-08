@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
-namespace App\Model\Repository\Frontoffice;
+namespace App\Model\Repository;
 use App\Service\Database;
 use App\Model\Entity\Post;
-use App\Model\Repository\Interfaces\Frontoffice\PostRepositoryInterface;
+use App\Model\Repository\Interfaces\PostRepositoryInterface;
 final class PostRepository implements PostRepositoryInterface
 {
     private $db;

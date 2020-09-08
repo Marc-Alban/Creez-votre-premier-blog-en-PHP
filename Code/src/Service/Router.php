@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace  App\Service;
 
 use App\Controller\ErrorController;
-use App\Model\Repository\DatabaseProperties;
+use App\Service\ConfigProperties;
 use App\Service\Database;
 use App\View\View;
 
@@ -16,7 +16,7 @@ final class Router
     private string $pageMaj;
     private ?array $pageFront;
     private ?array $pageBack;
-    private DatabaseProperties $databaseProperties;
+    private ConfigProperties $configProperties;
     private Database $database;
     private View $view;
 
@@ -25,11 +25,9 @@ final class Router
     {
         // dépendance
         $this->errorAction = new ErrorController();
-        $this->errorAction = new ErrorController();
+        $this->configProperties = new ConfigProperties();
         $this->view = new View();
-        //Injection de dépendence
-        $this->databaseProperties = new DatabaseProperties();
-        $this->database = new Database($this->databaseProperties);
+        $this->database = new Database($this->configProperties);
         // En attendent de mettre en place la class App\Service\Http\Request --> gestion super global
         $idUrl = $_GET['id'] ?? null;
         $this->id = intval($idUrl);
@@ -64,11 +62,11 @@ public function managerClass(): string
 {  
     if(in_array($this->pageMaj, $this->pageFront) || !in_array($this->pageMaj, $this->pageBack))
     {
-        return 'App\Model\Manager\Frontoffice\\'.$this->pageMaj.'Manager';
+        return 'App\Model\Manager\\'.$this->pageMaj.'Manager';
     }
     else if(in_array($this->pageMaj, $this->pageBack))
     {
-        return 'App\Model\Manager\Backoffice\\'.$this->pageMaj.'Manager';
+        return 'App\Model\Manager\\'.$this->pageMaj.'Manager';
     }
     return $this->error();
 }
@@ -78,11 +76,11 @@ public function repositoryClass(): string
 {  
     if(in_array($this->pageMaj, $this->pageFront) || !in_array($this->pageMaj, $this->pageBack))
     {
-        return 'App\Model\Repository\Frontoffice\\'.$this->pageMaj.'Repository';
+        return 'App\Model\Repository\\'.$this->pageMaj.'Repository';
     }
     else if(in_array($this->pageMaj, $this->pageBack))
     {
-        return 'App\Model\Repository\Backoffice\\'.$this->pageMaj.'Repository';
+        return 'App\Model\Repository\\'.$this->pageMaj.'Repository';
     }
     return $this->error();
 }
@@ -101,10 +99,12 @@ public function repositoryClass(): string
         $controllerClass = $this->controller();
         $managerClass = $this->managerClass();
         $repoClass = $this->repositoryClass();
-        if(file_exists($repoClass)){
+        $replacePath = str_replace("App","src",$repoClass);
+        $pathVerif = ROOT.$replacePath.'.php';
+        if(file_exists($pathVerif)){
             $repo = new $repoClass($this->database);
             $manager = new $managerClass($repo);
-        }elseif(!file_exists($repoClass)){
+        }elseif(!file_exists($pathVerif)){
             $manager = new $managerClass();
         }
         $view = $this->view ;

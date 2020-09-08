@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Manager\Frontoffice;
+namespace App\Model\Manager;
 
 use App\Model\Entity\Post;
-use App\Model\Repository\Interfaces\Frontoffice\PostRepositoryInterface;
+use App\Model\Repository\Interfaces\PostRepositoryInterface;
 
 final class PostManager
 {

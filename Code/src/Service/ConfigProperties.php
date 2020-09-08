@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
-namespace App\Model\Repository;
-class DatabaseProperties
+namespace App\Service;
+use \Exception;
+class ConfigProperties 
 {
     private array $ini;
     private $DbHost;
@@ -10,6 +11,10 @@ class DatabaseProperties
     private $DbPass;
     public function __construct()
     {
+
+        if(!file_exists(ROOT.'config.ini')){
+            throw new Exception('Fichier config.ini absent');
+        }
         $this->ini = parse_ini_file(ROOT.'config.ini', false);
         $this->DbHost  = $this->ini['DbHost'];
         $this->DbName  = $this->ini['DbName'];
