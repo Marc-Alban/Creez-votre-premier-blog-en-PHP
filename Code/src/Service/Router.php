@@ -1,48 +1,156 @@
 <?php
-
 declare(strict_types=1);
-
 namespace  App\Service;
 
-use App\Controller\Frontoffice\PostController;
-use App\Model\Manager\PostManager;
-use App\Model\Repository\PostRepository;
+use App\Controller\ErrorController;
+use App\Service\ConfigProperties;
+use App\Service\Database;
 use App\View\View;
 
-// cette classe router est un exemple très basic. Cette façon de faire n'est pas optimale
 final class Router
 {
-    private PostController $postController;
-    private PostManager $postManager;
-    private PostRepository $postRepo;
+    private ?string $action;
+    private ErrorController $errorAction;
+    private ?int $id;
+    private string $page;
+    private string $pageMaj;
+    private ?array $pageFront;
+    private ?array $pageBack;
+    private ConfigProperties $configProperties;
+    private Database $database;
     private View $view;
-    private array $get;
+
 
     public function __construct()
     {
         // dépendance
-        $this->postRepo = new PostRepository();
-        $this->postManager = new PostManager($this->postRepo);
+        $this->errorAction = new ErrorController();
+        $this->configProperties = new ConfigProperties();
         $this->view = new View();
-
-        // injection des dépendances
-        $this->postController = new PostController($this->postManager, $this->view);
-
-        // En attendent de mettre ne place la class App\Service\Http\Request
-        $this->get = $_GET;
+        $this->database = new Database($this->configProperties);
+        // En attendent de mettre en place la class App\Service\Http\Request --> gestion super global
+        $idUrl = $_GET['id'] ?? null;
+        $this->id = intval($idUrl);
+        $this->action = $_GET['action'] ?? null;
+        $this->page = $_GET['page'] ?? $this->error();
+        $this->pageMaj = ucfirst($this->page);
+        $this->pageFront = ['Home','Post'];
+        $this->pageBack = [];
     }
 
-    public function run(): void
+/************************************Controller************************************************* */
+    /**
+     * 1) Renvoie le bon controller en fonction de la page qui est passé dans l'url
+     *
+     * @return string
+     */
+    public function controller(): string
     {
-        $action = isset($this->get['action']) && isset($this->get['id']) && $this->get['action'] === 'post';
-
-        if ($action) {
-            // route http://localhost:8000/?action=post&id=5
-
-            $this->postController->displayOneAction((int)$this->get['id']);
-        } elseif (!$action) {
-            // faire un controller pour la gestion d'erreur
-            echo "Error 404 - cette page n'existe pas<br><a href='http://localhost:8000/?action=post&id=5'>Ici</a>";
+        if(in_array($this->pageMaj, $this->pageFront) || empty($this->pageMaj) || !in_array($this->pageMaj, $this->pageBack))
+        {
+            return 'App\Controller\Frontoffice\\'.$this->pageMaj.'Controller';
+        }
+        else if(in_array($this->pageMaj, $this->pageBack))
+        {
+            return 'App\Controller\Backoffice\\'.$this->pageMaj.'Controller';
+        }
+        return $this->error();
+    }
+/************************************End Controller************************************************* */
+/************************************Manager Class************************************************* */
+public function managerClass(): string
+{  
+    if(in_array($this->pageMaj, $this->pageFront) || !in_array($this->pageMaj, $this->pageBack))
+    {
+        return 'App\Model\Manager\\'.$this->pageMaj.'Manager';
+    }
+    else if(in_array($this->pageMaj, $this->pageBack))
+    {
+        return 'App\Model\Manager\\'.$this->pageMaj.'Manager';
+    }
+    return $this->error();
+}
+/************************************End Manager Class************************************************* */
+/************************************Manager Class************************************************* */
+public function repositoryClass(): string
+{  
+    if(in_array($this->pageMaj, $this->pageFront) || !in_array($this->pageMaj, $this->pageBack))
+    {
+        return 'App\Model\Repository\\'.$this->pageMaj.'Repository';
+    }
+    else if(in_array($this->pageMaj, $this->pageBack))
+    {
+        return 'App\Model\Repository\\'.$this->pageMaj.'Repository';
+    }
+    return $this->error();
+}
+/************************************End Manager Class************************************************* */
+/************************************Call Method With Controller************************************************* */
+    /**
+     * 1) Appel du controller 
+     * 2) Instance de ce dernier 
+     * 3) Appel de la methode avec le nom de la page suivi du mot Action
+     * 4) Retourne sous-forme d'array l'objet et la méthode utilisée.
+     *  
+     * @return array
+     */
+    public function call(array $datas): ?array
+    {
+        $controllerClass = $this->controller();
+        $managerClass = $this->managerClass();
+        $repoClass = $this->repositoryClass();
+        $replacePath = str_replace("App","src",$repoClass);
+        $pathVerif = ROOT.$replacePath.'.php';
+        if(file_exists($pathVerif)){
+            $repo = new $repoClass($this->database);
+            $manager = new $managerClass($repo);
+        }elseif(!file_exists($pathVerif)){
+            $manager = new $managerClass();
+        }
+        $view = $this->view ;
+        $controllerObject = new $controllerClass($manager,$view);
+        $methode = $this->pageMaj.'Action';
+        return $controllerObject->$methode($datas);
+    }
+/************************************End Call Methode With Controller************************************************* */
+/************************************Start Router************************************************* */
+    /**
+     * 1)Vérification des paramètres dans l'url
+     * 2)insertion des superglobales dans les futurs méthodes utilisées
+     * si les mots action et id sont present ou pas  ou seulment action sans id ou encore aucun des deux.
+     * 3)insertion des superglobales dans les futurs méthodes utilisées
+     *si le mot action est absent et le mot id est present alors insertions des superglobale mais sans le file.active
+     * 4)Une fois cette étape faite si rien n'est trouvé alors on affiche une erreur 404.
+     */
+    public function start(): void
+    {
+        if(in_array($this->pageMaj, $this->pageFront) || in_array($this->pageMaj, $this->pageBack))
+        {
+            if(($this->action === null && $this->id === null) || ($this->action !== null && $this->id !== null) || ($this->action !== null && $this->id === null))
+            {
+                $this->call(['get'=>$_GET, 'post'=>$_POST, 'files'=>$_FILES, 'session'=>$_SESSION]);
+            }
+            else if($this->action === null && $this->id !== null)
+            {
+                $this->call(['get'=>$_GET, 'post'=>$_POST, 'session'=>$_SESSION]);
+            }
+        }
+        else if(!in_array($this->pageMaj, $this->pageFront) || !in_array($this->pageMaj, $this->pageBack))
+        {
+            $this->error();
         }
     }
+/************************************End Start Routeur************************************************* */
+/************************************Return Error Action************************************************* */
+    /**
+     * Renvoie la page 404 si rien n'est trouvée !
+     *
+     * @return void
+     */
+    public function error(): void
+    {
+        $this->errorAction->ErrorAction();
+        exit();
+    }
+/************************************End Return Error Action************************************************ */
 }

@@ -1,26 +1,28 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Service;
-use Exception;
+
 use \PDO;
+use App\Service\ConfigProperties;
 
-// class pour gérer la connection à la base de donnée
-class Database
+final class Database
 {
-    const HOST = 'localhost';
-    const USER = 'root';
-    const PASSWORD = '';
-    const DATABASE = 'blog';
-    private static $instance = null;
+    private PDO $database;
+    private array $dsn;
+    private ConfigProperties $configProperties;
 
-    public static function getPdo(): PDO
+    public function __construct(ConfigProperties $configProperties)
     {
-        try{
-            if(self::$instance === null)
-                self::$instance = new PDO('mysql:host='.self::HOST.';dbname='.self::DATABASE.';',self::USER,self::PASSWORD);
-            return self::$instance;
-        }catch (Exception $e ){
-            die('Erreur : ' . $e->getMessage());
-        }
+        $this->configProperties = $configProperties;
+        $this->dsn = $this->configProperties->connect();
+        $this->database = new PDO($this->dsn['dsn'], $this->dsn['user'], $this->dsn['pass']);
+        
+    }
+
+    public function getPdo(): PDO
+    {
+        return $this->database ;
     }
 }

@@ -1,13 +1,13 @@
-{% extends "/frontoffice/layout.html.twig" %}
+{% extends "frontoffice/layout.html.twig" %}
 
-{% block title %}Titre{% endblock %}
+{% block title %}
+	{% for post in data %}
+		{{ post.title }}
+	{% endfor %}
+{% endblock %}
 
-{% block content %} 
-    <a href="index.php?action=post&id=100">Un post qui existe</a>
-    <br> 
-    <a href="index.php?action=post&id=1000">Un post qui n'existe pas</a>
-    <article>
-        <h2>{{ post.title }}</h2>
-        <p>{{ post.text}}</p>
-    </article>
+{% block content %}
+	{% for post in data %}
+		{{ post.description }}
+	{% endfor %}
 {% endblock %}

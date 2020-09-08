@@ -8,6 +8,7 @@ use App\Model\Entity\Post;
 
 interface PostRepositoryInterface
 {
+
     /* Read */
     public function findByAll() : ?array;
     public function findById(int $id) : ?Post;

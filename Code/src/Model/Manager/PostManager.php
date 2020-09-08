@@ -16,13 +16,17 @@ final class PostManager
         $this->postRepo = $postRepository;
     }
 
-    public function showOne(int $id): ?Post
+    public function showOne(?string $dataId): ?Post
     {
-        // exemple de régle de gestion fictif
+        $id = intval($dataId);
+
         if ($id > 600) {
             return null;
         }
-
+        else if($id === null || empty($id))
+        {
+            return null;
+        }
         return $this->postRepo->findById($id);
     }
 }

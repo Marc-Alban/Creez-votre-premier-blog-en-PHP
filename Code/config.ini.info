@@ -1,0 +1,6 @@
+; My database Properties
+[Database]
+DbHost='localhost'
+DbName='the name of database'
+DbUser='User'
+DbPass='Password'
