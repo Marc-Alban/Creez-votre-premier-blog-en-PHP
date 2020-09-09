@@ -34,7 +34,7 @@ final class Router
         $this->action = $_GET['action'] ?? null;
         $this->page = $_GET['page'] ?? $this->error();
         $this->pageMaj = ucfirst($this->page);
-        $this->pageFront = ['Home','Post'];
+        $this->pageFront = ['Home','Post','Blog'];
         $this->pageBack = [];
     }
 

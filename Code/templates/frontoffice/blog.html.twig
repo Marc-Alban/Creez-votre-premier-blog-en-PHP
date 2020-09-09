@@ -1,0 +1,47 @@
+{% extends "/frontoffice/layout.html.twig" %}
+{% block content %}
+      <section class="postBlogHome">
+      <div class="container">
+        <div class="">
+          <h2>Bl<b>og</b></h2>
+          <div class="row-page row">
+          
+            {# First post #}
+            <div class="col-page col-sm-8 col-md-6">
+              <a href="" class="black postPublicationHome">
+                <div class="imgPostPrincipalHome">
+                  <img class="" src="">
+                </div>
+                <div class="contentPublicacionPrincipalHome">
+                  <h3></h3>
+                  <p></p>
+                </div>
+                <div class="readMoreBlogHome">
+                  <span>Lire plus...</span>
+                </div>
+              </a>
+            </div>
+            {# end first post #}
+          {# Other post #}
+            <div class="col-page col-sm-4 col-md-3">
+              <a href=""  class="postPublication">
+                <div class="imgPostPublication">
+                  <img class="img-responsive" src="">
+                </div>
+                <div class="contentPostHome">
+                  <h3></h3>
+                  <p></p>
+                </div>
+                <div class="readMoreBlogHome">
+                  <span>Lire plus... </span>
+                </div>
+              </a>
+            </div>
+            {# End post #}
+          </div>
+        </div>
+      </div>
+    </section>
+      {# modal connexion #}
+      {% include 'frontoffice/modalConnexion.html.twig' %}
+{% endblock %}

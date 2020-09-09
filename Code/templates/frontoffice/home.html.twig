@@ -16,58 +16,75 @@
 				</div>
 				<div class="card-footer d-flex justify-content-around">
 					<button href="#" class="btn btn-primary btnHome ">Télécharger CV</button>
-					{# modal #}
-					<button href="#" class="btn btn-primary btnHome" data-toggle="modal" data-target="#contact" data-original-title>
-						Contacter l'administrateur
-					</button>
+					{# modal link #}
+					<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Contacter l'administrateur</button>
 				</div>
-
-				<div class="modal" id="contact" role="dialog" aria-labelledby="contactLabel" aria-hidden="true">
+				{# Modal Contact #}
+				<!--Begin Modal Window-->
+				<div class="modal fade left" id="myModal">
 					<div class="modal-dialog">
-						<div class="panel panel-primary">
-							<div class="panel-heading">
-								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-								<h4 class="panel-title" id="contactLabel">
-									<span class="glyphicon glyphicon-info-sign"></span>
-									Une question ? Contactez-moi :</h4>
+						<div class="modal-content">
+							<div class="modal-header">
+								<h3 class="pull-left no-margin">Envie de m'écrire ?
+								</h3>
+								<div class="required">* Requis</div>
+								<button type="button" class="close" data-dismiss="modal" title="Close">
+									<span class="glyphicon glyphicon-remove"></span>
+								</button>
 							</div>
-							<form action="#" method="post" accept-charset="utf-8">
-								<div class="modal-body" style="padding: 5px;">
-									<div class="row">
-										<div class="col-lg-6 col-md-6 col-sm-6" style="padding-bottom: 10px;">
-											<input class="form-control" name="firstname" placeholder="Votre nom" type="text" required autofocus/>
+							<div class="modal-body">
+								<!--INSERT CONTACT FORM HERE-->
+								<!--NOTE: you will need to provide your own form processing script-->
+									<form class="form-horizontal" role="form" method="post" action="">
+									<div class="form-group responsiveForm">
+										<label for="name" class="control-label">
+											<span class="required">*</span>
+											Nom:</label>
+										<div class="col-sm-4">
+											<input type="text" class="form-control" id="name" name="name" placeholder="Nom de famille" required>
 										</div>
-										<div class="col-lg-6 col-md-6 col-sm-6" style="padding-bottom: 10px;">
-											<input class="form-control" name="lastname" placeholder="Votre prénom" type="text" required/>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-lg-12 col-md-12 col-sm-12" style="padding-bottom: 10px;">
-											<input class="form-control" name="email" placeholder="E-mail" type="text" required/>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-lg-12 col-md-12 col-sm-12" style="padding-bottom: 10px;">
-											<input class="form-control" name="subject" placeholder="Sujet" type="text" required/>
+										<label for="lastName" class=" control-label">
+											<span class="required">*</span>
+											Prénom:</label>
+										<div class="col-sm-4">
+											<input type="text" class="form-control" id="lastName" name="lastName" placeholder="Prénom" required>
 										</div>
 									</div>
-									<div class="row">
-										<div class="col-lg-12 col-md-12 col-sm-12">
-											<textarea style="resize:vertical;" class="form-control" placeholder="Message..." rows="6" name="comment" required></textarea>
+									<div class="form-group">
+										<label for="email" class="col-sm-3 control-label">
+											<span class="required">*</span>
+											E-mail:
+										</label>
+										<div class="col-sm-9 m-auto">
+											<input type="email" class="form-control" id="email" name="email" placeholder="you@domain.com" required>
 										</div>
 									</div>
-								</div>
-								<div class="panel-footer" style="margin-bottom:-14px;">
-									<input type="submit" class="btn btn-success" value="Envoyer"/>
-									<button style="float: right;" type="button" class="btn btn-default btn-close" data-dismiss="modal">Fermer</button>
-								</div>
-							</form>
+									<div class="form-group">
+										<label for="message" class="col-sm-3 control-label">
+											<span class="required">*</span>
+											Message:</label>
+										<div class="col-sm-9 m-auto">
+											<textarea name="message" rows="4" required class="form-control" id="message" placeholder="Votre message ..."></textarea>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-sm-offset-3 m-auto col-sm-6 col-sm-offset-3">
+											<button type="submit" id="submit" name="submit" class="btn-lg btn-primary">Envoyer</button>
+										</div>
+									</div>
+									<!--end Form-->
+								</form>
+							</div>
+							<div class="modal-footer">
+								<button class="btn-sm close" type="button" data-dismiss="modal">Fermer</button>
+							</div>
 						</div>
 					</div>
 				</div>
-				{# End modal #}
+				{# EndModalContact #}
+				{# modal connexion #}
+			{% include 'frontoffice/modalConnexion.html.twig' %}
 			</div>
 		</div>
 	</div>
 {% endblock %}
-

@@ -1,0 +1,69 @@
+{# My modal form #}
+				<div class="container">
+					<div class="modal fade form" id="formModal">
+						<div class="modal-dialog form animated">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+								</div>
+								<div class="modal-body">
+									<div class="box">
+										<div class="content">
+											<div class="error"></div>
+											<div class="form formBox">
+												<form method="" action="" accept-charset="UTF-8">
+													<div class="container mb-5">
+														<div class="raw">
+															<label for="email">E-mail:</label>
+															<input id="email" class="form-control" type="text" name="email">
+														</div>
+														<div class="raw">
+															<label for="password">Mot de passe:</label>
+															<input id="password" class="form-control" type="password" name="password">
+														</div>
+													</div>
+													<input class="btn btn-default btn-form" type="button" value="Se connecter">
+												</form>
+											</div>
+										</div>
+									</div>
+									<div class="box">
+										<div class="content registerBox" style="display:none;">
+											<div class="form">
+												<form method="" html="{:multipart=>true}" data-remote="true" action="" accept-charset="UTF-8">
+													<div class="container mb-5">
+														<div class="raw ">
+															<label for="userName">Pseudo:</label>
+															<input id="userName" class="form-control" type="text" name="userName">
+															<label for="email">E-mail:</label>
+															<input id="email" class="form-control" type="text" name="email">
+														</div>
+														<div class="raw ">
+															<label for="password">Mot de passe:</label>
+															<input id="password" class="form-control" type="password" name="password">
+															<label for="password_confirmation">Mot de passe de confirmation:</label>
+															<input id="password_confirmation" class="form-control" type="password" name="password_confirmation">
+														</div>
+													</div>
+													<input class="btn btn-default btn-register" type="button" value="S'enregistrer" name="commit">
+												</form>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<div class="forgot form-footer">
+										<span>Pas de compte ?
+											<a href="javascript: showRegisterForm();">Cliquer ici</a>
+										</span>
+									</div>
+									<div class="forgot register-footer" style="display:none">
+										<span>Déjà un compte ?</span>
+										<a href="javascript: showformForm();">Cliquer ici</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				{# End modal #}
