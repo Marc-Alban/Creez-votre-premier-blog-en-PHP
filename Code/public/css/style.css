@@ -699,10 +699,10 @@ img {
 
 .clear-filter[filter-color="orange"] {
     background: rgba(255, 255, 255, 0.698);
-    background: -webkit-linear-gradient(20deg, rgba(255, 255, 255, 0.582), rgba(233, 138, 14, 0.52));
-    background: -o-linear-gradient(20deg, rgba(255, 255, 255, 0.582), rgba(233, 138, 14, 0.52));
-    background: -moz-linear-gradient(20deg, rgba(255, 255, 255, 0.582), rgba(233, 138, 14, 0.52));
-    background: linear-gradient(20deg, rgba(255, 255, 255, 0.582), rgba(233, 138, 14, 0.52));
+    background: -webkit-linear-gradient(1deg, rgba(255, 255, 255, 0.582), rgba(233, 138, 14, 0.52));
+    background: -o-linear-gradient(1deg, rgba(255, 255, 255, 0.582), rgba(233, 138, 14, 0.52));
+    background: -moz-linear-gradient(1deg, rgba(255, 255, 255, 0.582), rgba(233, 138, 14, 0.52));
+    background: linear-gradient(1deg, rgba(255, 255, 255, 0.582), rgba(233, 138, 14, 0.52));
     border: 1px solid #fff;
 }
 
