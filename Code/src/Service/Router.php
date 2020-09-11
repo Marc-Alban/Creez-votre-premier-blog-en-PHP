@@ -32,18 +32,13 @@ final class Router
         $idUrl = $_GET['id'] ?? null;
         $this->id = intval($idUrl);
         $this->action = $_GET['action'] ?? null;
-        $this->page = $_GET['page'] ?? $this->error();
+        $this->page = $_GET['page'] ?? "Home";
         $this->pageMaj = ucfirst($this->page);
         $this->pageFront = ['Home','Post','Blog'];
         $this->pageBack = [];
     }
 
 /************************************Controller************************************************* */
-    /**
-     * 1) Renvoie le bon controller en fonction de la page qui est passé dans l'url
-     *
-     * @return string
-     */
     public function controller(): string
     {
         if(in_array($this->pageMaj, $this->pageFront) || empty($this->pageMaj) || !in_array($this->pageMaj, $this->pageBack))
@@ -86,14 +81,6 @@ public function repositoryClass(): string
 }
 /************************************End Manager Class************************************************* */
 /************************************Call Method With Controller************************************************* */
-    /**
-     * 1) Appel du controller 
-     * 2) Instance de ce dernier 
-     * 3) Appel de la methode avec le nom de la page suivi du mot Action
-     * 4) Retourne sous-forme d'array l'objet et la méthode utilisée.
-     *  
-     * @return array
-     */
     public function call(array $datas): ?array
     {
         $controllerClass = $this->controller();
@@ -108,20 +95,12 @@ public function repositoryClass(): string
             $manager = new $managerClass();
         }
         $view = $this->view ;
-        $controllerObject = new $controllerClass($manager,$view);
+        $controllerObject = new $controllerClass($manager, $view);
         $methode = $this->pageMaj.'Action';
         return $controllerObject->$methode($datas);
     }
 /************************************End Call Methode With Controller************************************************* */
 /************************************Start Router************************************************* */
-    /**
-     * 1)Vérification des paramètres dans l'url
-     * 2)insertion des superglobales dans les futurs méthodes utilisées
-     * si les mots action et id sont present ou pas  ou seulment action sans id ou encore aucun des deux.
-     * 3)insertion des superglobales dans les futurs méthodes utilisées
-     *si le mot action est absent et le mot id est present alors insertions des superglobale mais sans le file.active
-     * 4)Une fois cette étape faite si rien n'est trouvé alors on affiche une erreur 404.
-     */
     public function start(): void
     {
         if(in_array($this->pageMaj, $this->pageFront) || in_array($this->pageMaj, $this->pageBack))
@@ -142,11 +121,6 @@ public function repositoryClass(): string
     }
 /************************************End Start Routeur************************************************* */
 /************************************Return Error Action************************************************* */
-    /**
-     * Renvoie la page 404 si rien n'est trouvée !
-     *
-     * @return void
-     */
     public function error(): void
     {
         $this->errorAction->ErrorAction();

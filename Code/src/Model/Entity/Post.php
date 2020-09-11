@@ -14,7 +14,8 @@ final class Post
     private string $categorie;
     private string $dateCreation;
     private string $dateUpdate;
-    private string $statuPost;
+    private int $statuPost;
+    private int $lastPost;
     private int $UserId;
 
     /**
@@ -180,7 +181,7 @@ final class Post
     /**
      * Get the value of statuPost
      */
-    public function getStatuPost(): string
+    public function getStatuPost(): int
     {
         return $this->statuPost;
     }
@@ -193,6 +194,26 @@ final class Post
     public function setStatuPost($statuPost): self
     {
         $this->statuPost = $statuPost;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of lastPost
+     */ 
+    public function getLastPost(): int
+    {
+        return $this->lastPost;
+    }
+
+    /**
+     * Set the value of lastPost
+     *
+     * @return  self
+     */ 
+    public function setLastPost($lastPost): self
+    {
+        $this->lastPost = $lastPost;
 
         return $this;
     }
@@ -217,4 +238,5 @@ final class Post
 
         return $this;
     }
+
 }

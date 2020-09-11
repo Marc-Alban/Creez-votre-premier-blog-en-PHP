@@ -1,6 +1,6 @@
-{% extends "/frontoffice/layout.html.twig" %}
+{% extends "frontoffice/layout.html.twig" %}
 {% block content %}
-      <section class="postBlogHome">
+ <section class="postBlogHome">
       <div class="container">
         <div class="">
           <h2>Bl<b>og</b></h2>
@@ -8,13 +8,15 @@
           
             {# First post #}
             <div class="col-page col-sm-8 col-md-6">
-              <a href="" class="black postPublicationHome">
+              <a href="?p=post&id={{ data.lastPost.idPost }}" class="black postPublicationHome">
                 <div class="imgPostPrincipalHome">
-                  <img class="" src="">
+                  <img class="" src="images/post/{{ data.lastPost.imagePost }}">
                 </div>
                 <div class="contentPublicacionPrincipalHome">
-                  <h3></h3>
-                  <p></p>
+                  <h3>{{ data.lastPost.title }}</h3>
+                  <span class="label">{{ data.lastPost.label }}</span>
+                  <p class="desc">{{ data.lastPost.description }}</p>
+                  <p class="dateCreation">{{ data.lastPost.dateCreation|date('d/m/Y') }}</p>
                 </div>
                 <div class="readMoreBlogHome">
                   <span>Lire plus...</span>
@@ -23,14 +25,16 @@
             </div>
             {# end first post #}
           {# Other post #}
-            <div class="col-page col-sm-4 col-md-3">
-              <a href=""  class="postPublication">
+            <div class="col-page col-sm-4 col-md-4">
+              <a href="?p=post&id={{ data.lastPost.idPost }}"  class="postPublicationHome">
                 <div class="imgPostPublication">
-                  <img class="img-responsive" src="">
+                  <img class="img-responsive" src="images/post/{{ data.lastPost.imagePost }}">
                 </div>
                 <div class="contentPostHome">
-                  <h3></h3>
-                  <p></p>
+                  <h3>{{ data.lastPost.title }}</h3>
+                  <span class="label">{{ data.lastPost.label }}</span>
+                  <p class="descPost" >{{ data.lastPost.description }}</p>
+                  <p class="datePost" >{{ data.lastPost.dateCreation|date('d/m/Y') }}</p>
                 </div>
                 <div class="readMoreBlogHome">
                   <span>Lire plus... </span>
@@ -38,10 +42,69 @@
               </a>
             </div>
             {# End post #}
+   {#--------------------------END-lastPost-----------------------------#}
+    {% if data.pagination %}
+    {#--------------------------PAGINATION-----------------------------#}
+    <nav aria-label="Page navigation mr-auto">
+        <ul class="pagination pg-blue">
+            <li class="page-item
+                {% if data.pagination.current == 1
+                or data.pagination.current <1 %}
+                disabled
+                {% endif %}">
+                <a class="page-link" aria-label="Previous" href="{% if
+                    data.pagination.current != 1 %}
+                    ?p=listesArticles&pp={{data.pagination.current -
+                    1 }}
+                    {% else %}
+                    ?p=listesArticles&pp={{data.pagination.current
+                    }}
+                    {% endif %}">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                </a>
+            </li>
+            {% for i in 1..data.pagination.nbPage %}
+            {% if i == data.pagination.current %}
+            <li class="page-item active"><a class="page-link"
+                    href="?p=listesArticles&pp={{ i }}">{{ i }}</a></li>
+            {% else %}
+            <li class="page-item
+                {% if data.pagination.current <1 %}
+                disabled
+                {% endif %}"><a class="page-link"
+                    href="?p=listesArticles&pp={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+
+            <li class="page-item
+                {% if data.pagination.current ==
+                data.pagination.nbPage %}
+                disabled
+                {% endif %}">
+                <a class="page-link" aria-label="Next" href="{% if
+                    data.pagination.current !=
+                    data.pagination.nbPage %}
+                    ?p=listesArticles&pp={{data.pagination.current +
+                    1 }}
+                    {% else %}
+                    ?p=listesArticles&pp={{data.pagination.current
+                    }}
+                    {% endif %}">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endif %}
+    {#-------------------------END-PAGINATION-----------------------------#}
+
           </div>
         </div>
       </div>
     </section>
-      {# modal connexion #}
-      {% include 'frontoffice/modalConnexion.html.twig' %}
+
+{# modal connexion #}
+{% include 'frontoffice/modalConnexion.html.twig' %}
 {% endblock %}

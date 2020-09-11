@@ -37,6 +37,43 @@
     position: relative;
 }
 
+.contentPostHome {
+    position: relative;
+}
+
+.contentPostHome h3 {
+    font-weight: 900;
+    color: rgb(51, 51, 51);
+    text-transform: uppercase;
+    font-size: 20px;
+    position: absolute;
+    top: 20px;
+    left: 10px;
+}
+
+.contentPostHome .label {
+    text-transform: capitalize;
+    font-weight: 900;
+    color: rgb(51, 51, 51);
+    position: absolute;
+    top: 45px;
+    left: 15px;
+}
+
+.contentPostHome .descPost {
+    font-size: 16px;
+    font-weight: 300;
+    position: absolute;
+    top: 65px;
+    left: 10px;
+}
+
+.contentPostHome .datePost {
+    position: absolute;
+    top: 185px;
+    left: 10px;
+}
+
 .postBlogHome .postPublicationHome:hover h3 {
     color: #e95e38;
     /*    box-shadow: 0px 4px 3px 3px rgba(0, 0, 0, 0.08);*/
@@ -75,7 +112,7 @@
     display: inline-block;
     vertical-align: top;
     width: 49%;
-    padding: 0 10px;
+    position: relative;
 }
 
 .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome h3 {
@@ -83,12 +120,36 @@
     color: #fff;
     text-transform: uppercase;
     font-size: 30px;
+    position: absolute;
+    top: 10px;
+    left: 15px;
 }
 
-.postBlogHome .postPublicationHome .contentPublicacionPrincipalHome p {
+.postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .label {
+    position: absolute;
+    top: 40px;
+    left: 20px;
+    text-transform: capitalize;
+    font-weight: 700;
+    color: #fff;
+}
+
+.postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .desc {
     color: #ffffff;
     font-size: 16px;
     font-weight: 300;
+    position: absolute;
+    top: 70px;
+    left: 20px;
+}
+
+.postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .dateCreation {
+    color: rgb(255, 255, 255);
+    font-size: 16px;
+    font-weight: 300;
+    position: absolute;
+    top: 365px;
+    left: 20px;
 }
 
 .postBlogHome .postPublicationHome .postPublication {
@@ -175,9 +236,9 @@
     }
     .postBlogHome .postPublicationHome {
         background: #ffffff;
+        border: 1px solid #f8945e;
         border-radius: 3px;
         overflow: hidden;
-        height: inherit;
         margin-bottom: 20px;
         display: block;
         color: inherit;
@@ -194,6 +255,16 @@
         height: auto;
         width: 100%;
     }
+    .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .label {
+        color: rgb(2 2 2);
+    }
+    .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .desc {
+        color: rgb(14 14 14);
+    }
+    .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .dateCreation {
+        color: rgb(0 0 0);
+        top: 275px;
+    }
     .postBlogHome .black {
         background: #fff;
     }
@@ -201,7 +272,9 @@
         display: inline-block;
         vertical-align: top;
         width: 100%;
-        padding: 0 10px;
+        padding: 0px 10px;
+        margin: 0 0 10px 0;
+        height: 310px;
     }
     .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome h3 {
         font-weight: 900;
@@ -222,6 +295,30 @@
         padding: 20px;
         text-decoration: none;
         border-radius: 3px;
+    }
+}
+
+@media (min-width: 320px) {
+    .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .dateCreation {
+        color: rgb(0, 0, 0);
+        top: 145px;
+    }
+}
+
+@media (min-width: 375px) {
+    .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .dateCreation {
+        color: rgb(0, 0, 0);
+        top: 145px;
+    }
+}
+
+@media (min-width: 320px) {
+    .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .dateCreation {
+        color: rgb(0, 0, 0);
+        top: 145px;
+    }
+    .postBlogHome .postPublicationHome {
+        height: 480px;
     }
 }
 
