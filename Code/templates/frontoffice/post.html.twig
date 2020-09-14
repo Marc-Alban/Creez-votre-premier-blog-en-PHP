@@ -1,13 +1,65 @@
 {% extends "frontoffice/layout.html.twig" %}
-
-{% block title %}
-	{% for post in data %}
-		{{ post.title }}
-	{% endfor %}
-{% endblock %}
-
 {% block content %}
-	{% for post in data %}
-		{{ post.description }}
-	{% endfor %}
+{#---------------------------BLOC-TITLE-PAGE----------------------------#}
+<div class="d-flex flex-row">
+    <div class="flex-shrink-1 col-md-4">
+        <a href="index.php?page=blog&pp=1">
+            <button type="button" class="btn btn-danger">
+                Retour blog
+            </button>
+        </a>
+    </div>
+</div>
+{#--------------------------END-BLOC-TITLE-PAGE----------------------------#}
+{#--------------------------GRILLE-COLONNE----------------------------#}
+<div class="col-md-12">
+    {#--------------------------CARD----------------------------#}
+    <div class="card hoverable pb-5 mx-md-3">
+        {#--------------------------IMAGE----------------------------#}
+        <img class="jarallax-img" src="images/post/{% for post in data %}{{
+            post.imagePost }}{% endfor %}" alt="">
+        {#--------------------------END-IMAGE----------------------------#}
+        <div class="card-body">
+            <div class="container">
+                {#--------------------------SECTION-HEADING----------------------------#}
+                <h1 class="text-left h1 pt-4 mb-3">
+                    <strong>
+                        {% for post in data %}
+                        {{ post.title }}
+                        {% endfor %}
+                    </strong>
+                </h1>
+                {#-------------------------END-SECTION-HEADING----------------------------#}
+                <div class="row">
+                    <div class="col-md-12 col-xl-12 d-flex
+                        justify-content-left">
+                        <p class="font-small grey-text mb-0">
+                            <i class="far fa-clock-o dark-grey-text"></i>
+                            {% for post in data %}
+                            {{ post.label }}
+                            {% endfor %}
+                        </p>
+                        <p class="font-small grey-text mb-0">
+                            <i class="far fa-clock-o dark-grey-text"></i>
+                            {% for post in data %}
+                            {{ post.dateCreation|date('d/m/Y') }}
+                            {% endfor %}
+                        </p>
+                    </div>
+                </div>
+                {#--------------------------GRILLE-COLONNE----------------------------#}
+                <p class="card-text text-justify">
+                    {% for post in data %}
+                    {{ post.description|raw }}
+                    {% endfor %}
+                </p>
+            </div>
+            {#--------------------------END-GRILLE-COLONNE----------------------------#}
+        </div>
+    </div>
+    {#--------------------------END-CARD----------------------------#}
+</div>
+{#--------------------------END-GRILLE-COLONNE----------------------------#}
+{# modal connexion #}
+{% include 'frontoffice/modalConnexion.html.twig' %}
 {% endblock %}

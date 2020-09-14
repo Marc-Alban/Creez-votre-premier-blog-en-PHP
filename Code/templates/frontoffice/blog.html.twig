@@ -8,7 +8,7 @@
           
             {# First post #}
             <div class="col-page col-sm-8 col-md-6">
-              <a href="?p=post&id={{ data.lastPost.idPost }}" class="black postPublicationHome">
+              <a href="?page=post&id={{ data.lastPost.idPost }}" class="black postPublicationHome">
                 <div class="imgPostPrincipalHome">
                   <img class="" src="images/post/{{ data.lastPost.imagePost }}">
                 </div>
@@ -28,7 +28,7 @@
         data.paginationPost.postFront %}
           {# Other post #}
             <div class="col-page col-sm-4 col-md-4">
-              <a href="?p=post&id={{ otherPost.idPost }}"  class="postPublicationHome">
+              <a href="?page=post&id={{ otherPost.idPost }}"  class="postPublicationHome">
                 <div class="imgPostPublication">
                   <img class="img-responsive" src="images/post/{{ otherPost.imagePost }}">
                 </div>
