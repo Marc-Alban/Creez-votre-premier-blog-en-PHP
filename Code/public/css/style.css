@@ -357,6 +357,8 @@ body {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
     color: #000;
+    display: -ms-flexbox;
+    -ms-flex-direction: column;
 }
 
 .card a {
@@ -400,47 +402,6 @@ body {
 img {
     max-width: 100%;
     border-radius: 1px;
-}
-
-.footer {
-    padding: 24px 0;
-}
-
-.footer nav {
-    display: inline-block;
-    float: left;
-}
-
-.footer ul {
-    margin-bottom: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.footer ul li {
-    display: inline-block;
-}
-
-.footer ul li a {
-    color: inherit;
-    padding: 0.5rem;
-    font-size: 0.8571em;
-    text-transform: uppercase;
-    text-decoration: none;
-}
-
-.footer ul li a:hover {
-    text-decoration: none;
-}
-
-.footer .copyright {
-    font-size: 0.8571em;
-}
-
-.footer:after {
-    display: table;
-    clear: both;
-    content: " ";
 }
 
 .card {

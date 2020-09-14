@@ -22,10 +22,14 @@ class BlogController
 
         if(isset($data['get']['pp']) && !empty($data['get']['pp'])){
             $paginationPost =  $this->blogManager->paginationPost($data);
+        }else if(isset($data['get']['page']) && $data['get']['page'] === 'blog' && !isset($data['get']['pp']) && empty($data['get']['pp'])){
+            header("Location: http://localhost:8000/index.php?page=blog&pp=1");
+            exit();
         }
 
+
         $dataTable = [
-            "pagination" => $paginationPost ?? null,
+            "paginationPost" => $paginationPost ?? null,
             'lastPost' => $lastPost,
         ];
 

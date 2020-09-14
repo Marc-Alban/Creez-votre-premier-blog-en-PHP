@@ -57,10 +57,10 @@ final class BlogRepository implements BlogRepositoryInterface
     public function readAllPost(int $page, int $perPage, string $side): array
     {
         if (isset($side) && !empty($side) && $side !== null) {
-            if ($side === "readAllPost") {
-                $pdoStatement = $this->db->query("SELECT * FROM post ORDER BY date LIMIT $page,$perPage");
-            } else if ($side === "readAll") {
-                $pdoStatement = $this->db->query("SELECT * FROM post WHERE id!=(SELECT max(id) FROM post WHERE lastPost = 1) AND statuPost = publie ORDER BY id LIMIT $page,$perPage");
+            if ($side === "readAll") {
+                $pdoStatement = $this->db->query("SELECT * FROM post ORDER BY dateCreation LIMIT $page,$perPage");
+            } else if ($side === "readAllNoOne") {
+                $pdoStatement = $this->db->query("SELECT * FROM post WHERE lastPost != 1 AND statuPost = 1 ORDER BY idPost LIMIT $page,$perPage");
             }
         }
         $this->post = [];
@@ -87,15 +87,17 @@ final class BlogRepository implements BlogRepositoryInterface
     {
         if (isset($side) && !empty($side) && $side !== null) {
             if ($side === 'front') {
-                $this->pdoStatement = $this->db->query("SELECT count(*) AS total FROM post WHERE id!=(SELECT max(id) FROM post WHERE lastPost = 1) AND statuPost = 1 ");
+                $this->pdoStatement = $this->db->query("SELECT count(*) AS total FROM post WHERE lastPost != 1 AND statuPost = 1 ");
+
             } elseif ($side === 'back') {
+
                 $this->pdoStatement = $this->db->query("SELECT count(*) AS total FROM post WHERE statuPost = 1 ");
             }
         }
-        
+       
         if($this->pdoStatement === false){
             return null;
-        }else if($this->pdoStatement === true){
+        }else if(!$this->pdoStatement === false){
             $req = $this->pdoStatement->fetch();
             if ($req) {
                 $total = $req['total'];

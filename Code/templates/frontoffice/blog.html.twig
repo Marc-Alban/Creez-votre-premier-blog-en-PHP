@@ -24,17 +24,19 @@
               </a>
             </div>
             {# end first post #}
+                    {% for otherPost in
+        data.paginationPost.postFront %}
           {# Other post #}
             <div class="col-page col-sm-4 col-md-4">
-              <a href="?p=post&id={{ data.lastPost.idPost }}"  class="postPublicationHome">
+              <a href="?p=post&id={{ otherPost.idPost }}"  class="postPublicationHome">
                 <div class="imgPostPublication">
-                  <img class="img-responsive" src="images/post/{{ data.lastPost.imagePost }}">
+                  <img class="img-responsive" src="images/post/{{ otherPost.imagePost }}">
                 </div>
                 <div class="contentPostHome">
-                  <h3>{{ data.lastPost.title }}</h3>
-                  <span class="label">{{ data.lastPost.label }}</span>
-                  <p class="descPost" >{{ data.lastPost.description }}</p>
-                  <p class="datePost" >{{ data.lastPost.dateCreation|date('d/m/Y') }}</p>
+                  <h3>{{ otherPost.title }}</h3>
+                  <span class="label">{{ otherPost.label }}</span>
+                  <p class="descPost" >{{ otherPost.description }}</p>
+                  <p class="datePost" >{{ otherPost.dateCreation|date('d/m/Y') }}</p>
                 </div>
                 <div class="readMoreBlogHome">
                   <span>Lire plus... </span>
@@ -42,35 +44,36 @@
               </a>
             </div>
             {# End post #}
+            {% endfor %}
    {#--------------------------END-lastPost-----------------------------#}
-    {% if data.pagination %}
-    {#--------------------------PAGINATION-----------------------------#}
+    {% if data.paginationPost %}
+    {#--------------------------paginationPost-----------------------------#}
     <nav aria-label="Page navigation mr-auto">
-        <ul class="pagination pg-blue">
+        <ul class="paginationPost pg-blue">
             <li class="page-item
-                {% if data.pagination.current == 1
-                or data.pagination.current <1 %}
+                {% if data.paginationPost.current == 1
+                or data.paginationPost.current <1 %}
                 disabled
                 {% endif %}">
                 <a class="page-link" aria-label="Previous" href="{% if
-                    data.pagination.current != 1 %}
-                    ?p=listesArticles&pp={{data.pagination.current -
+                    data.paginationPost.current != 1 %}
+                    ?p=listesArticles&pp={{data.paginationPost.current -
                     1 }}
                     {% else %}
-                    ?p=listesArticles&pp={{data.pagination.current
+                    ?p=listesArticles&pp={{data.paginationPost.current
                     }}
                     {% endif %}">
                     <span aria-hidden="true">&laquo;</span>
                     <span class="sr-only">Previous</span>
                 </a>
             </li>
-            {% for i in 1..data.pagination.nbPage %}
-            {% if i == data.pagination.current %}
+            {% for i in 1..data.paginationPost.nbPage %}
+            {% if i == data.paginationPost.current %}
             <li class="page-item active"><a class="page-link"
                     href="?p=listesArticles&pp={{ i }}">{{ i }}</a></li>
             {% else %}
             <li class="page-item
-                {% if data.pagination.current <1 %}
+                {% if data.paginationPost.current <1 %}
                 disabled
                 {% endif %}"><a class="page-link"
                     href="?p=listesArticles&pp={{ i }}">{{ i }}</a></li>
@@ -78,17 +81,17 @@
             {% endfor %}
 
             <li class="page-item
-                {% if data.pagination.current ==
-                data.pagination.nbPage %}
+                {% if data.paginationPost.current ==
+                data.paginationPost.nbPage %}
                 disabled
                 {% endif %}">
                 <a class="page-link" aria-label="Next" href="{% if
-                    data.pagination.current !=
-                    data.pagination.nbPage %}
-                    ?p=listesArticles&pp={{data.pagination.current +
+                    data.paginationPost.current !=
+                    data.paginationPost.nbPage %}
+                    ?p=listesArticles&pp={{data.paginationPost.current +
                     1 }}
                     {% else %}
-                    ?p=listesArticles&pp={{data.pagination.current
+                    ?p=listesArticles&pp={{data.paginationPost.current
                     }}
                     {% endif %}">
                     <span aria-hidden="true">&raquo;</span>

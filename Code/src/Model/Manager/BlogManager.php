@@ -40,14 +40,14 @@ class BlogManager
         if(isset($current)){
             $total = $this->blogRepository->count('front');
             $nbPage = ceil($total/$perPage);
-            if(!isset($current) || empty($current) || ctype_digit($current) === false || $current <= 0){
+            if(empty($current) || ctype_digit($current) === false || $current <= 0){
                 $current = 1;
             }else if ($current > $nbPage){
                 $current = $nbPage;
             }
             $firstOfPage = ($current - 1) * $perPage;
             $page = (int) $firstOfPage;
-            $postFront = $this->blogRepository->readAllPost($page, $perPage, 'readAllPost');
+            $postFront = $this->blogRepository->readAllPost($page, $perPage, 'readAllNoOne');
         }
 
         if (isset($perCurrent)) {
@@ -60,18 +60,16 @@ class BlogManager
             }
             $twoOfPage = ($perCurrent - 1) * $perPage;
             $page = (int) $twoOfPage;
-            $postAll = $this->blogRepository->readAllPost($page, $perPage, 'readAll');
+            $postBack = $this->blogRepository->readAllPost($page, $perPage, 'readAll');
         }
 
-        // var_dump($nbPage);
-        // die();
 
         return $tabPost = [
             'current' => (int) $current,
             'perCurrent' => (int) $perCurrent,
             'nbPage' => (int) $nbPage,
-            'post' => $postFront,
-            'postAll' => $postAll
+            'postFront' => $postFront,
+            'postBack' => $postBack
         ];
     }
 }
