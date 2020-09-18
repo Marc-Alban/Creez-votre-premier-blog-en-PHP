@@ -5,35 +5,17 @@
         <div class="">
           <h2>Bl<b>og</b></h2>
           <div class="row-page row">
-          
-            {# First post #}
-            <div class="col-page col-sm-8 col-md-6">
-              <a href="?page=post&id={{ data.lastPost.idPost }}" class="black postPublicationHome">
-                <div class="imgPostPrincipalHome">
-                  <img class="" src="images/post/{{ data.lastPost.imagePost }}">
-                </div>
-                <div class="contentPublicacionPrincipalHome">
-                  <h3>{{ data.lastPost.title }}</h3>
-                  <p class="desc">{{ data.lastPost.chapô }}</p>
-                  <p class="dateCreation">{{ data.lastPost.dateCreation|date('d/m/Y') }}</p>
-                </div>
-                <div class="readMoreBlogHome">
-                  <span>Lire plus...</span>
-                </div>
-              </a>
-            </div>
-            {# end first post #}
             {% for otherPost in  data.paginationPost.postFront %}
           {# Other post #}
             <div class="col-page col-sm-4 col-md-4">
-              <a href="?page=post&id={{ otherPost.idPost }}"  class="postPublicationHome">
+              <a href="?page=blog&id={{ otherPost.idPost }}"  class="postPublicationHome">
                 <div class="imgPostPublication">
                   <img class="img-responsive" src="images/post/{{ otherPost.imagePost }}">
                 </div>
                 <div class="contentPostHome">
                   <h3>{{ otherPost.title }}</h3>
                   <p class="descPost" >{{ otherPost.chapô }}</p>
-                  <p class="datePost" >{{ otherPost.dateCreation|date('d/m/Y') }}</p>
+                  <p class="datePost" >{{ otherPost.datePost|date('d/m/Y') }}</p>
                 </div>
                 <div class="readMoreBlogHome">
                   <span>Lire plus... </span>
@@ -54,10 +36,10 @@
                 {% endif %}">
                 <a class="page-link" aria-label="Previous" href="{% if
                     data.paginationPost.current != 1 %}
-                    ?p=listesArticles&pp={{data.paginationPost.current -
+                    ?page=blog&pp={{data.paginationPost.current -
                     1 }}
                     {% else %}
-                    ?p=listesArticles&pp={{data.paginationPost.current
+                    ?page=blog&pp={{data.paginationPost.current
                     }}
                     {% endif %}">
                     <span aria-hidden="true">&laquo;</span>
@@ -67,13 +49,13 @@
             {% for i in 1..data.paginationPost.nbPage %}
             {% if i == data.paginationPost.current %}
             <li class="page-item active"><a class="page-link"
-                    href="?p=listesArticles&pp={{ i }}">{{ i }}</a></li>
+                    href="?page=blog&pp={{ i }}">{{ i }}</a></li>
             {% else %}
             <li class="page-item
                 {% if data.paginationPost.current <1 %}
                 disabled
                 {% endif %}"><a class="page-link"
-                    href="?p=listesArticles&pp={{ i }}">{{ i }}</a></li>
+                    href="?page=blog&pp={{ i }}">{{ i }}</a></li>
             {% endif %}
             {% endfor %}
 
@@ -85,10 +67,10 @@
                 <a class="page-link" aria-label="Next" href="{% if
                     data.paginationPost.current !=
                     data.paginationPost.nbPage %}
-                    ?p=listesArticles&pp={{data.paginationPost.current +
+                    ?page=blog&pp={{data.paginationPost.current +
                     1 }}
                     {% else %}
-                    ?p=listesArticles&pp={{data.paginationPost.current
+                    ?page=blog&pp={{data.paginationPost.current
                     }}
                     {% endif %}">
                     <span aria-hidden="true">&raquo;</span>

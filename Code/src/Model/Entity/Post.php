@@ -11,10 +11,8 @@ final class Post
     private string $description;
     private string $chapô;
     private string $imagePost;
-    private string $categorie;
     private string $datePost;
     private int $statuPost;
-    private int $lastPost;
     private int $UserId;
 
     /**
@@ -117,27 +115,6 @@ final class Post
     }
 
     /**
-     * Get the value of categorie
-     */
-    public function getCategorie(): string
-    {
-        return $this->categorie;
-    }
-
-    /**
-     * Set the value of categorie
-     *
-     * @return  self
-     */
-    public function setCategorie($categorie): self
-    {
-        $this->categorie = $categorie;
-
-        return $this;
-    }
-//************************************************* */
-
-    /**
      * Get the value of datePost
      */ 
     public function getDatePost(): string
@@ -176,27 +153,6 @@ final class Post
 
         return $this;
     }
-
-    /**
-     * Get the value of lastPost
-     */ 
-    public function getLastPost(): int
-    {
-        return $this->lastPost;
-    }
-
-    /**
-     * Set the value of lastPost
-     *
-     * @return  self
-     */ 
-    public function setLastPost($lastPost): self
-    {
-        $this->lastPost = $lastPost;
-
-        return $this;
-    }
-
 
     /**
      * Get the value of UserId
