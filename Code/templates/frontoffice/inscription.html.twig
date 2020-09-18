@@ -1,0 +1,36 @@
+{% extends "frontoffice/layout.html.twig" %}
+
+{% block title %}Inscription
+{% endblock %}
+
+{% block content %}
+	<div class="container">
+		<div class="content registerBox" style="display:none;">
+			<div class="form">
+				<form method="" html="{:multipart=>true}" data-remote="true" action="" accept-charset="UTF-8">
+					<div class="container mb-5">
+						<div class="raw ">
+							<label for="userName">Pseudo:</label>
+							<input id="userName" class="form-control" type="text" name="userName">
+							<label for="email">E-mail:</label>
+							<input id="email" class="form-control" type="text" name="email">
+						</div>
+						<div class="raw ">
+							<label for="password">Mot de passe:</label>
+							<input id="password" class="form-control" type="password" name="password">
+							<label for="passwordConfirmation">Mot de passe de confirmation:</label>
+							<input id="passwordConfirmation" class="form-control" type="password" name="passwordConfirmation">
+							<label for="file">Avatar:</label>
+							<input id="file" class="form-control" type="file" name="file">
+						</div>
+					</div>
+					<input class="btn btn-default btn-register" type="button" value="S'enregistrer" name="Register">
+				</form>
+			</div>
+		</div>
+		<div class="forgot register-footer" style="display:none">
+			<span>Déjà un compte ?</span>
+			<a href="/?page=inscription">Cliquer ici</a>
+		</div>
+	</div>
+</div>{% endblock %}

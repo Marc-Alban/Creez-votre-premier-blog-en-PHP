@@ -1,19 +1,17 @@
 <?php
-
 declare(strict_types=1);
-
 namespace App\Model\Manager;
-
 use App\Model\Entity\Post;
-use App\Model\Repository\Interfaces\PostRepositoryInterface;
+use App\Model\Entity\User;
+use App\Model\Repository\PostRepository;
 
 final class PostManager
 {
-    private PostRepositoryInterface $postRepo;
+    private PostRepository $postRepository;
 
-    public function __construct(PostRepositoryInterface $postRepository)
+    public function __construct(PostRepository $postRepository)
     {
-        $this->postRepo = $postRepository;
+        $this->postUserRepository = $postRepository;
     }
 
     public function showOne(?string $dataId): ?Post
@@ -27,6 +25,12 @@ final class PostManager
         {
             return null;
         }
-        return $this->postRepo->findById($id);
+        return $this->postUserRepository->findById($id);
+    }
+
+    public function showUser(?string $id ): ?User 
+    {
+        $idPost = intval($id);
+        return $this->postUserRepository->joinUserPost($idPost);
     }
 }

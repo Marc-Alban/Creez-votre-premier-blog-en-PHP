@@ -1,4 +1,22 @@
 <?php
-
 declare(strict_types=1);
-// Class permettant de gérer la variable super globale $_SESSION
+
+namespace App\Service\Http;
+
+class Session
+{
+/************************************getSession************************************************ */
+    public function getSession(): array
+    {
+        return $_SESSION;
+    }
+/************************************End getSession************************************************ */
+/************************************setParamSession************************************************ */
+    public function setParamSession($name, $instance): array
+    {
+        $_SESSION["$name"] = $instance;
+        return $_SESSION;
+    }
+/************************************End setParamSession*********************************************** */
+
+}

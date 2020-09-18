@@ -2,12 +2,10 @@
 declare(strict_types=1);
 namespace App\Model\Manager;
 use App\Model\Repository\BlogRepository;
-use App\Service\Database;
 
 class BlogManager
 {
     private BlogRepository $blogRepository;
-    private Database $db;
 
     public function __construct(BlogRepository $blogRepository)
     {
@@ -35,7 +33,6 @@ class BlogManager
         $current = $data['get']['pp'] ?? null;
         $perCurrent = $data['get']['pp'] ?? null;
         $postFront = null;
-        $postAll = null;
 
         if(isset($current)){
             $total = $this->blogRepository->count('front');

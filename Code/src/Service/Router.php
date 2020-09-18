@@ -4,13 +4,15 @@ namespace  App\Service;
 
 use App\Controller\ErrorController;
 use App\Service\ConfigProperties;
+use App\Service\Http\Session;
 use App\Service\Database;
 use App\View\View;
+use App\Service\Security\Token;
 
 final class Router
 {
     private ?string $action;
-    private ErrorController $errorAction;
+    private ?ErrorController $error;
     private ?int $id;
     private string $page;
     private string $pageMaj;
@@ -18,23 +20,27 @@ final class Router
     private ?array $pageBack;
     private ConfigProperties $configProperties;
     private Database $database;
+    private Session $session;
+    private Token $token;
     private View $view;
 
 
     public function __construct()
     {
         // dépendance
-        $this->errorAction = new ErrorController();
         $this->configProperties = new ConfigProperties();
-        $this->view = new View();
         $this->database = new Database($this->configProperties);
+        $this->session = new Session();
+        $this->error = new ErrorController($this->session);
+        $this->view = new View($this->session);
+        $this->token = new Token();
         // En attendent de mettre en place la class App\Service\Http\Request --> gestion super global
         $idUrl = $_GET['id'] ?? null;
         $this->id = intval($idUrl);
         $this->action = $_GET['action'] ?? null;
         $this->page = $_GET['page'] ?? "Home";
         $this->pageMaj = ucfirst($this->page);
-        $this->pageFront = ['Home','Post','Blog'];
+        $this->pageFront = ['Home','Post','Blog', 'Connexion', 'Inscription'];
         $this->pageBack = [];
     }
 
@@ -90,12 +96,11 @@ public function repositoryClass(): string
         $pathVerif = ROOT.$replacePath.'.php';
         if(file_exists($pathVerif)){
             $repo = new $repoClass($this->database);
-            $manager = new $managerClass($repo);
+            $manager = new $managerClass($repo,$this->token);
         }elseif(!file_exists($pathVerif)){
-            $manager = new $managerClass();
+            $manager = new $managerClass($this->token);
         }
-        $view = $this->view ;
-        $controllerObject = new $controllerClass($manager, $view);
+        $controllerObject = new $controllerClass($manager, $this->view, $this->error, $this->token, $this->session);
         $methode = $this->pageMaj.'Action';
         return $controllerObject->$methode($datas);
     }
@@ -107,11 +112,13 @@ public function repositoryClass(): string
         {
             if(($this->action === null && $this->id === null) || ($this->action !== null && $this->id !== null) || ($this->action !== null && $this->id === null))
             {
-                $this->call(['get'=>$_GET, 'post'=>$_POST, 'files'=>$_FILES, 'session'=>$_SESSION]);
+                // var_dump($this->session->getSession(), $_SESSION);
+                // die();
+                $this->call(['get'=>$_GET, 'post'=>$_POST, 'files'=>$_FILES, 'session'=>$this->session->getSession()]);
             }
             else if($this->action === null && $this->id !== null)
             {
-                $this->call(['get'=>$_GET, 'post'=>$_POST, 'session'=>$_SESSION]);
+                $this->call(['get'=>$_GET, 'post'=>$_POST, 'session'=>$this->session->getSession()]);
             }
         }
         else if(!in_array($this->pageMaj, $this->pageFront) || !in_array($this->pageMaj, $this->pageBack))

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Model\Entity;
 
-final class Post
+final class User
 {
     private int $idUser;
     private string $userName;
     private string $email;
-    private int $password;
+    private string $password;
     private int $activated;
     private int $validationKey;
     private string $userType;
@@ -79,7 +79,7 @@ final class Post
     /**
      * Get the value of password
      */
-    public function getPassword(): int
+    public function getPassword(): string
     {
         return $this->password;
     }

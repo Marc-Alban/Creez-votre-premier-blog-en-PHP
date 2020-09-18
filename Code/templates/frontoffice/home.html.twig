@@ -1,4 +1,4 @@
-{% extends "/frontoffice/layoutHome.html.twig" %}
+{% extends "/frontoffice/layout.html.twig" %}
 {% block title %}Home
 {% endblock %}
 {% block content %}
@@ -7,7 +7,7 @@
 			<div class="card card-plain">
 				<div class="card-header text-center">
 					<div class="logo-container clear-filter" filter-color="orange">
-						<img src="images/profile/yoda.png" class="img-fluid " alt="Responsive image">
+						<img src="images/profile/DarkVador.png" class="img-fluid " alt="Responsive image">
 					</div>
 				</div>
 				<div class="card-body">
@@ -15,76 +15,48 @@
 					<h2 class="SubtitleSite">Le développeur fou, tu recruteras !</h2>
 				</div>
 				<div class="card-footer d-flex justify-content-around">
-					<button href="#" class="btn btn-primary btnHome ">Télécharger CV</button>
-					{# modal link #}
-					<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Contacter l'administrateur</button>
+					<a href="./images/cv/CV-Dark-Vador.pdf" download="CV-Dark-Vador.pdf" class="btn btn-primary btnHome">Télécharger CV</a>
 				</div>
-				{# Modal Contact #}
-				<!--Begin Modal Window-->
-				<div class="modal fade left" id="myModal">
-					<div class="modal-dialog">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h3 class="pull-left no-margin">Envie de m'écrire ?
-								</h3>
-								<div class="required">* Requis</div>
-								<button type="button" class="close" data-dismiss="modal" title="Close">
-									<span class="glyphicon glyphicon-remove"></span>
-								</button>
-							</div>
-							<div class="modal-body">
-								<!--INSERT CONTACT FORM HERE-->
-								<!--NOTE: you will need to provide your own form processing script-->
-									<form class="form-horizontal" role="form" method="post" action="">
-									<div class="form-group responsiveForm">
-										<label for="name" class="control-label">
-											<span class="required">*</span>
-											Nom:</label>
-										<div class="col-sm-4">
-											<input type="text" class="form-control" id="name" name="name" placeholder="Nom de famille" required>
-										</div>
-										<label for="lastName" class=" control-label">
-											<span class="required">*</span>
-											Prénom:</label>
-										<div class="col-sm-4">
-											<input type="text" class="form-control" id="lastName" name="lastName" placeholder="Prénom" required>
-										</div>
-									</div>
-									<div class="form-group">
-										<label for="email" class="col-sm-3 control-label">
-											<span class="required">*</span>
-											E-mail:
-										</label>
-										<div class="col-sm-9 m-auto">
-											<input type="email" class="form-control" id="email" name="email" placeholder="you@domain.com" required>
-										</div>
-									</div>
-									<div class="form-group">
-										<label for="message" class="col-sm-3 control-label">
-											<span class="required">*</span>
-											Message:</label>
-										<div class="col-sm-9 m-auto">
-											<textarea name="message" rows="4" required class="form-control" id="message" placeholder="Votre message ..."></textarea>
-										</div>
-									</div>
-									<div class="form-group">
-										<div class="col-sm-offset-3 m-auto col-sm-6 col-sm-offset-3">
-											<button type="submit" id="submit" name="submit" class="btn-lg btn-primary">Envoyer</button>
-										</div>
-									</div>
-									<!--end Form-->
-								</form>
-							</div>
-							<div class="modal-footer">
-								<button class="btn-sm close" type="button" data-dismiss="modal">Fermer</button>
-							</div>
-						</div>
-					</div>
-				</div>
-				{# EndModalContact #}
-				{# modal connexion #}
-			{% include 'frontoffice/modalConnexion.html.twig' %}
 			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="raw">
+		{#--------------------------CONDITION-DATA----------------------------#}
+{% if data.mail %}
+{#--------------------------SUCCES-MESSAGE----------------------------#}
+{% for success in data.mail.succes %}
+<div class="alert alert-primary" role="alert">
+    {{success}}
+</div>
+{% endfor %}
+{#-------------------------END-CONDITION-DATA----------------------------#}
+{#-------------------------END-SUCCES-MESSAGE----------------------------#}
+{% endif %}
+{#--------------------------CONDITION-DATA----------------------------#}
+{% if data.mail %}
+{#--------------------------ERROR-MESSAGE----------------------------#}
+{% for errors in data.mail.error %}
+<div class="alert alert-danger" role="alert">
+    {{errors}}
+</div>
+{% endfor %}
+{#--------------------------ERROR-MESSAGE----------------------------#}
+{% endif %}
+{#--------------------------END-CONDITION-DATA----------------------------#}
+			<form method="post" action="/?page=Home&action=sendMessage">
+				<label>Nom</label>
+				<input type="text" name="name" ><br> 
+				<label>Prénom</label>
+				<input type="text" name="lastName" ><br> 
+				<label>Email</label>
+				<input type="email" name="mail" ><br> 
+				<label>Message</label>
+				<textarea name="message" ></textarea><br> 
+				<input type="hidden"
+                    name="token" id="token" value="{{session.token}}" >
+				<input type="submit" name="submit">
+			</form>
 		</div>
 	</div>
 {% endblock %}

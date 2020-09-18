@@ -20,6 +20,7 @@ final class BlogRepository implements BlogRepositoryInterface
         $executeIsOk = $pdo->execute([$id]);
         if ($executeIsOk === true) {
             $idBdd = $pdo->fetchObject(Post::class) ;
+
             if ($idBdd) {
                 return $idBdd;
             } elseif ($idBdd === false) {
@@ -71,15 +72,12 @@ final class BlogRepository implements BlogRepositoryInterface
             exit();
         }
         
-        while ($post = $pdoStatement->fetchObject(Post::class)) {
-            $this->post[] = $post;
-            $post++;
-        }
-
         if ($this->post === false) {
             header('Location: index.php?page=blog');
             exit();
         };
+        
+        $this->post[] = $pdoStatement->fetchObject(Post::class);
         return $this->post;
     }
 
@@ -94,7 +92,7 @@ final class BlogRepository implements BlogRepositoryInterface
                 $this->pdoStatement = $this->db->query("SELECT count(*) AS total FROM post WHERE statuPost = 1 ");
             }
         }
-       
+
         if($this->pdoStatement === false){
             return null;
         }else if(!$this->pdoStatement === false){
@@ -108,21 +106,6 @@ final class BlogRepository implements BlogRepositoryInterface
 
 
 
-    }
-
-    public function create(Post $post) : bool
-    {
-        return false;
-    }
-
-    public function update(Post $post) : bool
-    {
-        return false;
-    }
-
-    public function delete(Post $post) : bool
-    {
-        return false;
     }
 
 }

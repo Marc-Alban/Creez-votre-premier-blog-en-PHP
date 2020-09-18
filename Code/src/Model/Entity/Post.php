@@ -9,7 +9,7 @@ final class Post
     private int $idPost;
     private string $title;
     private string $description;
-    private string $label;
+    private string $chapô;
     private string $imagePost;
     private string $categorie;
     private string $dateCreation;
@@ -78,26 +78,25 @@ final class Post
         return $this;
     }
 
-    /**
-     * Get the value of label
-     */
-    public function getLabel(): ?string
+     /**
+     * Get the value of chapô
+     */ 
+    public function getChapô(): string
     {
-        return $this->label;
+        return $this->chapô;
     }
 
     /**
-     * Set the value of label
+     * Set the value of chapô
      *
      * @return  self
-     */
-    public function setLabel($label): self
+     */ 
+    public function setChapô($chapô): self
     {
-        $this->label = $label;
+        $this->chapô = $chapô;
 
         return $this;
     }
-
     /**
      * Get the value of imagePost
      */

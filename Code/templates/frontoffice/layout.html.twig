@@ -7,8 +7,7 @@
 		<meta name="description" content="Site blog/ Cv-Personnel">
 		<meta name="author" content="Fatellim">
 		<title>
-		{% block title %}
-		{% endblock %}
+			{% block title %}{% endblock %}
 		</title>
 		{# ------------- Style ----------------------- #}
 		<!-- Bootstrap -->
@@ -16,20 +15,25 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
 		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
 		{#----------------------------Style-personnel-Css---------------------------#}
+		<link href="css/style.css" rel="stylesheet">
+
+
 	</head>
-	<body>
-		{% include 'frontoffice/headerPost.html.twig' %}
-		{# -------------------------------------------------Main-------------------------------------------- #}
-		<div class="filterheight clear-filter" filter-color="orange">
-		<div class="content"> {% block content %}{% endblock %}</div>
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet"/>
+	<link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+
+	<body class="login-page sidebar-collapse">
+		{% include 'frontoffice/header.html.twig' %}
+		<div class="page-header clear-filter" filter-color="orange">
+			<div class="page-header-image" style="background-image:url('https://images.unsplash.com/photo-1497493292307-31c376b6e479?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1351&q=80')"></div>
+			<div class="content"> {% block content %}{% endblock %}</div>
 		</div>
 		{% include 'frontoffice/footer.html.twig' %}
-			{#---------------------script js-------------------------#}
+			<!-- Optional JavaScript -->
+			<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
 			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
-			<script src="js/form.js"></script>
 			<script src="js/script.js"></script>
-			{% block js %}{% endblock %}
 		</body>
 	</html>

@@ -14,8 +14,7 @@
                 </div>
                 <div class="contentPublicacionPrincipalHome">
                   <h3>{{ data.lastPost.title }}</h3>
-                  <span class="label">{{ data.lastPost.label }}</span>
-                  <p class="desc">{{ data.lastPost.description }}</p>
+                  <p class="desc">{{ data.lastPost.chapô }}</p>
                   <p class="dateCreation">{{ data.lastPost.dateCreation|date('d/m/Y') }}</p>
                 </div>
                 <div class="readMoreBlogHome">
@@ -24,8 +23,7 @@
               </a>
             </div>
             {# end first post #}
-                    {% for otherPost in
-        data.paginationPost.postFront %}
+            {% for otherPost in  data.paginationPost.postFront %}
           {# Other post #}
             <div class="col-page col-sm-4 col-md-4">
               <a href="?page=post&id={{ otherPost.idPost }}"  class="postPublicationHome">
@@ -34,8 +32,7 @@
                 </div>
                 <div class="contentPostHome">
                   <h3>{{ otherPost.title }}</h3>
-                  <span class="label">{{ otherPost.label }}</span>
-                  <p class="descPost" >{{ otherPost.description }}</p>
+                  <p class="descPost" >{{ otherPost.chapô }}</p>
                   <p class="datePost" >{{ otherPost.dateCreation|date('d/m/Y') }}</p>
                 </div>
                 <div class="readMoreBlogHome">
@@ -108,6 +105,4 @@
       </div>
     </section>
 
-{# modal connexion #}
-{% include 'frontoffice/modalConnexion.html.twig' %}
 {% endblock %}

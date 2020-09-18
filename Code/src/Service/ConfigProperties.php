@@ -11,11 +11,11 @@ class ConfigProperties
     private $DbPass;
     public function __construct()
     {
-
-        if(!file_exists(ROOT.'config.ini')){
-            throw new Exception('Fichier config.ini absent');
+        try{
+            $this->ini = parse_ini_file(ROOT.'config.ini', false);
+        }catch(Exception $e) {
+            die('Erreur : Problème avec la connexion de la base de donnée ' );
         }
-        $this->ini = parse_ini_file(ROOT.'config.ini', false);
         $this->DbHost  = $this->ini['DbHost'];
         $this->DbName  = $this->ini['DbName'];
         $this->DbUser  = $this->ini['DbUser'];

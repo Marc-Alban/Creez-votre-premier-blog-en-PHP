@@ -1,0 +1,32 @@
+{% extends "frontoffice/layout.html.twig" %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block content %}
+<div class="container">
+<div class="content">
+    <div class="error"></div>
+    <div class="form formBox">
+        <form method="" action="" accept-charset="UTF-8">
+            <div class="container mb-5">
+                <div class="raw">
+                    <label for="email">E-mail:</label>
+                    <input id="email" class="form-control" type="text" name="email">
+                </div>
+                <div class="raw">
+                    <label for="password">Mot de passe:</label>
+                    <input id="password" class="form-control" type="password" name="password">
+                </div>
+            </div>
+            <input class="btn btn-default btn-form" type="button" value="Signin" >
+        </form>
+    </div>
+</div>
+<div class="forgot form-footer">
+    <span>Pas de compte ?
+        <a href="/?page=inscription">Cliquer ici</a>
+    </span>
+</div>
+</div>
+{% endblock %}
+
