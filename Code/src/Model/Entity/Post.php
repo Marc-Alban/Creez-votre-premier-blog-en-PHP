@@ -12,8 +12,7 @@ final class Post
     private string $chapô;
     private string $imagePost;
     private string $categorie;
-    private string $dateCreation;
-    private string $dateUpdate;
+    private string $datePost;
     private int $statuPost;
     private int $lastPost;
     private int $UserId;
@@ -136,43 +135,24 @@ final class Post
 
         return $this;
     }
+//************************************************* */
 
     /**
-     * Get the value of dateCreation
-     */
-    public function getDateCreation(): string
+     * Get the value of datePost
+     */ 
+    public function getDatePost(): string
     {
-        return $this->dateCreation;
+        return $this->datePost;
     }
 
     /**
-     * Set the value of dateCreation
+     * Set the value of datePost
      *
      * @return  self
-     */
-    public function setDateCreation($dateCreation): self
+     */ 
+    public function setDatePost($datePost): self
     {
-        $this->dateCreation = $dateCreation;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of dateUpdate
-     */
-    public function getDateUpdate(): ?string
-    {
-        return $this->dateUpdate;
-    }
-
-    /**
-     * Set the value of dateUpdate
-     *
-     * @return  self
-     */
-    public function setDateUpdate($dateUpdate): self
-    {
-        $this->dateUpdate = $dateUpdate;
+        $this->datePost = $datePost;
 
         return $this;
     }

@@ -12,7 +12,6 @@ use App\Service\Security\Token;
 final class Router
 {
     private ?string $action;
-    private ?ErrorController $error;
     private ?int $id;
     private string $page;
     private string $pageMaj;
@@ -23,17 +22,18 @@ final class Router
     private Session $session;
     private Token $token;
     private View $view;
+    private ?ErrorController $error;  
 
 
     public function __construct()
     {
         // dépendance
+        $this->session = new Session();
         $this->configProperties = new ConfigProperties();
         $this->database = new Database($this->configProperties);
-        $this->session = new Session();
-        $this->error = new ErrorController($this->session);
-        $this->view = new View($this->session);
         $this->token = new Token();
+        $this->view = new View($this->session);
+        $this->error = new ErrorController($this->session);
         // En attendent de mettre en place la class App\Service\Http\Request --> gestion super global
         $idUrl = $_GET['id'] ?? null;
         $this->id = intval($idUrl);

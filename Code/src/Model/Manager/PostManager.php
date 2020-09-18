@@ -11,7 +11,7 @@ final class PostManager
 
     public function __construct(PostRepository $postRepository)
     {
-        $this->postUserRepository = $postRepository;
+        $this->postRepository = $postRepository;
     }
 
     public function showOne(?string $dataId): ?Post
@@ -25,12 +25,12 @@ final class PostManager
         {
             return null;
         }
-        return $this->postUserRepository->findById($id);
+        return $this->postRepository->findById($id);
     }
 
     public function showUser(?string $id ): ?User 
     {
         $idPost = intval($id);
-        return $this->postUserRepository->joinUserPost($idPost);
+        return $this->postRepository->joinUserPost($idPost);
     }
 }

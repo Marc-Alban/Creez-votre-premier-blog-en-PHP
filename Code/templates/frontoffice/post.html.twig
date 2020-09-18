@@ -2,11 +2,7 @@
 {% block content %}
 	{#--------------------------SECTION-HEADING----------------------------#}
 	<h1 class="text-left h1 pt-4 mb-3">
-		<strong>
-			{% for post in data %}
-				{{ post.title }}
-			{% endfor %}
-		</strong>
+		<strong>{{data.post.title }}</strong>
 	</h1>
 	{#-------------------------END-SECTION-HEADING----------------------------#}
 	{#--------------------------GRILLE-COLONNE----------------------------#}
@@ -16,8 +12,7 @@
 			class="pb-5 mx-md-3">
 			{#--------------------------IMAGE----------------------------#}
 			<img
-			class="image-responsive" src="images/post/{% for post in data %}{{
-				post.imagePost }}{% endfor %}" alt="">
+			class="image-responsive" src="images/post/{{ data.post.imagePost }}" alt="">
 			{#--------------------------END-IMAGE----------------------------#}
 			<div class="container">
 				<div class="row">
@@ -25,23 +20,22 @@
 							justify-content-left">
 						<p class="font-small grey-text mb-0">
 							<i class="far fa-clock-o dark-grey-text"></i>
-							{% for post in data %}
-								{{ post.UserId }}
-							{% endfor %}
+								{{ data.user.userName }}
 						</p>
 						<p class="font-small grey-text mb-0">
 							<i class="far fa-clock-o dark-grey-text"></i>
-							{% for post in data %}
-								{{ post.dateCreation|date('d/m/Y') }}
-							{% endfor %}
+								{{ data.post.datePost|date('d/m/Y') }}
 						</p>
 					</div>
 				</div>
 				{#--------------------------GRILLE-COLONNE----------------------------#}
 				<p class="text-justify">
-					{% for post in data %}
-						{{ post.description|raw }}
-					{% endfor %}
+				<pre>Chapô du post:</pre>
+				{{ data.post.chapô|raw }}
+				</p>
+				<p class="text-justify">
+				<pre>Description du post:</pre>
+				{{ data.post.description|raw }}
 				</p>
 			</div>
 			{#--------------------------END-GRILLE-COLONNE----------------------------#}
@@ -92,28 +86,6 @@
 							<input type="submit" class="btn btn-primary" placeholder="Envoyer" value="Envoyer">
 						</div>
 					</form>
-
-					<div class="col-12 ">
-						{% for comments in data %}
-							<div class="blockquote col-12 com">
-								{{ comments.name }}
-								le
-								{{ comments.dateCreation }}
-								:
-								{{ comments.content }}
-								{% if post in data %}
-									{% for chapter in data %}
-										{% if comments.seen is same as("1") %}
-											<span class=" col-md-3  ml-3 alert alert-danger" id="ancre">Commentaire signalé</span>
-										{% else %}
-											<a href="">
-												(Signaler)</a>
-										{% endif %}
-									{% endfor %}
-								{% endif %}
-							</div>
-						{% endfor %}
-					</div>
 				</div>
 			</div>
 		</div>
