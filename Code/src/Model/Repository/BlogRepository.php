@@ -31,7 +31,8 @@ final class BlogRepository implements BlogRepositoryInterface
             exit();
         }
         
-        $this->post[] = $pdoStatement->fetchObject(Post::class);
+        $this->post = $pdoStatement->fetchAll();
+
         if ($this->post === false) {
             header('Location: index.php?page=blog&pp=1');
             exit();

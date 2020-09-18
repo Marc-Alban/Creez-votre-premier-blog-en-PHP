@@ -34,8 +34,6 @@ class BlogManager
             $postFront = $this->blogRepository->readAllPost($page, $perPage, 'readAllNoOne');
         }
         
-        var_dump($postFront); // Beau avoir fait ça je n'ai qu'un post qui apparait ? 
-        die();
 
         return $tabPost = [
             'current' => (int) $current,
