@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Model\Entity;
 
-final class Post
+final class Comment
 {
     private int $idComment;
     private string $content;
-    private string $dateCreation;
     private int $disabled;
     private int $UserId;
     private int $PostId;
+    private string $dateCreation;
 
 
     /**
@@ -50,26 +50,6 @@ final class Post
     public function setContent($content): self
     {
         $this->content = $content;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of dateCreation
-     */
-    public function getDateCreation(): string
-    {
-        return $this->dateCreation;
-    }
-
-    /**
-     * Set the value of dateCreation
-     *
-     * @return  self
-     */
-    public function setDateCreation($dateCreation): self
-    {
-        $this->dateCreation = $dateCreation;
 
         return $this;
     }
@@ -130,6 +110,26 @@ final class Post
     public function setPostId($PostId): self
     {
         $this->PostId = $PostId;
+
+        return $this;
+    }
+
+        /**
+     * Get the value of dateCreation
+     */
+    public function getDateCreation(): string
+    {
+        return $this->dateCreation;
+    }
+
+    /**
+     * Set the value of dateCreation
+     *
+     * @return  self
+     */
+    public function setDateCreation($dateCreation): self
+    {
+        $this->dateCreation = $dateCreation;
 
         return $this;
     }

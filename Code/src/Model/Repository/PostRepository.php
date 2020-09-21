@@ -4,9 +4,12 @@ namespace App\Model\Repository;
 use App\Service\Database;
 use App\Model\Entity\Post;
 use App\Model\Entity\User;
+use App\Model\Entity\Comment;
 use App\Model\Repository\Interfaces\PostRepositoryInterface;
 use App\Model\Repository\Interfaces\UserRepositoryInterface;
-final class PostRepository implements PostRepositoryInterface, UserRepositoryInterface
+use App\Model\Repository\Interfaces\CommentRepositoryInterface;
+
+final class PostRepository implements PostRepositoryInterface, UserRepositoryInterface, CommentRepositoryInterface
 {
     private $db;
 
@@ -78,6 +81,30 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
     }
 
     public function deleteUser(User $user) : bool
+    {
+        return false;
+    }
+
+    public function getComment(Comment $comment): ?Comment
+    {
+        return null;
+    }
+    public function createComment(string $idUser, string $comment, int $idPost): void
+    {
+        $sql = "
+        INSERT INTO comment(content, disabled, UserId, PostId, dateCreation)
+        VALUES(:content, :disabled, :UserId, :PostId, :NOW())
+        ";
+        $commentArray = [
+            ':content' => $comment,
+            ':disabled' => 1,
+            ':UserId' => $idUser,
+            ':PostId' => $idPost,
+        ];
+        $req = $this->db->prepare($sql);
+        $req->execute($commentArray);
+    }
+    public function deleteComment(Comment $comment): bool
     {
         return false;
     }

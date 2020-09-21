@@ -1,12 +1,19 @@
 <?php
 declare(strict_types=1);
 namespace App\Model\Manager;
+use App\Model\Repository\InscriptionRepository;
+use App\Service\Http\Session;
+use App\Service\Security\Token;
 
-class InscritionManager
+class InscriptionManager
 {
-    public function __construct()
+    private InscriptionRepository $inscriptionRepository;
+    private Token $token;
+    private Session $session;
+    public function __construct(InscriptionRepository $inscriptionRepository, Token $token)
     {
-
+        $this->inscriptionRepository = $inscriptionRepository;
+        $this->token = $token;
     }
 
     public function userSignIn(array $data): ?array
@@ -19,48 +26,38 @@ class InscritionManager
         $succes = $data["session"]["succes"] ?? null;
         unset($data["session"]["succes"]);
 
-        if (isset($data['post']['inscription']) && $action === "inscription") {
+        if (isset($data['post']['Register']) && $action === "inscription") {
 
-            $active = $this->userManager->getActiveUser();
-            $userBdd = $this->userManager->getUsers();
-            $pseudo = $data["post"]['pseudo'] ?? null;
-            $passwordBdd = $this->userManager->getPass();
+            $pseudo = $data["post"]['userName'] ?? null;
+            $email = $data["post"]['email'] ?? null;
             $password = $data["post"]['password'] ?? null;
-            $captcha = $data['post']['g-recaptcha-response'];
-            $resp = $this->recaptcha->verify($captcha);
+            $passwordConfirmation = $data["post"]['passwordConfirmation'] ?? null;
 
-            if (empty($pseudo) && empty($password)) {
-                $errors["pseudoPasswordEmpty"] = 'Veuillez mettre un contenu';
+            if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
+                $errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
             } else if (empty($pseudo)) {
-                $errors["pseudoEmpty"] = 'Veuillez mettre un pseudo ';
+                $errors['error']["pseudoEmpty"] = 'Veuillez mettre un pseudo ';
             } else if (empty($password)) {
-                $errors["passwordEmpty"] = 'Veuillez mettre un mot de passe';
-            } else if ($userBdd !== $pseudo) {
-                $errors['pseudoWrong'] = 'Identifiant Incorrect';
-            } else if (!password_verify($password, $passwordBdd)) {
-                $errors['passWrong'] = 'Identifiant Incorrect';
-            } else if (!$resp->isSuccess()) {
-                $errors['erreurCaptcha'] = "Veuillez Cocher la case du captcha.";
+                $errors['error']["passwordEmpty"] = 'Veuillez mettre un mot de passe';
+            } else if ($password !== $passwordConfirmation) {
+                $errors['error']['passwordWrong'] = 'Mot de passe et mot de passe de confirmation ne corresponde pas.. ';
             }
 
-            if ($active[0] === "0") {
-                $errors['compteWrong'] = "Compte desactivé";
-            }
             /************************************Token Session************************************************* */
-            if ($this->token->compareTokens($data) !== null) {
-                $errors['token'] = "Formulaire incorrect";
-            }
+            // if ($this->token->compareTokens($data['post']['token']) !== null) {
+            //     $errors['error']['token'] = "Formulaire incorrect";
+            // }
             /************************************End Token Session************************************************* */
+                // var_dump($data['post']['token']);
+                // die();
 
             if (empty($errors)) {
-                $this->maSuperGlobale->setParamSession('user', $userBdd);
-                $this->maSuperGlobale->setParamSession('active', $active);
+                $this->session->setParamSession('user', $pseudo);
                 $succes['succes'] = "Connexion réussie";
                 return $succes;
             }
             return $errors;
         }
-        return null;
         return null;
     }
 }

@@ -2,12 +2,12 @@
 declare(strict_types=1);
 namespace  App\Service;
 
-use App\Controller\ErrorController;
 use App\Service\ConfigProperties;
 use App\Service\Http\Session;
 use App\Service\Database;
-use App\View\View;
 use App\Service\Security\Token;
+use App\View\View;
+use App\Controller\ErrorController;
 
 final class Router
 {
@@ -29,11 +29,11 @@ final class Router
     {
         // dépendance
         $this->session = new Session();
+        $this->view = new View($this->session);
+        $this->token = new Token();
         $this->configProperties = new ConfigProperties();
         $this->database = new Database($this->configProperties);
-        $this->token = new Token();
-        $this->view = new View($this->session);
-        $this->error = new ErrorController($this->session);
+        $this->error = new ErrorController($this->view);
         // En attendent de mettre en place la class App\Service\Http\Request --> gestion super global
         $idUrl = $_GET['id'] ?? null;
         $this->id = intval($idUrl);
@@ -55,7 +55,7 @@ final class Router
         {
             return 'App\Controller\Backoffice\\'.$this->pageMaj.'Controller';
         }
-        return $this->error();
+        return $this->error->ErrorAction();
     }
 /************************************End Controller************************************************* */
 /************************************Manager Class************************************************* */
@@ -69,7 +69,7 @@ public function managerClass(): string
     {
         return 'App\Model\Manager\\'.$this->pageMaj.'Manager';
     }
-    return $this->error();
+        return $this->error->ErrorAction();
 }
 /************************************End Manager Class************************************************* */
 /************************************Manager Class************************************************* */
@@ -83,7 +83,7 @@ public function repositoryClass(): string
     {
         return 'App\Model\Repository\\'.$this->pageMaj.'Repository';
     }
-    return $this->error();
+        return $this->error->ErrorAction();
 }
 /************************************End Manager Class************************************************* */
 /************************************Call Method With Controller************************************************* */
@@ -112,8 +112,6 @@ public function repositoryClass(): string
         {
             if(($this->action === null && $this->id === null) || ($this->action !== null && $this->id !== null) || ($this->action !== null && $this->id === null))
             {
-                // var_dump($this->session->getSession(), $_SESSION);
-                // die();
                 $this->call(['get'=>$_GET, 'post'=>$_POST, 'files'=>$_FILES, 'session'=>$this->session->getSession()]);
             }
             else if($this->action === null && $this->id !== null)
@@ -123,14 +121,14 @@ public function repositoryClass(): string
         }
         else if(!in_array($this->pageMaj, $this->pageFront) || !in_array($this->pageMaj, $this->pageBack))
         {
-            $this->error();
+            $this->error->ErrorAction();
         }
     }
 /************************************End Start Routeur************************************************* */
 /************************************Return Error Action************************************************* */
     public function error(): void
     {
-        $this->errorAction->ErrorAction();
+        $this->error->ErrorAction();
         exit();
     }
 /************************************End Return Error Action************************************************ */

@@ -41,8 +41,8 @@
 			{#--------------------------END-GRILLE-COLONNE----------------------------#}
 		</div>
 		{#--------------------------END-CARD----------------------------#}
-
 		<hr>
+		{#--------------------------Form Comments----------------------------#}
 		<div class="container">
 			<div class="raw">
 				<div class="row">
@@ -64,12 +64,6 @@
 					{% endif %}
 					<form id="myForm" class="col-md-8 col-12 dp-" method="POST" action="index.php?page=post&id={{ data.post.id }}&action=submitComment&#ancre">
 						<div class="form-group">
-							<label for="name">Votre pseudo
-								<i class="fas fa-exclamation-triangle"></i>
-							</label>
-							<input id="name" name="name" type="text" class="form-control" require>
-							<div id="aideName"></div>
-						</div>
 						<div class="form-group">
 							<label for="message">Message
 								<i class=" fas fa-exclamation-triangle"></i>
@@ -79,7 +73,7 @@
 						</div>
 						<div class="form-group row">
 							<div class="col-md-6">
-								<input type="hidden" name="token" id="token" value="{{session.token}}"/>
+								<input type="hidden" name="token" id="token" value="{{session.commentToken}}"/>
 							</div>
 						</div>
 						<div class="d-flex flex-row-reverse">
@@ -89,5 +83,5 @@
 				</div>
 			</div>
 		</div>
-		{#--------------------------END-GRILLE-COLONNE----------------------------#}
+		{#--------------------------Form Comments----------------------------#}
 	{% endblock %}

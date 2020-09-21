@@ -1,18 +1,11 @@
 <?php
 declare(strict_types=1);
 namespace App\Model\Repository;
-use App\Service\Database;
 use App\Model\Entity\User;
 use App\Model\Repository\Interfaces\UserRepositoryInterface;
 final class UserRepository implements UserRepositoryInterface
 {
-    private $db;
 
-    public function __construct(Database $db)
-    {
-        $this->db = $db->getPdo();
-    }
-    
     public function joinUserPost(int $idPost): ?User
     {
         return null;
