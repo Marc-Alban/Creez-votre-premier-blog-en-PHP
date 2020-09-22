@@ -1,39 +1,37 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 	<head>
-		{#----------------------------Meta---------------------------#}
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<meta name="description" content="Site blog/ Cv-Personnel">
-		<meta name="author" content="Fatellim">
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+		<meta name="description" content=""/>
+		<meta name="author" content=""/>
 		<title>
 			{% block title %}{% endblock %}
 		</title>
-		{# ------------- Style ----------------------- #}
-		<!-- Bootstrap -->
-		<link href="https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed" rel="stylesheet">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
-		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
-		{#----------------------------Style-personnel-Css---------------------------#}
-		<link href="css/style.css" rel="stylesheet">
-
-
+		<link
+		rel="icon" type="image/x-icon" href="images/favicon/favicon.ico"/>
+		<!-- Font Awesome icons (free version)-->
+		<script src="https://use.fontawesome.com/releases/v5.13.0/js/all.js" crossorigin="anonymous"></script>
+		<!-- Google fonts-->
+		<link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet"/>
+		<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet"/>
+		<link href="css/bootstrap.css" rel="stylesheet"/>
+		<link href="css/style.css" rel="stylesheet"/>
 	</head>
 	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet"/>
 	<link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
 
-	<body class="login-page sidebar-collapse">
+	<body id="page-top">
 		{% include 'frontoffice/header.html.twig' %}
-		<div class="page-header clear-filter" filter-color="orange">
-			<div class="page-header-image" style="background-image:url('https://images.unsplash.com/photo-1497493292307-31c376b6e479?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1351&q=80')"></div>
-			<div class="content"> {% block content %}{% endblock %}</div>
-		</div>
+		{% block content %}{% endblock %}
 		{% include 'frontoffice/footer.html.twig' %}
-			<!-- Optional JavaScript -->
-			<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
-			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
-			<script src="js/script.js"></script>
-		</body>
-	</html>
+		<!-- Bootstrap core JS-->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+		<!-- Third party plugin JS-->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+		<!-- Core theme JS-->
+		<script src="js/script.js"></script>
+	</body>
+</html>
+

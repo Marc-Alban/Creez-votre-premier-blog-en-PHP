@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Controller\Frontoffice;
 
 use App\Model\Entity\Post;
@@ -26,7 +28,7 @@ final class PostController
         $this->token = $token;
         $this->session = $session;
     }
-    
+
     public function PostAction(array $datas): void
     {
         $id = $datas['get']['id'] ?? null;
@@ -34,18 +36,19 @@ final class PostController
 
         $post = $this->postManager->showOne($id);
         $user = $this->postManager->showUser($id);
+        //$user = $this->userManager->findUserById($post->getUserId());
 
-        if($action === 'signalComment' ){
-        $this->postManager->signalComment($datas);
-        }else if($action === 'sendComment'){
-        $this->session->setParamSession('commentToken', $this->token->createSessionToken());
-        $this->postManager->verifComment($datas);
+        if ($action === 'signalComment') {
+            $this->postManager->signalComment($datas);
+        } else if ($action === 'sendComment') {
+            $this->session->setParamSession('token', $this->token->createSessionToken());
+            $this->postManager->verifComment($datas);
         }
 
 
         if ($post instanceof Post) {
             $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user]);
-        } else if ($post === null || empty($post)){
+        } else if ($post === null || empty($post)) {
             $this->error->ErrorAction();
         }
     }

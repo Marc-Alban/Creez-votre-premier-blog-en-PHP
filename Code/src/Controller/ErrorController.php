@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\View\View;
 
+
 final class ErrorController
 {
     private View $view;
@@ -17,5 +18,11 @@ final class ErrorController
     public function ErrorAction(): void
     {
         $this->view->render('frontoffice','error', []);
+    }
+
+    public function ErrorBdd(): void
+    {
+        $bdd = 'Problème avec la connexion de la base de donnée';
+        $this->view->render('frontoffice','error', ['bdd' => $bdd]);
     }
 }

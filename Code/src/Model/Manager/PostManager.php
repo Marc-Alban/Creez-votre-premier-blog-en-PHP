@@ -16,16 +16,7 @@ final class PostManager
 
     public function showOne(?string $dataId): ?Post
     {
-        $id = intval($dataId);
-
-        if ($id > 600) {
-            return null;
-        }
-        else if($id === null || empty($id))
-        {
-            return null;
-        }
-        return $this->postRepository->findById($id);
+        return $this->postRepository->findById((int) $dataId);
     }
 
     public function showUser(?string $id ): ?User 

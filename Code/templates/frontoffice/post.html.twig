@@ -1,87 +1,87 @@
 {% extends "frontoffice/layout.html.twig" %}
 {% block content %}
-	{#--------------------------SECTION-HEADING----------------------------#}
-	<h1 class="text-left h1 pt-4 mb-3">
-		<strong>{{data.post.title }}</strong>
-	</h1>
-	{#-------------------------END-SECTION-HEADING----------------------------#}
-	{#--------------------------GRILLE-COLONNE----------------------------#}
-	<div class="col-md-12">
-		{#--------------------------CARD----------------------------#}
+	<div class="container postPage">
 		<div
-			class="pb-5 mx-md-3">
-			{#--------------------------IMAGE----------------------------#}
-			<img
-			class="image-responsive" src="images/post/{{ data.post.imagePost }}" alt="">
-			{#--------------------------END-IMAGE----------------------------#}
-			<div class="container">
-				<div class="row">
-					<div class="col-md-12 col-xl-12 d-flex
-							justify-content-left">
-						<p class="font-small grey-text mb-0">
-							<i class="far fa-clock-o dark-grey-text"></i>
-								{{ data.user.userName }}
-						</p>
-						<p class="font-small grey-text mb-0">
-							<i class="far fa-clock-o dark-grey-text"></i>
-								{{ data.post.datePost|date('d/m/Y') }}
-						</p>
-					</div>
-				</div>
-				{#--------------------------GRILLE-COLONNE----------------------------#}
-				<p class="text-justify">
-				<pre>Chapô du post:</pre>
-				{{ data.post.chapô|raw }}
-				</p>
-				<p class="text-justify">
-				<pre>Description du post:</pre>
-				{{ data.post.description|raw }}
-				</p>
-			</div>
-			{#--------------------------END-GRILLE-COLONNE----------------------------#}
-		</div>
-		{#--------------------------END-CARD----------------------------#}
-		<hr>
-		{#--------------------------Form Comments----------------------------#}
-		<div class="container">
-			<div class="raw">
-				<div class="row">
-					<span class="alert alert-primary">Notes:
-						<i class="fas fa-exclamation-triangle"></i>
-						->
-						obligatoire
-					</span>
+			class="raw">
+			{#--------------------------SECTION-HEADING----------------------------#}
+			<h1 class="text-left h1 pt-4 mb-3">
+				<strong>{{data.post.title }}</strong>
+			</h1>
+			{#-------------------------END-SECTION-HEADING----------------------------#}
+			{#--------------------------GRILLE-COLONNE----------------------------#}
+			<div
+				class="col-md-12">
+				{#--------------------------CARD----------------------------#}
+				<div
+					class="pb-5 mx-md-3">
+					{#--------------------------IMAGE----------------------------#}
+					<img
+					class="image-responsive" src="images/post/{{ data.post.imagePost }}" alt="">
+					{#--------------------------END-IMAGE----------------------------#}
 					<div class="container">
-						<h4>Laisser un commentaires:
-						</h4>
-					</div>
-					{% if data.errors %}
-						<div class="alert alert-danger col-12 col-md-12" role="alert">
-							{% for errors in data %}
-								<p>{{ error }}</p>
-							{% endfor %}
-						</div>
-					{% endif %}
-					<form id="myForm" class="col-md-8 col-12 dp-" method="POST" action="index.php?page=post&id={{ data.post.id }}&action=submitComment&#ancre">
-						<div class="form-group">
-						<div class="form-group">
-							<label for="message">Message
-								<i class=" fas fa-exclamation-triangle"></i>
-							</label>
-							<textarea id="message " name="comment" class="form-control" require></textarea>
-							<div id="aideMessage"></div>
-						</div>
-						<div class="form-group row">
-							<div class="col-md-6">
-								<input type="hidden" name="token" id="token" value="{{session.commentToken}}"/>
+						<div class="row">
+							<div class="col-md-12 col-xl-12 d-flex
+									justify-content-left">
+								<p class="font-small grey-text mb-0">
+									<i class="far fa-clock-o dark-grey-text"></i>
+									{{ data.user.userName }}
+								</p>
+								<p class="font-small grey-text mb-0">
+									<i class="far fa-clock-o dark-grey-text"></i>
+									{{ data.post.datePost|date('d/m/Y') }}
+								</p>
 							</div>
 						</div>
-						<div class="d-flex flex-row-reverse">
-							<input type="submit" class="btn btn-primary" placeholder="Envoyer" value="Envoyer">
+						{#--------------------------GRILLE-COLONNE----------------------------#}
+						<p class="text-justify">
+							<pre>Chapô du post:</pre>
+							{{ data.post.chapô|raw }}
+						</p>
+						<p class="text-justify">
+							<pre>Description du post:</pre>
+							{{ data.post.description|raw }}
+						</p>
+					</div>
+					{#--------------------------END-GRILLE-COLONNE----------------------------#}
+				</div>
+				{#--------------------------END-CARD----------------------------#}
+				{#--------------------------Form Comments----------------------------#}
+				{#--------------------------CONDITION-DATA----------------------------#}
+					{% if data %}
+					{#--------------------------SUCCES-MESSAGE----------------------------#}
+						{% for success in data.succes %}
+							<div class="alert alert-primary" role="alert"> {{success}}
 						</div>
-					</form>
+					{% endfor %}
+					{#-------------------------END-CONDITION-DATA----------------------------#}
+					{#-------------------------END-SUCCES-MESSAGE----------------------------#}
+				{% endif %}
+				{#--------------------------CONDITION-DATA----------------------------#}
+				{% if data %}
+					{#--------------------------ERROR-MESSAGE----------------------------#}
+					{% for errors in data.error %}
+						<div class="alert alert-danger" role="alert">
+							{{errors}}
+						</div>
+					{% endfor %}
+					{#--------------------------ERROR-MESSAGE----------------------------#}
+				{% endif %}
+				{#--------------------------END-CONDITION-DATA----------------------------#}
+				<div class="container">
+					<div class="raw formComment">
+						<h3 class="commentTitle">Laisser un commentaires:<span class="alert alert-primary">Obligatoire:<i class="fas fa-exclamation-triangle"></i>
+							</span>
+						</h3>
+						<form id="myForm" class="col-md-8 col-12 dp-" method="POST" action="/?page=post&id={{ data.post.id }}&action=submitComment&#ancre">
+							<textarea id="message " name="comment" placeholder="Laissez un commentaire" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" require></textarea>
+							<input type="hidden" name="token" id="token" value="{{session.token}}">
+							<button type="submit" name="submit" class="btn btn-primary mx-auto">Envoyer</button>
+						</form>
+					</div>
 				</div>
 			</div>
 		</div>
-		{#--------------------------Form Comments----------------------------#}
-	{% endblock %}
+	</div>
+	{#--------------------------Form Comments----------------------------#}
+{% endblock %}
+

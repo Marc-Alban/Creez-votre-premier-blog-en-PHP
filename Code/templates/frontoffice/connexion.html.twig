@@ -5,30 +5,23 @@
 
 {% block content %}
 	<div class="container">
-		<div class="raw m-6">
-			<div class="error"></div>
-			<div class="succes"></div>
-			<form method="POST" action="/?p=connexion&action=connexion">
-				<div class="container mb-5">
-					<div class="md-form">
-						<label for="email">E-mail:</label>
-						<input id="email" class="form-control" type="text" name="email">
-					</div>
-					<div class="md-form">
-						<label for="password">Mot de passe:</label>
-						<input id="password" class="form-control" type="password" name="password">
-					</div>
-					<div class="md-form">
-						<input type="hidden" name="token" id="token" value="{{session.token}}"/>
-					</div>
+		<div id="loginbox" class="mainbox col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="panel-title text-center">Connexion</div>
 				</div>
-				<input class="btn btn-primary" type="submit" value="Se connecter">
-			</form>
-		</div>
-		<div class="forgot form-footer">
-			<span>Pas de compte ?
-				<a href="/?page=inscription">Cliquer ici</a>
-			</span>
+				<div class="panel-body">
+					<form method="POST" action="/?p=connexion&action=connexion">
+						<div class="container mb-5">
+								<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email"><br>
+								<input id="password" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre mot de passe" type="password" name="password"><br>
+							<input type="hidden" name="token" id="token" value="{{session.token}}"/>
+						</div>
+					</div>
+					<button class="btn btn-primary mx-auto" type="submit">Se connecter</button>
+				</form>
+			</div>
 		</div>
 	</div>
+</div>
 {% endblock %}

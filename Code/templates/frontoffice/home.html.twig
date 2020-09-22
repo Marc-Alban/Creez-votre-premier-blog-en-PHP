@@ -1,62 +1,65 @@
 {% extends "/frontoffice/layout.html.twig" %}
-{% block title %}Home
+{% block title %}DevDark
 {% endblock %}
 {% block content %}
+	<!-- Masthead-->
+	<header class="masthead">
+		<div class="container d-flex h-100 align-items-center">
+			<div class="mx-auto text-center">
+				<img src="images/profile/DarkVador.png" class="img-fluid " alt="Responsive image">
+				<h1 class="mx-auto my-0 text-uppercase">Marc-Alban MILLET</h1>
+				<h2 class="text-white-50 mx-auto mt-2 mb-5">Je suis ...pchii ... ton pchi... développeur !</h2>
+				<a href="./images/cv/CV-Dark-Vador.pdf" download="CV-Dark-Vador.pdf" class="btn btn-primary">Télécharger CV</a>
+			</div>
+		</div>
+	</header>
+	<main>	
 	<div class="container">
-		<div class="col-md-12 ml-auto mr-auto">
-			<div class="card card-plain">
-				<div class="card-header text-center">
-					<div class="logo-container clear-filter" filter-color="orange">
-						<img src="images/profile/DarkVador.png" class="img-fluid " alt="Responsive image">
-					</div>
-				</div>
-				<div class="card-body">
-					<h1 class="titleSite">Marc-Alban MILLET</h1>
-					<h2 class="SubtitleSite">Le développeur fou, tu recruteras !</h2>
-				</div>
-				<div class="card-footer d-flex justify-content-around">
-					<a href="./images/cv/CV-Dark-Vador.pdf" download="CV-Dark-Vador.pdf" class="btn btn-primary btnHome">Télécharger CV</a>
-				</div>
+		<div class="raw">
+			<div class="bg-black">
+				<!-- Contact-->
+				{#--------------------------CONDITION-DATA----------------------------#}
+					{% if data.mail %}
+					{#--------------------------SUCCES-MESSAGE----------------------------#}
+						{% for success in data.mail.succes %}
+							<div class="alert alert-primary" role="alert"> {{success}}
+						</div>
+					{% endfor %}
+					{#-------------------------END-CONDITION-DATA----------------------------#}
+					{#-------------------------END-SUCCES-MESSAGE----------------------------#}
+				{% endif %}
+				{#--------------------------CONDITION-DATA----------------------------#}
+				{% if data.mail %}
+					{#--------------------------ERROR-MESSAGE----------------------------#}
+					{% for errors in data.mail.error %}
+						<div class="alert alert-danger" role="alert">
+							{{errors}}
+						</div>
+					{% endfor %}
+					{#--------------------------ERROR-MESSAGE----------------------------#}
+				{% endif %}
+				{#--------------------------END-CONDITION-DATA----------------------------#}
 			</div>
 		</div>
 	</div>
-	<div class="container">
-		<div class="raw">
-		{#--------------------------CONDITION-DATA----------------------------#}
-{% if data.mail %}
-{#--------------------------SUCCES-MESSAGE----------------------------#}
-{% for success in data.mail.succes %}
-<div class="alert alert-primary" role="alert">
-    {{success}}
-</div>
-{% endfor %}
-{#-------------------------END-CONDITION-DATA----------------------------#}
-{#-------------------------END-SUCCES-MESSAGE----------------------------#}
-{% endif %}
-{#--------------------------CONDITION-DATA----------------------------#}
-{% if data.mail %}
-{#--------------------------ERROR-MESSAGE----------------------------#}
-{% for errors in data.mail.error %}
-<div class="alert alert-danger" role="alert">
-    {{errors}}
-</div>
-{% endfor %}
-{#--------------------------ERROR-MESSAGE----------------------------#}
-{% endif %}
-{#--------------------------END-CONDITION-DATA----------------------------#}
-			<form method="post" action="/?page=Home&action=sendMessage">
-				<label>Nom</label>
-				<input type="text" name="name" ><br> 
-				<label>Prénom</label>
-				<input type="text" name="lastName" ><br> 
-				<label>Email</label>
-				<input type="email" name="mail" ><br> 
-				<label>Message</label>
-				<textarea name="message" ></textarea><br> 
-				<input type="hidden"
-                    name="token" id="token" value="{{session.token}}" >
-				<input type="submit" name="submit">
-			</form>
+	<!-- Signup-->
+	<section class="signup-section" id="signup">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-10 col-lg-8 mx-auto text-center">
+					<i class="far fa-paper-plane fa-2x mb-2 text-white"></i>
+					<h2 class="text-white mb-5">Contactez-moi !</h2>
+						<form method="post" action="/?page=Home&action=sendMessage" class="form-inline d-flex">
+								<input class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre nom" type="text" name="name"><br>
+								<input class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre prénom" type="text" name="lastName"><br>
+								<input class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="email" name="mail"><br>
+								<textarea class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" placeholder="Entrer votre Message" name="message"></textarea><br>
+							</div>
+							<input type="hidden" name="token" id="token" value="{{session.token}}">
+							<button type="submit" name="submit" class="btn btn-primary mx-auto">Envoyer</button>
+						</form>
+				</div>
+			</div>
 		</div>
-	</div>
+	</section>
 {% endblock %}

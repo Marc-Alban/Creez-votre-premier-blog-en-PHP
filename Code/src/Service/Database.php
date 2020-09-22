@@ -5,24 +5,24 @@ declare(strict_types=1);
 namespace App\Service;
 
 use \PDO;
-use \Exception;
 use App\Service\ConfigProperties;
+use Exception;
 
 final class Database
 {
-    private PDO $database;
-    private array $dsn;
     private ConfigProperties $configProperties;
+    private array $dsn;
 
     public function __construct(ConfigProperties $configProperties)
     {
         $this->configProperties = $configProperties;
         $this->dsn = $this->configProperties->connect();
-            try{
+        ini_set('display_errors', '1');
+        try {
             $this->database = new PDO($this->dsn['dsn'], $this->dsn['user'], $this->dsn['pass']);
-            }catch(Exception $e) {
-                die('Erreur : Problème avec la connexion de la base de donnée ' );
-            }
+        } catch (Exception $e) {
+                $e->getMessage();
+        }
     }
 
 

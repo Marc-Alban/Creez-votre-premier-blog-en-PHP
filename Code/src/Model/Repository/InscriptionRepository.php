@@ -11,4 +11,9 @@ class InscriptionRepository
     {
         $this->db = $db;
     }
+
+    public function setUser(): void
+    {
+        echo 'Utilisateur inscrit';
+    }
 }

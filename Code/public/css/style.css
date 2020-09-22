@@ -1,3 +1,592 @@
-img {
+/* Style */
+
+
+/* General */
+
+body {
+    letter-spacing: 0.0625em;
+    background: #000000;
+}
+
+.footer {
+    padding: 5rem 0;
+    background-color: #fff;
+}
+
+a {
+    color: #e95e38;
+    text-decoration: none;
+    background-color: transparent;
+}
+
+pre {
+    display: block;
+    font-size: 87.5%;
+    color: #fdfdfd;
+}
+
+.alert-primary {
+    color: #ffffff !important;
+    background-color: #e95e38 !important;
+    border: none !important;
+    margin-left: 30px !important;
+}
+
+
+/* Nav */
+
+#mainNav {
+    min-height: 3.5rem;
+    background-color: #fff;
+}
+
+#mainNav .navbar-toggler {
+    font-size: 80%;
+    padding: 0.75rem;
+    color: #e95e38;
+    border: 1px solid #e95e38;
+}
+
+#mainNav .navbar-toggler:focus {
+    outline: none;
+}
+
+#mainNav .navbar-brand {
+    color: #000000;
+    font-weight: 700;
+    padding: 0.9rem 0;
+}
+
+#mainNav .navbar-nav .nav-item:hover {
+    color: fade(#fff, 80%);
+    outline: none;
+    background-color: transparent;
+}
+
+#mainNav .navbar-nav .nav-item:active,
+#mainNav .navbar-nav .nav-item:focus {
+    outline: none;
+    background-color: transparent;
+}
+
+
+/* Btn */
+
+.btn {
+    box-shadow: 0 0.1875rem 0.1875rem 0 rgba(0, 0, 0, 0.1) !important;
+    padding: 1.25rem 2rem;
+    font-family: "Varela Round", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: 80%;
+    text-transform: uppercase;
+    letter-spacing: 0.15rem;
+    border: 0;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #e95e38;
+    border-color: #e95e38;
+}
+
+
+/* Home */
+
+.masthead {
+    position: relative;
     width: 100%;
+    height: auto;
+    min-height: 35rem;
+    padding: 15rem 0 10rem 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.7) 75%, #000000 100%), url("../images/background/bg-masthead.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-size: cover;
+}
+
+.masthead h1 {
+    font-family: "Varela Round", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: 2.5rem;
+    line-height: 2.5rem;
+    letter-spacing: 0.8rem;
+    background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0));
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.masthead h2 {
+    max-width: 20rem;
+    font-size: 1rem;
+}
+
+main {
+    position: relative;
+}
+
+.signup-section {
+    padding: 10rem 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.5) 75%, #000000 100%), url("../images/background/bg-signup.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-size: cover;
+}
+
+.signup-section .form-inline input {
+    box-shadow: 0 0.1875rem 0.1875rem 0 rgba(0, 0, 0, 0.1) !important;
+    margin: 1.5em 0 1.5em 0;
+    height: auto;
+    font-family: "Varela Round", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: 80%;
+    text-transform: uppercase;
+    letter-spacing: 0.15rem;
+    border: 0;
+}
+
+.signup-section .form-inline input[type='email'] {
+    display: block;
+    width: 50%;
+}
+
+.textAreaForm {
+    height: 4em;
+    display: block !important;
+    width: 100% !important;
+    margin-top: 2em;
+    margin-bottom: 2em !important;
+}
+
+
+/* Blog */
+
+.postBlogHome {
+    padding-bottom: 50px;
+    background-size: 100% auto;
+}
+
+.postBlogHome h2 {
+    text-align: center;
+    font-weight: 300;
+    margin-bottom: 30px;
+    font-size: 44px;
+    margin-top: 70px;
+    color: #fff;
+}
+
+.postBlogHome h2 b {
+    color: #e95e38;
+}
+
+.postBlogHome .postPublicationHome {
+    background: #ffffff;
+    border-radius: 3px;
+    overflow: hidden;
+    height: 400px;
+    margin-bottom: 20px;
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    position: relative;
+}
+
+.contentPostHome {
+    padding: 20px;
+}
+
+.contentPostHome h3 {
+    font-weight: 900;
+    color: rgb(51, 51, 51);
+    text-transform: uppercase;
+    font-size: 20px;
+}
+
+.contentPostHome .label {
+    text-transform: capitalize;
+    font-weight: 900;
+    color: rgb(51, 51, 51);
+}
+
+.contentPostHome .descPost {
+    font-size: 16px;
+    font-weight: 300;
+}
+
+.postBlogHome .postPublicationHome:hover h3 {
+    color: #e95e38;
+    box-shadow: 0px 4px 3px 3px rgba(0, 0, 0, 0.08);
+}
+
+.postBlogHome .postPublicationHome:hover .readMoreBlogHome {
+    height: 100%;
+    width: 100%;
+    color: #aaa;
+    background-color: #e95e38;
+    position: absolute;
+    top: 0;
+    opacity: 0.95;
+    -webkit-transition: all 0.4s ease-out 0s;
+    -o-transition: all 0.4s ease-out 0s;
+    transition: all 0.4s ease-out 0s;
+}
+
+.postBlogHome .black {
+    background: #e95e38;
+}
+
+.postBlogHome .postPublicationHome .imgPostPrincipalHome {
+    display: inline-block;
+    width: 50%;
+    overflow: hidden;
+    height: 100%;
+}
+
+.postBlogHome .postPublicationHome .imgPostPrincipalHome img {
+    height: 100%;
+    width: auto;
+}
+
+.postBlogHome .postPublicationHome .contentPublicacionPrincipalHome {
+    display: inline-block;
+    vertical-align: top;
+    width: 49%;
+}
+
+.postBlogHome .postPublicationHome .contentPublicacionPrincipalHome h3 {
+    font-weight: 900;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 30px;
+}
+
+.postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .label {
+    position: absolute;
+    top: 40px;
+    left: 20px;
+    text-transform: capitalize;
+    font-weight: 700;
+    color: #fff;
+}
+
+.postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .desc {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 300;
+}
+
+.postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .dateCreation {
+    color: rgb(255, 255, 255);
+    font-size: 16px;
+    font-weight: 300;
+}
+
+.postBlogHome .postPublicationHome .postPublication {
+    padding: 0 10px;
+}
+
+.postBlogHome .postPublicationHome .postPublication h3 {
+    font-weight: 900;
+    font-size: 20px;
+    text-transform: uppercase;
+}
+
+.postBlogHome .postPublicationHome .imgPostPublication {
+    overflow: hidden;
+    max-height: 180px;
+}
+
+.postBlogHome .postPublicationHome .imgPostPublication .img-responsive {
+    width: 100%;
+}
+
+.readMoreBlogHome {
+    height: 400px;
+    width: 0%;
+    color: #aaa;
+    background-color: #e95e38;
+    position: absolute;
+    top: 0;
+    opacity: 0.0;
+    -webkit-transition: all 0.4s ease-out 0s;
+    -o-transition: all 0.4s ease-out 0s;
+    transition: all 0.4s ease-out 0s;
+    text-align: center;
+    padding-top: 180px;
+}
+
+.readMoreBlogHome span {
+    text-align: center;
+    max-height: 400px;
+    border: 1px solid #fff;
+    display: inline-block;
+    padding: 10px 30px;
+    border-radius: 3px;
+    color: #fff;
+    font-weight: 900;
+    font-size: 16px;
+}
+
+.postBlogHome .todas-las-publicaciones-home {
+    background: #e95e38;
+    height: 400px;
+    width: 100%;
+    display: inline-block;
+    padding: 20px;
+    text-decoration: none;
+    border-radius: 3px;
+}
+
+.postBlogHome .todas-las-publicaciones-home span {
+    color: #fff;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: 25px;
+    line-height: 26px;
+}
+
+.paginationPost {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+}
+
+
+/* Post */
+
+.postPage {
+    color: #fff;
+    text-align: justify;
+    margin-top: 3rem;
+}
+
+.postPage img {
+    width: 100%;
+}
+
+.commentTitle {
+    color: #fff;
+}
+
+.formComment {
+    margin-bottom: 2em;
+    display: block;
+}
+
+.formComment .commentTitle {
+    text-align: left;
+}
+
+.formComment .alert-primary {
+    display: inline;
+    font-size: 0.7em !important;
+}
+
+
+/* Connexion */
+
+#loginbox {
+    margin: 25vh auto 17.4vh;
+}
+
+
+/* inscription*/
+
+#registerbox {
+    margin: 25vh auto 9.9vh;
+}
+
+.panel-title {
+    color: white;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 50px;
+}
+
+#loginbox button[type='submit'],
+#registerbox button[type='submit'] {
+    display: block;
+    margin: auto;
+    width: 50%;
+}
+
+
+/* Responsive */
+
+@media (min-width: 320px) {
+    .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .dateCreation {
+        color: rgb(0, 0, 0);
+        top: 145px;
+    }
+    .postBlogHome .postPublicationHome {
+        height: 480px;
+    }
+}
+
+@media (min-width: 375px) {
+    .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .dateCreation {
+        color: rgb(0, 0, 0);
+        top: 145px;
+    }
+}
+
+@media (max-width: 450px) {
+    .formComment .alert-primary {
+        display: block;
+        width: 80%;
+        margin: 0 0 0 -5px;
+        font-size: 0.7em !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .postBlogHome h2 {
+        text-align: center;
+        font-weight: 300;
+        margin-bottom: 30px;
+        font-size: 34px;
+        margin-top: 100px;
+    }
+    .postBlogHome .postPublicationHome {
+        background: rgb(255, 255, 255);
+        border: 1px solid rgb(248, 148, 94);
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        display: block;
+        color: inherit;
+        text-decoration: none;
+        position: relative;
+        HEIGHT: 520px;
+        width: 100%;
+    }
+    .postBlogHome .postPublicationHome .imgPostPrincipalHome {
+        display: inline-block;
+        width: 100%;
+        overflow: hidden;
+        height: auto;
+    }
+    .postBlogHome .postPublicationHome .imgPostPrincipalHome img {
+        height: auto;
+        width: 100%;
+    }
+    .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .label {
+        color: rgb(2 2 2);
+    }
+    .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .desc {
+        color: rgb(14 14 14);
+    }
+    .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .dateCreation {
+        color: rgb(0 0 0);
+        top: 275px;
+    }
+    .postBlogHome .black {
+        background: #fff;
+    }
+    .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome {
+        display: inline-block;
+        vertical-align: top;
+        width: 100%;
+        padding: 0px 10px;
+        margin: 0 0 10px 0;
+        height: 310px;
+    }
+    .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome h3 {
+        font-weight: 900;
+        color: #333;
+        text-transform: uppercase;
+        font-size: 20px;
+    }
+    .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome p {
+        color: #333;
+        font-size: 14px;
+        font-weight: 400;
+    }
+    .postBlogHome .todas-las-publicaciones-home {
+        background: #e95e38;
+        height: 100%;
+        width: 100%;
+        display: inline-block;
+        padding: 20px;
+        text-decoration: none;
+        border-radius: 3px;
+    }
+    #loginbox button[type='submit'],
+    #registerbox button[type='submit'] {
+        width: 100%;
+    }
+}
+
+@media (min-width: 768px) {
+    .masthead h1 {
+        font-size: 4rem;
+        line-height: 4rem;
+    }
+}
+
+@media (min-width: 992px) {
+    #mainNav {
+        padding-top: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+        background-color: transparent;
+        transition: background-color 0.3s ease-in-out;
+    }
+    #mainNav .navbar-brand {
+        padding: 0.5rem 0;
+        color: rgb(233 94 56);
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+    #mainNav .nav-link {
+        transition: none;
+        padding: 2rem 1.5rem;
+        color: #fff;
+        font-weight: bold;
+    }
+    #mainNav .nav-link:hover {
+        color: rgb(233 94 56);
+    }
+    #mainNav .nav-link:active {
+        color: #fff;
+    }
+    #mainNav.navbar-shrink {
+        background-color: #fff;
+    }
+    #mainNav.navbar-shrink .navbar-brand {
+        color: #000000;
+    }
+    #mainNav.navbar-shrink .nav-link {
+        color: #000000;
+        padding: 1.5rem 1.5rem 1.25rem;
+        border-bottom: 0.25rem solid transparent;
+    }
+    #mainNav.navbar-shrink .nav-link:hover {
+        color: #e95e38;
+    }
+    #mainNav.navbar-shrink .nav-link:active {
+        color: #467370;
+    }
+    #mainNav.navbar-shrink .nav-link.active {
+        color: #e95e38;
+        outline: none;
+        border-bottom: 0.25rem solid #e95e38;
+    }
+    .masthead {
+        height: 100vh;
+        padding: 0;
+    }
+    .masthead h1 {
+        font-size: 6.5rem;
+        line-height: 6.5rem;
+        letter-spacing: 0.8rem;
+    }
+    .masthead h2 {
+        max-width: 30rem;
+        font-size: 1.25rem;
+    }
+    .signup-section button[type='submit'] {
+        display: block;
+        width: 40%;
+        margin: auto;
+    }
 }

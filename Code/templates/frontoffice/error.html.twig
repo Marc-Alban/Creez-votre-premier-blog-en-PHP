@@ -1,10 +1,16 @@
 {% extends "frontoffice/layout.html.twig" %}
 
-{% block title %}Error: 404{% endblock %}
-
-{% block content %}
-    <div class="p-2 error">
-    <h2 class="d-flex align-items-end">La page demandé n'existe pas ..</h2>
-    </div>
+{% block title %}Error: 404
 {% endblock %}
 
+{% block content %}
+	{% if data.bdd %}
+		<div class="p-2 error">
+			<h2 class="d-flex align-items-end">{{data.bdd}}</h2>
+		</div>
+	{% else %}
+		<div class="p-2 error">
+			<h2 class="d-flex align-items-end">La page demandé n'existe pas ..</h2>
+		</div>
+    {% endif %}    
+{% endblock %}

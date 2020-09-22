@@ -21,9 +21,12 @@ class BlogController
 
     public function BlogAction(array $data): void
     {
-        if(isset($data['get']['pp']) && !empty($data['get']['pp'])){
+        if (isset($data['get']['pp']) && !empty($data['get']['pp'])) {
             $paginationPost =  $this->blogManager->paginationPost($data);
-        }else if(isset($data['get']['page']) || $data['get']['page'] === 'blog' || !isset($data['get']['pp']) || empty($data['get']['pp']) || $data['get']['pp'] !== '0'){
+        }else if(isset($data['get']['page']) && $data['get']['page'] === 'blog' && !isset($data['get']['pp'])){
+            header('Location: /?page=blog&pp=1');
+            exit();
+        }else if(isset($data['get']['page']) || !isset($data['get']['pp']) || empty($data['get']['pp']) || $data['get']['pp'] !== '0'){
             $this->errorController->ErrorAction();
         }
         

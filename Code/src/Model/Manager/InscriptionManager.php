@@ -10,10 +10,11 @@ class InscriptionManager
     private InscriptionRepository $inscriptionRepository;
     private Token $token;
     private Session $session;
-    public function __construct(InscriptionRepository $inscriptionRepository, Token $token)
+    public function __construct(InscriptionRepository $inscriptionRepository, Token $token, Session $session)
     {
         $this->inscriptionRepository = $inscriptionRepository;
         $this->token = $token;
+        $this->session = $session;
     }
 
     public function userSignIn(array $data): ?array
@@ -44,16 +45,15 @@ class InscriptionManager
             }
 
             /************************************Token Session************************************************* */
-            // if ($this->token->compareTokens($data['post']['token']) !== null) {
-            //     $errors['error']['token'] = "Formulaire incorrect";
-            // }
+            if ($this->token->compareTokens($data) !== null) {
+                $errors['error']['formRgister'] = "Formulaire incorrect";
+            }
             /************************************End Token Session************************************************* */
-                // var_dump($data['post']['token']);
-                // die();
 
             if (empty($errors)) {
                 $this->session->setParamSession('user', $pseudo);
-                $succes['succes'] = "Connexion réussie";
+                $this->inscriptionRepository->setUser();
+                $succes['succes'] = "Inscription réussie réussie";
                 return $succes;
             }
             return $errors;

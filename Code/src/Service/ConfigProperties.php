@@ -14,7 +14,7 @@ class ConfigProperties
         try{
             $this->ini = parse_ini_file(ROOT.'config.ini', false);
         }catch(Exception $e) {
-            die('Erreur : Problème avec la connexion de la base de donnée ' );
+            die('Erreur : Problème avec le fichier de config ' );
         }
         $this->DbHost  = $this->ini['DbHost'];
         $this->DbName  = $this->ini['DbName'];

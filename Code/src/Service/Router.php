@@ -21,18 +21,18 @@ final class Router
     private Database $database;
     private Session $session;
     private Token $token;
-    private View $view;
     private ?ErrorController $error;  
+    private View $view;
 
 
     public function __construct()
     {
         // dépendance
         $this->session = new Session();
-        $this->view = new View($this->session);
         $this->token = new Token();
         $this->configProperties = new ConfigProperties();
         $this->database = new Database($this->configProperties);
+        $this->view = new View($this->session);
         $this->error = new ErrorController($this->view);
         // En attendent de mettre en place la class App\Service\Http\Request --> gestion super global
         $idUrl = $_GET['id'] ?? null;
@@ -55,7 +55,6 @@ final class Router
         {
             return 'App\Controller\Backoffice\\'.$this->pageMaj.'Controller';
         }
-        return $this->error->ErrorAction();
     }
 /************************************End Controller************************************************* */
 /************************************Manager Class************************************************* */
@@ -69,7 +68,6 @@ public function managerClass(): string
     {
         return 'App\Model\Manager\\'.$this->pageMaj.'Manager';
     }
-        return $this->error->ErrorAction();
 }
 /************************************End Manager Class************************************************* */
 /************************************Manager Class************************************************* */
@@ -83,7 +81,6 @@ public function repositoryClass(): string
     {
         return 'App\Model\Repository\\'.$this->pageMaj.'Repository';
     }
-        return $this->error->ErrorAction();
 }
 /************************************End Manager Class************************************************* */
 /************************************Call Method With Controller************************************************* */
@@ -96,9 +93,9 @@ public function repositoryClass(): string
         $pathVerif = ROOT.$replacePath.'.php';
         if(file_exists($pathVerif)){
             $repo = new $repoClass($this->database);
-            $manager = new $managerClass($repo,$this->token);
+            $manager = new $managerClass($repo,$this->token, $this->session);
         }elseif(!file_exists($pathVerif)){
-            $manager = new $managerClass($this->token);
+            $manager = new $managerClass($this->token, $this->session);
         }
         $controllerObject = new $controllerClass($manager, $this->view, $this->error, $this->token, $this->session);
         $methode = $this->pageMaj.'Action';
@@ -121,15 +118,14 @@ public function repositoryClass(): string
         }
         else if(!in_array($this->pageMaj, $this->pageFront) || !in_array($this->pageMaj, $this->pageBack))
         {
-            $this->error->ErrorAction();
+            $this->error();
         }
     }
 /************************************End Start Routeur************************************************* */
 /************************************Return Error Action************************************************* */
     public function error(): void
     {
-        $this->error->ErrorAction();
-        exit();
+            $this->error->ErrorAction();
     }
 /************************************End Return Error Action************************************************ */
 }
