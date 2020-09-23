@@ -8,9 +8,9 @@ class ConnexionController {
 
     private View $view;
 
-    public function __construct(ConnexionManager $connexionManager, View $view)
+    public function __construct(ConnexionManager $connexionManager, array $classController)
     {
-        $this->view = $view;
+        $this->view = $classController['view'];
     }
 
     public function ConnexionAction(){

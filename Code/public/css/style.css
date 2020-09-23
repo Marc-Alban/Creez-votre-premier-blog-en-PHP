@@ -139,7 +139,6 @@ main {
     height: auto;
     font-family: "Varela Round", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-size: 80%;
-    text-transform: uppercase;
     letter-spacing: 0.15rem;
     border: 0;
 }
@@ -350,6 +349,13 @@ main {
     justify-content: center;
 }
 
+.page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #e95e38;
+    border: 1px solid #fff;
+}
+
 
 /* Post */
 
@@ -407,6 +413,19 @@ main {
     display: block;
     margin: auto;
     width: 50%;
+}
+
+
+/* Error */
+
+#errorBox {
+    margin: 24.9vh auto 42.8vh;
+}
+
+#errorBox h2 {
+    color: #fff;
+    font-size: 2.5em;
+    font-weight: bold;
 }
 
 

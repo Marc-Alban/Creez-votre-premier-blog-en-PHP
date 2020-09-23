@@ -17,12 +17,12 @@ class HomeController
     private array $mail = [];
 
     
-    public function __construct(HomeManager $homeManager, View $view, ErrorController $error, Token $token, Session $session)
+    public function __construct(HomeManager $homeManager, array $classController)
     {
-        $this->view = $view;
-        $this->token = $token;
         $this->homeManager = $homeManager;
-        $this->session = $session;
+        $this->view = $classController['view'];
+        $this->token = $classController['token'];
+        $this->session = $classController['session'];
     }
 
     public function HomeAction(array $data)

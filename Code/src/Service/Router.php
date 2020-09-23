@@ -83,6 +83,7 @@ public function repositoryClass(): string
     }
 }
 /************************************End Manager Class************************************************* */
+
 /************************************Call Method With Controller************************************************* */
     public function call(array $datas): ?array
     {
@@ -93,15 +94,16 @@ public function repositoryClass(): string
         $pathVerif = ROOT.$replacePath.'.php';
         if(file_exists($pathVerif)){
             $repo = new $repoClass($this->database);
-            $manager = new $managerClass($repo,$this->token, $this->session);
+            $manager = new $managerClass($repo,['token' => $this->token, 'session' => $this->session]);
         }elseif(!file_exists($pathVerif)){
-            $manager = new $managerClass($this->token, $this->session);
+            $manager = new $managerClass(['token' => $this->token, 'session' => $this->session]);
         }
-        $controllerObject = new $controllerClass($manager, $this->view, $this->error, $this->token, $this->session);
+        $controllerObject = new $controllerClass($manager, ['view' => $this->view, 'error' => $this->error, 'token' => $this->token, 'session' => $this->session]);
         $methode = $this->pageMaj.'Action';
         return $controllerObject->$methode($datas);
     }
 /************************************End Call Methode With Controller************************************************* */
+
 /************************************Start Router************************************************* */
     public function start(): void
     {
@@ -118,7 +120,7 @@ public function repositoryClass(): string
         }
         else if(!in_array($this->pageMaj, $this->pageFront) || !in_array($this->pageMaj, $this->pageBack))
         {
-            $this->error();
+            $this->error->ErrorAction();
         }
     }
 /************************************End Start Routeur************************************************* */

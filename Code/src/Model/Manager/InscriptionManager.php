@@ -10,11 +10,11 @@ class InscriptionManager
     private InscriptionRepository $inscriptionRepository;
     private Token $token;
     private Session $session;
-    public function __construct(InscriptionRepository $inscriptionRepository, Token $token, Session $session)
+    public function __construct(InscriptionRepository $inscriptionRepository, array $classController)
     {
         $this->inscriptionRepository = $inscriptionRepository;
-        $this->token = $token;
-        $this->session = $session;
+        $this->token = $classController['token'];
+        $this->session = $classController['session'];
     }
 
     public function userSignIn(array $data): ?array

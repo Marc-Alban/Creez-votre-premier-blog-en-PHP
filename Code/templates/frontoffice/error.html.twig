@@ -4,13 +4,13 @@
 {% endblock %}
 
 {% block content %}
-	{% if data.bdd %}
-		<div class="p-2 error">
-			<h2 class="d-flex align-items-end">{{data.bdd}}</h2>
+	<div id="errorBox">
+			<div class="container">
+		<div class="raw">
+			<div class="p-2 error">
+				<h2 class="d-flex align-items-end">La page demandé n'existe pas ..</h2>
+			</div>
 		</div>
-	{% else %}
-		<div class="p-2 error">
-			<h2 class="d-flex align-items-end">La page demandé n'existe pas ..</h2>
-		</div>
-    {% endif %}    
+	</div>
+	</div> 
 {% endblock %}

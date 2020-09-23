@@ -6,6 +6,7 @@ namespace App\Controller\Frontoffice;
 
 use App\Model\Entity\Post;
 use App\Model\Manager\PostManager;
+use App\Model\Manager\UserManager;
 use App\View\View;
 use App\Controller\ErrorController;
 use App\Service\Http\Session;
@@ -14,19 +15,21 @@ use App\Service\Security\Token;
 final class PostController
 {
     private PostManager $postManager;
+    private UserManager $userManager;
     private View $view;
     private ErrorController $error;
     private Token $token;
     private Session $session;
 
-    public function __construct(PostManager $postManager, View $view, ErrorController $error, Token $token, Session $session)
+    public function __construct(PostManager $postManager, array $classController)
     {
         // Dépendances
         $this->postManager = $postManager;
-        $this->view = $view;
-        $this->error = $error;
-        $this->token = $token;
-        $this->session = $session;
+        //$this->userManager = $classController['manager'];
+        $this->view = $classController['view'];
+        $this->error = $classController['error'];
+        $this->token = $classController['token'];
+        $this->session = $classController['session'];
     }
 
     public function PostAction(array $datas): void
@@ -36,7 +39,7 @@ final class PostController
 
         $post = $this->postManager->showOne($id);
         $user = $this->postManager->showUser($id);
-        //$user = $this->userManager->findUserById($post->getUserId());
+        //$user = $this->userManager->findUserById('Post','getUserId()');
 
         if ($action === 'signalComment') {
             $this->postManager->signalComment($datas);

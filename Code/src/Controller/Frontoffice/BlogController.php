@@ -12,11 +12,11 @@ class BlogController
     private BlogManager $blogManager;
     private ErrorController $errorController;
 
-    public function __construct(BlogManager $blogManager, View $view, ErrorController $errorController)
+    public function __construct(BlogManager $blogManager, array $classController)
     {
         $this->blogManager = $blogManager;
-        $this->view = $view;
-        $this->errorController = $errorController;
+        $this->view = $classController['view'];
+        $this->error = $classController['error'];
     }
 
     public function BlogAction(array $data): void
@@ -27,7 +27,8 @@ class BlogController
             header('Location: /?page=blog&pp=1');
             exit();
         }else if(isset($data['get']['page']) || !isset($data['get']['pp']) || empty($data['get']['pp']) || $data['get']['pp'] !== '0'){
-            $this->errorController->ErrorAction();
+            header('Location: /?page=blog&pp=1');
+            exit();
         }
         
 
