@@ -415,6 +415,10 @@ main {
     width: 50%;
 }
 
+#registerbox .alert-primary {
+    margin-left: 0px !important;
+}
+
 
 /* Error */
 
@@ -452,7 +456,7 @@ main {
     .formComment .alert-primary {
         display: block;
         width: 80%;
-        margin: 0 0 0 -5px;
+        margin: 0 !important;
         font-size: 0.7em !important;
     }
 }

@@ -4,9 +4,9 @@ namespace App\Controller\Frontoffice;
 
 use App\Service\Http\Session;
 use App\Service\Security\Token;
+use App\View\View;
 use App\Controller\ErrorController;
 use App\Model\Manager\InscriptionManager;
-use App\View\View;
 
 class InscriptionController {
 
@@ -31,7 +31,7 @@ class InscriptionController {
         $register = null;
         if(isset($data['session']['user']) && !empty($data['session']['user']))
         {
-            header('Location: /?p=home');
+            header('Location: /?page=connexion');
             exit();
         }
         

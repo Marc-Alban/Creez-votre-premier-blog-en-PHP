@@ -45,59 +45,50 @@ final class Router
     }
 
 /************************************Controller************************************************* */
-    public function controller(): string
+    public function page(string $arg): string
     {
+        $pathControllerFront = 'App\Controller\Frontoffice\\'.$this->pageMaj.'Controller';
+        $pathControllerBack = 'App\Controller\Backoffice\\'.$this->pageMaj.'Controller';
+        $pathManager = 'App\Model\Manager\\'.$this->pageMaj.'Manager';
+        
+        $path = 'App\Model\Repository\\'.$this->pageMaj.'Repository.php';
+        if(file_exists($path)){
+            $pathRepository = 'App\Model\Repository\\'.$this->pageMaj.'Repository';     
+        }else if(!file_exists($path)){
+            $pathRepository = 'App\Model\Repository\\'.$this->pageMaj.'Repository';
+        }
+
         if(in_array($this->pageMaj, $this->pageFront) || empty($this->pageMaj) || !in_array($this->pageMaj, $this->pageBack))
         {
-            return 'App\Controller\Frontoffice\\'.$this->pageMaj.'Controller';
+            if($arg === 'controller'){
+                return $pathControllerFront;
+            }else if($arg === 'manager'){
+                return $pathManager;
+            }else if($arg === 'repository'){
+                return $pathRepository;
+            }
         }
         else if(in_array($this->pageMaj, $this->pageBack))
         {
-            return 'App\Controller\Backoffice\\'.$this->pageMaj.'Controller';
+            if($arg === 'controller'){
+                return $pathControllerBack;
+            }else if($arg === 'manager'){
+                return $pathManager;
+            }else if($arg === 'repository'){
+                return $pathRepository;
+            }
         }
     }
 /************************************End Controller************************************************* */
-/************************************Manager Class************************************************* */
-public function managerClass(): string
-{  
-    if(in_array($this->pageMaj, $this->pageFront) || !in_array($this->pageMaj, $this->pageBack))
-    {
-        return 'App\Model\Manager\\'.$this->pageMaj.'Manager';
-    }
-    else if(in_array($this->pageMaj, $this->pageBack))
-    {
-        return 'App\Model\Manager\\'.$this->pageMaj.'Manager';
-    }
-}
-/************************************End Manager Class************************************************* */
-/************************************Manager Class************************************************* */
-public function repositoryClass(): string
-{  
-    if(in_array($this->pageMaj, $this->pageFront) || !in_array($this->pageMaj, $this->pageBack))
-    {
-        return 'App\Model\Repository\\'.$this->pageMaj.'Repository';
-    }
-    else if(in_array($this->pageMaj, $this->pageBack))
-    {
-        return 'App\Model\Repository\\'.$this->pageMaj.'Repository';
-    }
-}
-/************************************End Manager Class************************************************* */
 
 /************************************Call Method With Controller************************************************* */
     public function call(array $datas): ?array
     {
-        $controllerClass = $this->controller();
-        $managerClass = $this->managerClass();
-        $repoClass = $this->repositoryClass();
-        $replacePath = str_replace("App","src",$repoClass);
-        $pathVerif = ROOT.$replacePath.'.php';
-        if(file_exists($pathVerif)){
-            $repo = new $repoClass($this->database);
-            $manager = new $managerClass($repo,['token' => $this->token, 'session' => $this->session]);
-        }elseif(!file_exists($pathVerif)){
-            $manager = new $managerClass(['token' => $this->token, 'session' => $this->session]);
-        }
+        $controllerClass = $this->page('controller');
+        $managerClass = $this->page('manager');
+        $repoClass = $this->page('repository');
+        $repo = new $repoClass($this->database);
+        $manager = new $managerClass($repo,['token' => $this->token, 'session' => $this->session]);
         $controllerObject = new $controllerClass($manager, ['view' => $this->view, 'error' => $this->error, 'token' => $this->token, 'session' => $this->session]);
         $methode = $this->pageMaj.'Action';
         return $controllerObject->$methode($datas);
