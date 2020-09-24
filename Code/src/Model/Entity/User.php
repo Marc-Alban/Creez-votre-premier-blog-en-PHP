@@ -9,7 +9,7 @@ final class User
     private int $idUser;
     private string $userName;
     private string $email;
-    private string $password;
+    private string $passwordUser;
     private int $activated;
     private int $validationKey;
     private string $userType;
@@ -76,22 +76,23 @@ final class User
         return $this;
     }
 
-    /**
-     * Get the value of password
-     */
-    public function getPassword(): string
+
+        /**
+     * Get the value of passwordUser
+     */ 
+    public function getPasswordUser(): string
     {
-        return $this->password;
+        return $this->passwordUser;
     }
 
     /**
-     * Set the value of password
+     * Set the value of passwordUser
      *
      * @return  self
-     */
-    public function setPassword($password): self
+     */ 
+    public function setPasswordUser($passwordUser): self
     {
-        $this->password = $password;
+        $this->passwordUser = $passwordUser;
 
         return $this;
     }
@@ -175,4 +176,6 @@ final class User
 
         return $this;
     }
+
+
 }

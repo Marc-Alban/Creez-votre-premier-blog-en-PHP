@@ -14,10 +14,14 @@
 		</div>
 	</header>
 	<main>	
-	<div class="container">
-		<div class="raw">
-			<div class="bg-black">
-				<!-- Contact-->
+	<!-- Signup-->
+	<section class="signup-section" id="signup">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-10 col-lg-8 mx-auto text-center">
+					<i class="far fa-paper-plane fa-2x mb-2 text-white"></i>
+					<h2 class="text-white mb-5">Contactez-moi !</h2>
+									<!-- Contact-->
 				{#--------------------------CONDITION-DATA----------------------------#}
 					{% if data.mail %}
 					{#--------------------------SUCCES-MESSAGE----------------------------#}
@@ -39,16 +43,6 @@
 					{#--------------------------ERROR-MESSAGE----------------------------#}
 				{% endif %}
 				{#--------------------------END-CONDITION-DATA----------------------------#}
-			</div>
-		</div>
-	</div>
-	<!-- Signup-->
-	<section class="signup-section" id="signup">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-10 col-lg-8 mx-auto text-center">
-					<i class="far fa-paper-plane fa-2x mb-2 text-white"></i>
-					<h2 class="text-white mb-5">Contactez-moi !</h2>
 						<form method="post" action="/?page=Home&action=sendMessage" class="form-inline d-flex">
 								<input class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre nom" type="text" name="name"><br>
 								<input class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre prénom" type="text" name="lastName"><br>

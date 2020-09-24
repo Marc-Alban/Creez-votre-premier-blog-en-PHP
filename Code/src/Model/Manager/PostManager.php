@@ -14,15 +14,14 @@ final class PostManager
         $this->postRepository = $postRepository;
     }
 
-    public function showOne(?string $dataId): ?Post
+    public function showOne(int $dataId): ?Post
     {
-        return $this->postRepository->findById((int) $dataId);
+        return $this->postRepository->findById($dataId);
     }
 
-    public function showUser(?string $id ): ?User 
+    public function showUser(int $id ): ?User 
     {
-        $idPost = intval($id);
-        return $this->postRepository->joinUserPost($idPost);
+        return $this->postRepository->joinUserPost($id);
     }
 
     public function signalComment(array $datas)

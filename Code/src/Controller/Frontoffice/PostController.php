@@ -37,8 +37,8 @@ final class PostController
         $id = $datas['get']['id'] ?? null;
         $action = $datas['get']['action'] ?? null;
 
-        $post = $this->postManager->showOne($id);
-        $user = $this->postManager->showUser($id);
+        $post = $this->postManager->showOne((int) $id);
+        $user = $this->postManager->showUser((int) $id);
         //$user = $this->userManager->findUserById('Post','getUserId()');
 
         if ($action === 'signalComment') {

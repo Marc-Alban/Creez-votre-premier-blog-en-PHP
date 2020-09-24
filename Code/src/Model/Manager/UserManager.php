@@ -19,8 +19,6 @@ final class UserManager
     {
         $post = new $obj;
         $test = $post->$method;
-        var_dump($test);
-        die();
     }
 
 }

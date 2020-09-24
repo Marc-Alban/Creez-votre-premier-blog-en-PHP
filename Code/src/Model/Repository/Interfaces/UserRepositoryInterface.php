@@ -8,9 +8,12 @@ interface UserRepositoryInterface
 
     /* Read */
     public function joinUserPost(int $id): ?User;
+    public function getEmail(User $user): ?User;
+    public function getUser(User $user): ?User;
+    public function getPassword(User $user): ?User;
     
     /* CUD */
-    public function createUser(User $user): bool;
+    public function createUser(array $data): void;
     public function updateUser(User $user): bool;
     public function deleteUser(User $user): bool;
 

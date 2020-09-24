@@ -20,8 +20,11 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
     
     public function findById(int $id): ?Post
     {
-        $pdo = $this->db->prepare("SELECT * FROM post WHERE idPost=?");
-        $executeIsOk = $pdo->execute([$id]);
+        $req = [
+            ':idPost' => $id
+        ];
+        $pdo = $this->db->prepare("SELECT * FROM post WHERE idPost= :idPost");
+        $executeIsOk = $pdo->execute($req);
         if ($executeIsOk === true) {
             $idBdd = $pdo->fetchObject(Post::class) ;
             if ($idBdd) {
@@ -39,7 +42,10 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
 
     public function joinUserPost(int $idPost): ?User
     {
-        $pdo = $this->db->prepare("SELECT * FROM user INNER JOIN post ON user.idUser = post.UserID && idPost = ?");
+        $req = [
+            ':idPost' => $idPost,
+        ];
+        $pdo = $this->db->prepare("SELECT * FROM user INNER JOIN post ON user.idUser = post.UserID && idPost = :idPost");
         $executeIsOk = $pdo->execute([$idPost]);
         if ($executeIsOk === true) {
             $user = $pdo->fetchObject(User::class) ;
@@ -55,9 +61,23 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
         return null;
     }
 
-    public function createPost(Post $post) : bool
+    public function getEmail(User $user): ?User
     {
-        return false;
+        return null;
+    }
+
+    public function getUser(User $user): ?User
+    {
+        return null;
+    }
+
+    public function getPassword(User $user): ?User
+    {
+        return null;
+    }
+    public function createPost(Post $post): void
+    {
+
     }
 
     public function updatePost(Post $post) : bool
@@ -70,9 +90,9 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
         return false;
     }
 
-    public function createUser(User $user) : bool
+    public function createUser(array $data): void
     {
-        return false;
+
     }
 
     public function updateUser(User $user) : bool
