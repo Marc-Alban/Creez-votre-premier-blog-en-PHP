@@ -5,6 +5,16 @@ namespace App\Service\Http;
 
 class Session
 {
+
+    public function __construct()
+{
+    
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+
+}
+
 /************************************getSession************************************************ */
     public function getSession(): array
     {

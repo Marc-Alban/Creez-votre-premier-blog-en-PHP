@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-session_start();
 use App\Service\Router;
 
 define('ROOT', str_replace('public\index.php', '', $_SERVER['SCRIPT_FILENAME']));

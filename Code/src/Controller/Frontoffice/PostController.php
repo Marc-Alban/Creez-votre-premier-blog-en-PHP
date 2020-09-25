@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 namespace App\Controller\Frontoffice;
 
 use App\Model\Entity\Post;
@@ -21,12 +19,14 @@ final class PostController
     private Token $token;
     private Session $session;
 
-    public function __construct(PostManager $postManager, array $classController)
+    public function __construct(array $classController)
     {
+        var_dump($classController);
+        die();
         // Dépendances
-        $this->postManager = $postManager;
-        //$this->userManager = $classController['manager'];
+        $this->postManager = $classController['view'];
         $this->view = $classController['view'];
+        $this->userManager = $classController['manager'];
         $this->error = $classController['error'];
         $this->token = $classController['token'];
         $this->session = $classController['session'];
@@ -38,8 +38,8 @@ final class PostController
         $action = $datas['get']['action'] ?? null;
 
         $post = $this->postManager->showOne((int) $id);
-        $user = $this->postManager->showUser((int) $id);
-        //$user = $this->userManager->findUserById('Post','getUserId()');
+        // $user = $this->postManager->showUser((int) $id);
+        $user = $this->userManager->findUserById('Post','getUserId()');
 
         if ($action === 'signalComment') {
             $this->postManager->signalComment($datas);

@@ -43,73 +43,107 @@ final class Router
         $this->pageFront = ['Home','Post','Blog', 'Connexion', 'Inscription'];
         $this->pageBack = [];
     }
-
+/**
+ * Methode return the path of file needed;
+ *
+ * @param string $arg
+ * @return string
+ */
 /************************************Controller************************************************* */
-    public function page(string $arg): string
+    public function pagePath(string $arg): string
     {
+        //Path controller
         $pathControllerFront = 'App\Controller\Frontoffice\\'.$this->pageMaj.'Controller';
         $pathControllerBack = 'App\Controller\Backoffice\\'.$this->pageMaj.'Controller';
-        $pathManager = 'App\Model\Manager\\'.$this->pageMaj.'Manager';
+        if($arg === 'controller'){
+            if(in_array($this->pageMaj, $this->pageFront) || empty($this->pageMaj) || !in_array($this->pageMaj, $this->pageBack))
+            {
+                return $pathControllerFront;
+            }
+            else if(in_array($this->pageMaj, $this->pageBack))
+            {
+                return $pathControllerBack;
+            }
+        //Path Manager
+        }else if($arg === 'manager'){
+            return 'App\Model\Manager\\'.$this->pageMaj.'Manager';
+        //Path Repository
+        }else if($arg === 'repository'){
         $path = ROOT.'src\Model\Repository\\'.$this->pageMaj.'Repository.php';
-
         $namePageRepo = [
             'Inscription' => 'User',
             'Connexion' => 'User',
         ];
-
-        if(file_exists($path)){
-            $pathRepository = $path;
-        }else if(!file_exists($path)){
-            if(array_key_exists($this->pageMaj, $namePageRepo)){
-                $pathRepository = ROOT.'src\Model\Repository\\'.$namePageRepo[$this->pageMaj].'Repository.php';
-            }else if(array_key_exists($this->pageMaj, $namePageRepo) === false ){
-                $pathRepository = $path;
+            if(file_exists($path)){
+                return $path;
+            }else if(!file_exists($path)){
+                return ROOT.'src\Model\Repository\\'.$namePageRepo[$this->pageMaj].'Repository.php';
             }
-        }
-
-        if(in_array($this->pageMaj, $this->pageFront) || empty($this->pageMaj) || !in_array($this->pageMaj, $this->pageBack))
-        {
-            if($arg === 'controller'){
-                return $pathControllerFront;
-            }
-        }
-        else if(in_array($this->pageMaj, $this->pageBack))
-        {
-            if($arg === 'controller'){
-                return $pathControllerBack;
-            }
-        }
-
-        if($arg === 'manager'){
-            return $pathManager;
-        }else if($arg === 'repository'){
-            return $pathRepository;
         }
     }
 /************************************End Controller************************************************* */
-
+/**
+ * Method call the good controller,manager and repository
+ *
+ * @param array $datas
+ * @return array|null
+ */
 /************************************Call Method With Controller************************************************* */
     public function call(array $datas): ?array
     {
-        $controllerClass = $this->page('controller');
-        $managerClass = $this->page('manager');
-        $repoClass = $this->page('repository');
-        
+        //paths
+        $controllerClass = $this->pagePath('controller');
+        $managerClass = $this->pagePath('manager');
+        $repoClass = $this->pagePath('repository');
+        //If the reposritory file exists
         if(file_exists($repoClass)){
+            //Transform path into App instead of src and .php
             $pathApp = str_replace('src', 'App', $repoClass);
             $subPath = substr_replace($pathApp, '', 0, -39);
             $pathRepo = str_replace('.php', '', $subPath);
-            $repo = new $pathRepo($this->database);
-            $manager = new $managerClass($repo,['token' => $this->token, 'session' => $this->session]);
+            //Repository
+            $addRepo = null;
+            $repoPage = $this->pageMaj . 'Repository';
+            $repoTab = [
+                'PostRepository' => 'UserRepository'
+            ];
+            if(array_key_exists($repoPage, $repoTab)){
+                $addRepo = 'App\Model\Repository\\'.$repoTab[$repoPage];
+                $addRepoInstance = new $addRepo($this->database);
+            }else if(!array_key_exists($repoPage, $repoTab)){
+                $addRepo = 'App\Model\Repository\\'.$repoPage;
+                $addRepoInstance = new $pathRepo($this->database);
+            }
+            //Manager
+            $addManager = null;
+            $managerPage = $this->pageMaj . 'Manager';
+            $managerTab = [
+                'PostManager' => 'UserManager'
+            ];
+            if(array_key_exists($managerPage, $managerTab)){
+                $addManager = 'App\Model\Manager\\'.$managerTab[$managerPage];
+                $addManagerInstance = new $addManager(['addRepoInstance' => $addRepoInstance]);
+            }else if(!array_key_exists($managerPage, $managerTab)){
+                $addManager = 'App\Model\Repository\\'.$managerPage;
+                $addManagerInstance = new $managerClass(['addRepoInstance' => $addRepoInstance, 'token' => $this->token, 'session' => $this->session]);
+            }
+            //Controller
+            $controller = new $controllerClass(['manager' => $addManagerInstance ,'view' => $this->view, 'error' => $this->error, 'token' => $this->token, 'session' => $this->session]);
         }elseif(!file_exists($repoClass)){
-            $manager = new $managerClass(['token' => $this->token, 'session' => $this->session]);
+            //manager
+            $managerInstance = new $managerClass(['token' => $this->token, 'session' => $this->session]);
+            //controller
+            $controller = new $controllerClass(['managerInstance' => $managerInstance,'view' => $this->view, 'error' => $this->error, 'token' => $this->token, 'session' => $this->session]);
         }
-        $controllerObject = new $controllerClass($manager, ['view' => $this->view, 'error' => $this->error, 'token' => $this->token, 'session' => $this->session]);
         $methode = $this->pageMaj.'Action';
-        return $controllerObject->$methode($datas);
+        return $controller->$methode($datas);
     }
 /************************************End Call Methode With Controller************************************************* */
-
+/**
+ * Methode for start the router
+ *
+ * @return void
+ */
 /************************************Start Router************************************************* */
     public function start(): void
     {
@@ -133,7 +167,7 @@ final class Router
 /************************************Return Error Action************************************************* */
     public function error(): void
     {
-            $this->error->ErrorAction();
+        $this->error->ErrorAction();
     }
 /************************************End Return Error Action************************************************ */
 }
