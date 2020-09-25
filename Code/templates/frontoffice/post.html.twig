@@ -21,7 +21,7 @@
 					<div class="container">
 						<div class="row">
 							<div class="col-md-12 col-xl-12 d-flex
-									justify-content-left">
+																		justify-content-left">
 								<p class="font-small grey-text mb-0">
 									{{ data.user.userName }}
 								</p>
@@ -43,39 +43,72 @@
 					</div>
 					{#--------------------------END-GRILLE-COLONNE----------------------------#}
 				</div>
-				{#--------------------------END-CARD----------------------------#}
-				{#--------------------------Form Comments----------------------------#}
-				{#--------------------------CONDITION-DATA----------------------------#}
+				{% if sessions.user %}
+					{#--------------------------END-CARD----------------------------#}
+					{#--------------------------Form Comments----------------------------#}
+					{#--------------------------CONDITION-DATA----------------------------#}
+						{% if data %}
+						{#--------------------------SUCCES-MESSAGE----------------------------#}
+							{% for success in data.succes %}
+								<div class="alert alert-primary" role="alert"> {{success}}
+							</div>
+						{% endfor %}
+						{#-------------------------END-CONDITION-DATA----------------------------#}
+						{#-------------------------END-SUCCES-MESSAGE----------------------------#}
+					{% endif %}
+					{#--------------------------CONDITION-DATA----------------------------#}
 					{% if data %}
-					{#--------------------------SUCCES-MESSAGE----------------------------#}
-						{% for success in data.succes %}
-							<div class="alert alert-primary" role="alert"> {{success}}
+						{#--------------------------ERROR-MESSAGE----------------------------#}
+						{% for errors in data.error %}
+							<div class="alert alert-danger" role="alert">
+								{{errors}}
+							</div>
+						{% endfor %}
+						{#--------------------------ERROR-MESSAGE----------------------------#}
+					{% endif %}
+					{#--------------------------END-CONDITION-DATA----------------------------#}
+					<div class="container">
+						<div class="raw formComment">
+							<h3 class="commentTitle">Laisser un commentaires:<span class="alert alert-primary">Obligatoire:<i class="fas fa-exclamation-triangle"></i>
+								</span>
+							</h3>
+							<form id="myForm" class="col-md-8 col-12 dp-" method="POST" action="/?page=post&id={{ data.post.id }}&action=submitComment&#ancre">
+								<textarea id="message " name="comment" placeholder="Laissez un commentaire" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" require></textarea>
+								<input type="hidden" name="token" id="token" value="{{session.token}}">
+								<button type="submit" name="submit" class="btn btn-primary mx-auto">Envoyer</button>
+							</form>
 						</div>
-					{% endfor %}
-					{#-------------------------END-CONDITION-DATA----------------------------#}
-					{#-------------------------END-SUCCES-MESSAGE----------------------------#}
-				{% endif %}
-				{#--------------------------CONDITION-DATA----------------------------#}
-				{% if data %}
-					{#--------------------------ERROR-MESSAGE----------------------------#}
-					{% for errors in data.error %}
-						<div class="alert alert-danger" role="alert">
-							{{errors}}
+					</div>
+				{% else %}
+					<div class="container">
+						<div class="raw">
+							<p>Connectez-vous pour mettre un commentaire:
+							</p>
+							<div class="btnConnexion">
+								<a href="/?page=connexion">
+									<button class="btn btn-primary mx-auto">Se connecter</button>
+								</a>
+							</div>
 						</div>
-					{% endfor %}
-					{#--------------------------ERROR-MESSAGE----------------------------#}
+					</div>
 				{% endif %}
-				{#--------------------------END-CONDITION-DATA----------------------------#}
+				
 				<div class="container">
-					<div class="raw formComment">
-						<h3 class="commentTitle">Laisser un commentaires:<span class="alert alert-primary">Obligatoire:<i class="fas fa-exclamation-triangle"></i>
-							</span>
-						</h3>
-						<form id="myForm" class="col-md-8 col-12 dp-" method="POST" action="/?page=post&id={{ data.post.id }}&action=submitComment&#ancre">
-							<textarea id="message " name="comment" placeholder="Laissez un commentaire" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" require></textarea>
-							<input type="hidden" name="token" id="token" value="{{session.token}}">
-							<button type="submit" name="submit" class="btn btn-primary mx-auto">Envoyer</button>
-						</form>
+					<div class="raw">
+						<section class="comments">
+						{% if data.comment.disabled < 0 %}
+							<article class="comment">
+								<div class="comment-body">
+									<div class="text">
+										<p>{{data.comment.content}}</p>
+									</div>
+									<p class="attribution">de
+										<a href="#">{{data.session.user}}</a>
+										à {{data.comment.dateCreation}}</p>
+								</div>
+							</article>
+						{% endif %}
+						</section>
 					</div>
 				</div>
 			</div>

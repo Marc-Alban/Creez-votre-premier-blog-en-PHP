@@ -46,7 +46,7 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
             ':idPost' => $idPost,
         ];
         $pdo = $this->db->prepare("SELECT * FROM user INNER JOIN post ON user.idUser = post.UserID && idPost = :idPost");
-        $executeIsOk = $pdo->execute([$idPost]);
+        $executeIsOk = $pdo->execute($req);
         if ($executeIsOk === true) {
             $user = $pdo->fetchObject(User::class) ;
             if ($user) {
