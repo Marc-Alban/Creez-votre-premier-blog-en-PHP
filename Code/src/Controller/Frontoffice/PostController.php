@@ -21,12 +21,10 @@ final class PostController
 
     public function __construct(array $classController)
     {
-        var_dump($classController);
-        die();
         // Dépendances
-        $this->postManager = $classController['view'];
         $this->view = $classController['view'];
-        $this->userManager = $classController['manager'];
+        $this->postManager = $classController['manager']['managerPage'];
+        $this->userManager = $classController['manager']['managerAdd'];
         $this->error = $classController['error'];
         $this->token = $classController['token'];
         $this->session = $classController['session'];

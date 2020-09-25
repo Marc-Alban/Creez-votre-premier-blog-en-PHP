@@ -17,9 +17,9 @@ class HomeController
     private array $mail = [];
 
     
-    public function __construct(HomeManager $homeManager, array $classController)
+    public function __construct(array $classController)
     {
-        $this->homeManager = $homeManager;
+        $this->homeManager = $classController['manager']['managerPage'];
         $this->view = $classController['view'];
         $this->token = $classController['token'];
         $this->session = $classController['session'];

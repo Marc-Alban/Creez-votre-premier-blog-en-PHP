@@ -64,21 +64,24 @@ final class Router
             {
                 return $pathControllerBack;
             }
+        }
         //Path Manager
-        }else if($arg === 'manager'){
+        if($arg === 'manager'){
             return 'App\Model\Manager\\'.$this->pageMaj.'Manager';
+        }
         //Path Repository
-        }else if($arg === 'repository'){
+        if($arg === 'repository'){
         $path = ROOT.'src\Model\Repository\\'.$this->pageMaj.'Repository.php';
         $namePageRepo = [
             'Inscription' => 'User',
             'Connexion' => 'User',
         ];
-            if(file_exists($path)){
-                return $path;
-            }else if(!file_exists($path)){
-                return ROOT.'src\Model\Repository\\'.$namePageRepo[$this->pageMaj].'Repository.php';
+            if(!file_exists($path)){
+                if(array_key_exists($this->pageMaj, $namePageRepo)){
+                    return ROOT.'src\Model\Repository\\'.$namePageRepo[$this->pageMaj].'Repository.php';
+                }
             }
+        return $path;
         }
     }
 /************************************End Controller************************************************* */
@@ -122,18 +125,18 @@ final class Router
             ];
             if(array_key_exists($managerPage, $managerTab)){
                 $addManager = 'App\Model\Manager\\'.$managerTab[$managerPage];
-                $addManagerInstance = new $addManager(['addRepoInstance' => $addRepoInstance]);
+                $addManagerInstance = new $addManager(['repository' => ['repositoryAdd' => $addRepoInstance, 'repositoryPage' => $repoPage ]]);
             }else if(!array_key_exists($managerPage, $managerTab)){
                 $addManager = 'App\Model\Repository\\'.$managerPage;
-                $addManagerInstance = new $managerClass(['addRepoInstance' => $addRepoInstance, 'token' => $this->token, 'session' => $this->session]);
+                $addManagerInstance = new $managerClass(['repository' => ['repositoryAdd' => $addRepoInstance, 'repositoryPage' => $repoPage ], 'token' => $this->token, 'session' => $this->session]);
             }
-            //Controller
-            $controller = new $controllerClass(['manager' => $addManagerInstance ,'view' => $this->view, 'error' => $this->error, 'token' => $this->token, 'session' => $this->session]);
+            //Controller 
+            $controller = new $controllerClass(['manager' => ['managerAdd' => $addManagerInstance, 'managerPage' => $managerPage],'view' => $this->view, 'error' => $this->error, 'token' => $this->token, 'session' => $this->session]);
         }elseif(!file_exists($repoClass)){
             //manager
             $managerInstance = new $managerClass(['token' => $this->token, 'session' => $this->session]);
             //controller
-            $controller = new $controllerClass(['managerInstance' => $managerInstance,'view' => $this->view, 'error' => $this->error, 'token' => $this->token, 'session' => $this->session]);
+            $controller = new $controllerClass(['manager' => $managerInstance,'view' => $this->view, 'error' => $this->error, 'token' => $this->token, 'session' => $this->session]);
         }
         $methode = $this->pageMaj.'Action';
         return $controller->$methode($datas);
