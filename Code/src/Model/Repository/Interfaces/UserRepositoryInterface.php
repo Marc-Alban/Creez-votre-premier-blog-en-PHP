@@ -7,7 +7,6 @@ interface UserRepositoryInterface
 {
 
     /* Read */
-    public function joinUserPost(int $id): ?User;
     public function getEmail(User $user): ?User;
     public function getUser(User $user): ?User;
     public function getPassword(User $user): ?User;

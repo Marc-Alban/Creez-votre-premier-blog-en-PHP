@@ -14,10 +14,6 @@ final class UserRepository implements UserRepositoryInterface
         $this->db = $db->getPdo();
     }
 
-    public function joinUserPost(int $idPost): ?User
-    {
-        return null;
-    }
 
     public function getEmail(User $user): ?User
     {

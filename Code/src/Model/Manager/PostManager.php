@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace App\Model\Manager;
 use App\Model\Entity\Post;
-use App\Model\Entity\User;
 use App\Model\Repository\PostRepository;
 
 final class PostManager
@@ -19,10 +18,6 @@ final class PostManager
         return $this->postRepository->findById($dataId);
     }
 
-    public function showUser(int $id ): ?User 
-    {
-        return $this->postRepository->joinUserPost($id);
-    }
 
     public function signalComment(array $datas)
     {

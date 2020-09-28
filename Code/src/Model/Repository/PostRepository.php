@@ -40,27 +40,6 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
         return null;
     }
 
-    public function joinUserPost(int $idPost): ?User
-    {
-        $req = [
-            ':idPost' => $idPost,
-        ];
-        $pdo = $this->db->prepare("SELECT * FROM user INNER JOIN post ON user.idUser = post.UserID && idPost = :idPost");
-        $executeIsOk = $pdo->execute($req);
-        if ($executeIsOk === true) {
-            $user = $pdo->fetchObject(User::class) ;
-            if ($user) {
-                return $user;
-            } elseif ($user === false) {
-                return null;
-            }
-            return $user;
-        } elseif ($executeIsOk === false) {
-            return null;
-        }
-        return null;
-    }
-
     public function getEmail(User $user): ?User
     {
         return null;
