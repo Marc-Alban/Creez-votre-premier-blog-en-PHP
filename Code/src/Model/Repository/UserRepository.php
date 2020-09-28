@@ -17,26 +17,17 @@ final class UserRepository implements UserRepositoryInterface
 
     public function getEmail(User $user): ?User
     {
-        if($user){
-            return $user->getEmail();
-        }
         return null;
     }
 
 
-    public function getUser(User $user, string $methode): ?User
+    public function getUser(int $user): ?User
     {
-        if(isset($user)){
-            return $user->$methode();
-        }
         return null;
     }
 
     public function getPassword(User $user): ?User
     {
-        if($user){
-            return $user->getPasswordUser();
-        }
         return null;
     }
 

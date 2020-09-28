@@ -100,17 +100,13 @@ final class Router
         $repoClass = $this->pagePath('repository');
         //If the reposritory file exists
         if(file_exists($repoClass)){
-            //Transform path into App instead of src and .php
-            $pathApp = str_replace('src', 'App', $repoClass);
-            $subPath = substr_replace($pathApp, '', 0, -39);
-            $pathRepo = str_replace('.php', '', $subPath);
             //--------------------------------A modifier--------------------------------------------------//
             //Repository
             $addRepo = null;
             $repoPage = $this->pageMaj . 'Repository';
             $repoTab = [
                 'ConnexionRepository' => 'UserRepository',
-                'InscriptionRepository' => 'UserRepository'
+                'InscriptionRepository' => 'UserRepository',
             ];
             if(array_key_exists($repoPage, $repoTab)){
                 $addRepo = 'App\Model\Repository\\'.$repoTab[$repoPage];

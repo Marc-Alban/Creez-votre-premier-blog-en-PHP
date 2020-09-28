@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace App\Model\Repository\Interfaces;
+
 use App\Model\Entity\User;
 
 interface UserRepositoryInterface
@@ -8,7 +9,7 @@ interface UserRepositoryInterface
 
     /* Read */
     public function getEmail(User $user): ?User;
-    public function getUser(User $user, string $methode): ?User;
+    public function getUser(int $user): ?User;
     public function getPassword(User $user): ?User;
     
     /* CUD */
