@@ -8,7 +8,7 @@ interface UserRepositoryInterface
 
     /* Read */
     public function getEmail(User $user): ?User;
-    public function getUser(User $user): ?User;
+    public function getUser(User $user, string $methode): ?User;
     public function getPassword(User $user): ?User;
     
     /* CUD */

@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace App\Controller\Frontoffice;
 
 use App\Model\Entity\Post;
+use App\Model\Entity\User;
 use App\Model\Manager\PostManager;
 use App\Model\Manager\UserManager;
 use App\View\View;
@@ -18,6 +19,7 @@ final class PostController
     private ErrorController $error;
     private Token $token;
     private Session $session;
+    private User $userObj;
 
     public function __construct(array $classController)
     {
@@ -36,7 +38,9 @@ final class PostController
         $action = $datas['get']['action'] ?? null;
 
         $post = $this->postManager->showOne((int) $id);
-        $user = $this->userManager->findUserById('Post','getUserId()');
+        // $this->userObj = 'User';
+        // $user = $this->userManager->findUser($this->userObj,'getUserName()');
+        $user = null;
 
         if ($action === 'signalComment') {
             $this->postManager->signalComment($datas);

@@ -23,10 +23,11 @@ final class UserRepository implements UserRepositoryInterface
         return null;
     }
 
-    public function getUser(User $user): ?User
+
+    public function getUser(User $user, string $methode): ?User
     {
-        if($user){
-            return $user->getUserName();
+        if(isset($user)){
+            return $user->$methode();
         }
         return null;
     }

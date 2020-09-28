@@ -1,22 +1,15 @@
 <?php
 declare(strict_types=1);
 namespace App\Model\Manager;
-use App\Model\Entity\Post;
+use App\Model\Entity\User;
 
 
 final class UserManager
 {
 
-private Post $post;
-
-public function __construct()
-{
-    
-}
-
-public function findUserById(string $post, string $method)
-{
-    
-}
+    public function findUser(User $user, string $method)
+    {
+        $this->user->getUser($user, $method);
+    }
 
 }
