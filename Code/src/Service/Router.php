@@ -104,31 +104,37 @@ final class Router
             $pathApp = str_replace('src', 'App', $repoClass);
             $subPath = substr_replace($pathApp, '', 0, -39);
             $pathRepo = str_replace('.php', '', $subPath);
+            //--------------------------------A modifier--------------------------------------------------//
             //Repository
             $addRepo = null;
             $repoPage = $this->pageMaj . 'Repository';
             $repoTab = [
-                'PostRepository' => 'UserRepository'
+                'ConnexionRepository' => 'UserRepository',
+                'InscriptionRepository' => 'UserRepository'
             ];
             if(array_key_exists($repoPage, $repoTab)){
                 $addRepo = 'App\Model\Repository\\'.$repoTab[$repoPage];
-                $addRepoInstance = new $addRepo($this->database);
+                $repo = new $addRepo($this->database);
             }else if(!array_key_exists($repoPage, $repoTab)){
-                $addRepo = 'App\Model\Repository\\'.$repoPage;
-                $addRepoInstance = new $pathRepo($this->database);
+                $addRepo = 'App\Model\Repository\\'.$this->pageMaj . 'Repository';
+                $repo = new $addRepo($this->database);
             }
+            //--------------------------------Modifier--------------------------------------------------//
             //Manager
             $addManager = null;
+            $addManagerInstance = null;
             $managerPage = $this->pageMaj . 'Manager';
             $managerTab = [
                 'PostManager' => 'UserManager'
             ];
             if(array_key_exists($managerPage, $managerTab)){
                 $addManager = 'App\Model\Manager\\'.$managerTab[$managerPage];
-                $addManagerInstance = new $addManager(['repository' => ['repositoryAdd' => $addRepoInstance, 'repositoryPage' => $repoPage ]]);
+                $addManagerInstance = new $addManager(['repository' => $repo ]);
+                $addPath = 'App\Model\Manager\\'.$managerPage;
+                $managerPage = new $addPath(['repository' => $repo, 'token' => $this->token, 'session' => $this->session]);
             }else if(!array_key_exists($managerPage, $managerTab)){
-                $addManager = 'App\Model\Repository\\'.$managerPage;
-                $addManagerInstance = new $managerClass(['repository' => ['repositoryAdd' => $addRepoInstance, 'repositoryPage' => $repoPage ], 'token' => $this->token, 'session' => $this->session]);
+                $addManager = 'App\Model\Manager\\'.$managerPage;
+                $managerPage = new $addManager(['repository' => $repo, 'token' => $this->token, 'session' => $this->session]);
             }
             //Controller 
             $controller = new $controllerClass(['manager' => ['managerAdd' => $addManagerInstance, 'managerPage' => $managerPage],'view' => $this->view, 'error' => $this->error, 'token' => $this->token, 'session' => $this->session]);

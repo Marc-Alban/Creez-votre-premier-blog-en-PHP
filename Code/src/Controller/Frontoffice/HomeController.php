@@ -19,7 +19,7 @@ class HomeController
     
     public function __construct(array $classController)
     {
-        $this->homeManager = $classController['manager']['managerPage'];
+        $this->homeManager = $classController['manager'];
         $this->view = $classController['view'];
         $this->token = $classController['token'];
         $this->session = $classController['session'];

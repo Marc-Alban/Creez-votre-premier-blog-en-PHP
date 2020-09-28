@@ -9,9 +9,9 @@ class HomeManager
 
     private Token $token;
 
-    public function __construct(array $classController)
+    public function __construct(array $dataManager)
     {
-        $this->token = $classController['token'];
+        $this->token = $dataManager['token'];
     }
 
     private function sendMail(array $data): void

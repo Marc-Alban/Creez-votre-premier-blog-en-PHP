@@ -12,9 +12,10 @@ class BlogController
     private BlogManager $blogManager;
     private ErrorController $errorController;
 
-    public function __construct(BlogManager $blogManager, array $classController)
+    public function __construct(array $classController)
     {
-        $this->blogManager = $blogManager;
+
+        $this->blogManager = $classController['manager']['managerPage'];
         $this->view = $classController['view'];
         $this->error = $classController['error'];
     }

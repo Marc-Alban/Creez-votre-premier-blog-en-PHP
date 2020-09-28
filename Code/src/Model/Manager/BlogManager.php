@@ -7,9 +7,9 @@ class BlogManager
 {
     private BlogRepository $blogRepository;
 
-    public function __construct(BlogRepository $blogRepository)
+    public function __construct(array $dataManager)
     {
-        $this->blogRepository = $blogRepository;
+        $this->blogRepository = $dataManager['repository'];
     }
 
 

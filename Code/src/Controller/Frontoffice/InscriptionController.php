@@ -16,14 +16,13 @@ class InscriptionController {
     private ErrorController $error;
     private Session $session;
 
-    public function __construct(InscriptionManager $inscriptionManager, array $classController)
+    public function __construct(array $classController)
     {
         $this->view = $classController['view'];
         $this->error = $classController['error'];
         $this->token = $classController['token'];
         $this->session = $classController['session'];
-        $this->inscriptionManager = $inscriptionManager;
-
+        $this->inscriptionManager = $classController['manager']['managerPage'];
     }
 
     public function InscriptionAction(array $data): void

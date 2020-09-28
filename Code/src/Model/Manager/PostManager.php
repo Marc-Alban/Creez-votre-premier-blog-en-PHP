@@ -9,9 +9,9 @@ final class PostManager
 {
     private PostRepository $postRepository;
 
-    public function __construct(PostRepository $postRepository)
+    public function __construct(array $dataManager)
     {
-        $this->postRepository = $postRepository;
+        $this->postRepository = $dataManager['repository'];
     }
 
     public function showOne(int $dataId): ?Post

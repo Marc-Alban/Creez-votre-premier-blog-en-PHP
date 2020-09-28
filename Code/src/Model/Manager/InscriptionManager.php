@@ -13,11 +13,11 @@ class InscriptionManager
     private Token $token;
     private User $user;
     private Session $session;
-    public function __construct(UserRepository $userRepository, array $classController)
+    public function __construct(array $dataManager)
     {
-        $this->userRepository = $userRepository;
-        $this->token = $classController['token'];
-        $this->session = $classController['session'];
+        $this->userRepository = $dataManager['repository'];
+        $this->token = $dataManager['token'];
+        $this->session = $dataManager['session'];
     }
 
     public function userSignIn(array $data): ?array

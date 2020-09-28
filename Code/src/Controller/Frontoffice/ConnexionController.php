@@ -15,9 +15,9 @@ class ConnexionController {
     private Session $session;
     private ConnexionManager $connexionManager;
 
-    public function __construct(ConnexionManager $connexionManager, array $classController)
+    public function __construct(array $classController)
     {
-        $this->connexionManager = $connexionManager;
+        $this->connexionManager = $classController['manager']['managerPage'];
         $this->view = $classController['view'];
         $this->error = $classController['error'];
         $this->token = $classController['token'];

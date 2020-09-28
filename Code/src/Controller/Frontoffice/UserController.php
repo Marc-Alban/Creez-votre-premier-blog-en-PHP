@@ -16,10 +16,10 @@ final class UserController
     private View $view;
     private ErrorController $error;
 
-    public function __construct(UserManager $userManager, array $classController)
+    public function __construct(array $classController)
     {
         // Dépendances
-        $this->userManager = $userManager;
+        $this->userManager = $classController['manager'];
         // $this->userManager = $manager;
         $this->view = $classController['view'];
         $this->error = $classController['error'];
