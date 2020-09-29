@@ -599,7 +599,7 @@ main {
     }
     #mainNav .nav-link {
         transition: none;
-        padding: 2rem 1.5rem;
+        padding: 2rem 0.5rem;
         color: #fff;
         font-weight: bold;
     }

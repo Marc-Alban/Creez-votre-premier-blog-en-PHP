@@ -45,7 +45,7 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
         return null;
     }
 
-    public function getUser(int $user = null): ?User
+    public function getUser(int $user = null): ?string
     {
         return null;
     }

@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 namespace App\Model\Manager;
+
+use App\Model\Entity\User;
 use App\Model\Repository\UserRepository;
 
 
@@ -13,9 +15,9 @@ final class UserManager
         $this->userRepo = $dataManager['repository']['repoAdd'];
     }
 
-    public function findUser(int $user): void
+    public function findUser(int $user): string
     {
-            $this->userRepo->getUser($user);
+        return $this->userRepo->getUser($user);
     }
 
 }

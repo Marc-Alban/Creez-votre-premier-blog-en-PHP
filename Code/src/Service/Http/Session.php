@@ -28,5 +28,9 @@ class Session
         return $_SESSION;
     }
 /************************************End setParamSession*********************************************** */
+    public function sessionDestroy(): void
+    {
+            session_destroy();
+    }
 
 }

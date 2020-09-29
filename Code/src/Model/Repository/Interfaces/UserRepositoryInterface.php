@@ -9,7 +9,7 @@ interface UserRepositoryInterface
 
     /* Read */
     public function getEmailBdd(string $email): ?string;
-    public function getUser(int $user = null): ?User;
+    public function getUser(int $user = null): ?string;
     public function getPassword(string $email): ?string;
     
     /* CUD */

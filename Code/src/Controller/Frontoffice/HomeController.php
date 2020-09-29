@@ -2,11 +2,11 @@
 declare(strict_types=1);
 namespace App\Controller\Frontoffice;
 
-use App\Controller\ErrorController;
 use App\Model\Manager\HomeManager;
 use App\View\View;
 use App\Service\Security\Token;
 use App\Service\Http\Session;
+
 
 class HomeController
 {
@@ -27,10 +27,18 @@ class HomeController
 
     public function HomeAction(array $data)
     {
-        if(isset($data['get']['action']) && $data['get']['action'] === 'sendMessage'){
+        $action = $data['get']['action'] ?? null;
+
+        if(isset($action) && $action === 'sendMessage'){
             $this->session->setParamSession('token', $this->token->createSessionToken());
             $this->mail = $this->homeManager->verifMail($data);
+        }else if (isset($action) && $action === "logout") {
+            $this->session->sessionDestroy();
+            header('Location: ?p=home');
+            exit();
         }
+
+
         $this->view->render('Frontoffice', 'home', ['mail' => $this->mail]);
     }
 }

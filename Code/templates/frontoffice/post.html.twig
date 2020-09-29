@@ -20,10 +20,9 @@
 					{#--------------------------END-IMAGE----------------------------#}
 					<div class="container">
 						<div class="row">
-							<div class="col-md-12 col-xl-12 d-flex
-																		justify-content-left">
+							<div class="col-md-12 col-xl-12 d-flex justify-content-left">
 								<p class="font-small grey-text mb-0">
-									{{ data.user.userName }}
+									{{ data.user }}
 								</p>
 								<pre>|</pre>
 								<p class="font-small grey-text mb-0">
@@ -43,7 +42,7 @@
 					</div>
 					{#--------------------------END-GRILLE-COLONNE----------------------------#}
 				</div>
-				{% if sessions.user %}
+				{% if session.user %}
 					{#--------------------------END-CARD----------------------------#}
 					{#--------------------------Form Comments----------------------------#}
 					{#--------------------------CONDITION-DATA----------------------------#}

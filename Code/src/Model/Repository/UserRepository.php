@@ -38,17 +38,24 @@ final class UserRepository implements UserRepositoryInterface
     }
 
 
-    public function getUser(int $user = null): ?User
+    public function getUser(int $user = null): ?string
     {
-        $req = [
-            ':idUser' => $user
-        ];
-        $pdo = $this->db->prepare("SELECT userName FROM user WHERE idUser = :idUser");
-        $executeIsOk = $pdo->execute($req);
+
+        if($user !== null){
+            $req = [
+                ':idUser' => $user
+            ];
+            $pdo = $this->db->prepare("SELECT userName FROM user WHERE idUser = :idUser");
+            $executeIsOk = $pdo->execute($req);
+        }else if($user === null){
+            $pdo = $this->db->query("SELECT userName FROM user");
+            $executeIsOk = $pdo->execute();
+        }
         if ($executeIsOk === true) {
             $userBdd = $pdo->fetchObject(User::class);
             if ($userBdd) {
-                return $userBdd;
+                $user = $userBdd->getUserName();
+                return $user;
             } elseif ($userBdd === false) {
                 return null;
             }

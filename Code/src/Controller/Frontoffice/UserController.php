@@ -15,22 +15,21 @@ final class UserController
     private UserManager $userManager;
     private View $view;
     private ErrorController $error;
+    private Session $session;
 
     public function __construct(array $classController)
     {
         // Dépendances
-        $this->userManager = $classController['manager'];
-        // $this->userManager = $manager;
-        $this->view = $classController['view'];
-        $this->error = $classController['error'];
-        $this->token = $classController['token'];
-        $this->session = $classController['session'];
+        $this->userManager = $classController['manager'] ?? null;
+        $this->view = $classController['view'] ?? null;
+        $this->error = $classController['error'] ?? null;
+        $this->token = $classController['token'] ?? null;
+        $this->session = $classController['session'] ?? null;
     }
 
     public function UserAction(array $datas): void
     {
-        
-    }
 
+    }
 
 }

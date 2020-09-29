@@ -44,7 +44,7 @@ class ConnexionManager
                 $errors['error']["emailEmpty"] = 'Veuillez mettre un mail ';
             }else if (!preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
                 $errors['error']['emailWrong'] = "L'adresse e-mail est invalide";
-            }else if ($email !== $this->userRepository->getEmail($email)) {
+            }else if ($email !== $this->userRepository->getEmailBdd($email)) {
                 $errors['error']["emailFalse"] = 'E-mail invalid ou inexistante';
             }else if (empty($password)) {
                 $errors['error']["passwordEmpty"] = 'Veuillez mettre un mot de passe';

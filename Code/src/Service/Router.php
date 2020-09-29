@@ -40,8 +40,8 @@ final class Router
         $this->action = $_GET['action'] ?? null;
         $this->page = $_GET['page'] ?? "Home";
         $this->pageMaj = ucfirst($this->page);
-        $this->pageFront = ['Home','Post','Blog', 'Connexion', 'Inscription'];
-        $this->pageBack = [];
+        $this->pageFront = ['Home','Post','Blog', 'Connexion', 'Inscription', 'Deconnexion', 'User'];
+        $this->pageBack = ['Dashboard'];
     }
 /**
  * Methode return the path of file needed;
@@ -100,8 +100,7 @@ final class Router
         $repoClass = $this->pagePath('repository');
         //If the reposritory file exists
         if(file_exists($repoClass)){
-            //--------------------------------A modifier--------------------------------------------------//
-            //Repository
+            //--------------------------------Repository--------------------------------------------------//
             $addRepo = null;
             $addRepoPage = null;
             $repoPage = $this->pageMaj . 'Repository';
@@ -109,6 +108,7 @@ final class Router
                 'ConnexionRepository' => 'UserRepository',
                 'InscriptionRepository' => 'UserRepository',
                 'PostRepository' => 'UserRepository',
+                'DashboardRepository' => 'UserRepository',
             ];
             if(array_key_exists($repoPage, $repoTab)){
                 $addRepo = 'App\Model\Repository\\'.$repoTab[$repoPage];
@@ -119,13 +119,12 @@ final class Router
                 $addRepo = 'App\Model\Repository\\'.$this->pageMaj.'Repository';
                 $repo = new $addRepo($this->database);
             }
-            //--------------------------------Modifier--------------------------------------------------//
-            //Manager
+            //--------------------------------Manager--------------------------------------------------//
             $addManager = null;
             $addManagerInstance = null;
             $managerPage = $this->pageMaj . 'Manager';
             $managerTab = [
-                'PostManager' => 'UserManager'
+                'PostManager' => 'UserManager',
             ];
             if(array_key_exists($managerPage, $managerTab)){
                 $addManager = 'App\Model\Manager\\'.$managerTab[$managerPage];
@@ -136,7 +135,7 @@ final class Router
                 $addManager = 'App\Model\Manager\\'.$managerPage;
                 $managerPage = new $addManager(['repository' => ['repoAdd'=>$repo,'repoPage'=>$addRepoPage], 'token' => $this->token, 'session' => $this->session]);
             }
-            //Controller 
+            //--------------------------------Controller--------------------------------------------------//
             $controller = new $controllerClass(['manager' => ['managerAdd' => $addManagerInstance, 'managerPage' => $managerPage],'view' => $this->view, 'error' => $this->error, 'token' => $this->token, 'session' => $this->session]);
         }elseif(!file_exists($repoClass)){
             //manager
