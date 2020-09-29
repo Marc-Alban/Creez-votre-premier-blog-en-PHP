@@ -10,7 +10,7 @@ final class PostManager
 
     public function __construct(array $dataManager)
     {
-        $this->postRepository = $dataManager['repository'];
+        $this->postRepository = $dataManager['repository']['repoPage'];
     }
 
     public function showOne(int $dataId): ?Post

@@ -8,9 +8,9 @@ interface UserRepositoryInterface
 {
 
     /* Read */
-    public function getEmail(User $user): ?User;
-    public function getUser(int $user): ?User;
-    public function getPassword(User $user): ?User;
+    public function getEmailBdd(string $email): ?string;
+    public function getUser(int $user = null): ?User;
+    public function getPassword(string $email): ?string;
     
     /* CUD */
     public function createUser(array $data): void;

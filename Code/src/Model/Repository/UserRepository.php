@@ -15,19 +15,69 @@ final class UserRepository implements UserRepositoryInterface
     }
 
 
-    public function getEmail(User $user): ?User
+    public function getEmailBdd(string $email): ?string
     {
+        $tabEmail = [
+            ':email' => $email
+        ];
+        $pdo = $this->db->prepare("SELECT email FROM user WHERE email = :email");
+        $executeIsOk = $pdo->execute($tabEmail);
+        if ($executeIsOk === true) {
+            $mailBdd = $pdo->fetchObject(User::class);
+            if ($mailBdd) {
+                $mail = $mailBdd->getEmail();
+                return $mail;
+            } elseif ($mailBdd === false) {
+                return null;
+            }
+            return null;
+        } elseif ($executeIsOk === false) {
+            return null;
+        }
         return null;
     }
 
 
-    public function getUser(int $user): ?User
+    public function getUser(int $user = null): ?User
     {
+        $req = [
+            ':idUser' => $user
+        ];
+        $pdo = $this->db->prepare("SELECT userName FROM user WHERE idUser = :idUser");
+        $executeIsOk = $pdo->execute($req);
+        if ($executeIsOk === true) {
+            $userBdd = $pdo->fetchObject(User::class);
+            if ($userBdd) {
+                return $userBdd;
+            } elseif ($userBdd === false) {
+                return null;
+            }
+            return $userBdd;
+        } elseif ($executeIsOk === false) {
+            return null;
+        }
         return null;
     }
 
-    public function getPassword(User $user): ?User
+    public function getPassword(string $email): ?string
     {
+        $tabPass = [
+            ':email' => $email
+        ];
+        $pdo = $this->db->prepare("SELECT passwordUser FROM user WHERE email = :email");
+        $executeIsOk = $pdo->execute($tabPass);
+        if ($executeIsOk === true) {
+            $passwordBdd = $pdo->fetchObject(User::class);
+            if ($passwordBdd) {
+                $pass = $passwordBdd->getPasswordUser();
+                return $pass;
+            } elseif ($passwordBdd === false) {
+                return null;
+            }
+            return null;
+        } elseif ($executeIsOk === false) {
+            return null;
+        }
         return null;
     }
 
@@ -37,7 +87,7 @@ final class UserRepository implements UserRepositoryInterface
         $tabUser = [
             ':userName' => htmlspecialchars(trim($data['post']['userName'])),
             ':email' => htmlspecialchars(trim($data['post']['email'])),
-            ':passwordUser' => password_hash($data['post']['password'], PASSWORD_DEFAULT),
+            ':passwordUser' => password_hash($data['post']['password'], PASSWORD_BCRYPT ),
         ];
         $req = $this->db->prepare("INSERT INTO user (userName, email, passwordUser) VALUES (:userName, :email, :passwordUser)");
         $req->execute($tabUser);

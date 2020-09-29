@@ -9,7 +9,7 @@ class BlogManager
 
     public function __construct(array $dataManager)
     {
-        $this->blogRepository = $dataManager['repository'];
+        $this->blogRepository = $dataManager['repository']['repoAdd'];
     }
 
 

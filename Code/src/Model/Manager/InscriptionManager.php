@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace App\Model\Manager;
 
-use App\Model\Entity\User;
 use App\Model\Repository\UserRepository;
 use App\Service\Http\Session;
 use App\Service\Security\Token;
@@ -11,11 +10,10 @@ class InscriptionManager
 {
     private UserRepository $userRepository;
     private Token $token;
-    private User $user;
     private Session $session;
     public function __construct(array $dataManager)
     {
-        $this->userRepository = $dataManager['repository'];
+        $this->userRepository = $dataManager['repository']['repoAdd'];
         $this->token = $dataManager['token'];
         $this->session = $dataManager['session'];
     }
@@ -36,6 +34,7 @@ class InscriptionManager
 
             $pseudo = $data["post"]['userName'] ?? null;
             $email = $data["post"]['email'] ?? null;
+            $emailBdd = $this->userRepository->getEmailBdd(strtolower($email));
             $password =  $data['post']['password'] ?? null;
             $passwordConfirmation = $data["post"]['passwordConfirmation'] ?? null;
 
@@ -47,7 +46,7 @@ class InscriptionManager
                 $errors['error']["emailEmpty"] = 'Veuillez mettre un mail ';
             } else if (!preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
                 $errors['error']['emailWrong'] = "L'adresse e-mail est invalide";
-            }else if ($email === $this->userRepository->getEmail($this->user)) {
+            }else if ($emailBdd !== null && $email === $emailBdd  ) {
                 $errors['error']['emailFalse'] = "L'adresse e-mail est déjà présente en bdd";
             }else if (empty($password)) {
                 $errors['error']["passwordEmpty"] = 'Veuillez mettre un mot de passe';

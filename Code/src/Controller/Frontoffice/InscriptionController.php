@@ -28,12 +28,6 @@ class InscriptionController {
     public function InscriptionAction(array $data): void
     {
         $register = null;
-        if(isset($data['session']['user']) && !empty($data['session']['user']))
-        {
-            header('Location: /?page=connexion');
-            exit();
-        }
-        
         if (isset($data['get']['action']) && $data['get']['action'] === 'inscription') {
             $this->session->setParamSession('token', $this->token->createSessionToken());
             $register = $this->inscriptionManager->userSignIn($data);

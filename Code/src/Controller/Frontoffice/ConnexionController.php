@@ -26,11 +26,6 @@ class ConnexionController {
 
     public function ConnexionAction(array $data){
         $logIn = null;
-        if(!isset($data['session']['user']) && empty($data['session']['user']))
-        {
-            header('Location: /?page=inscription');
-            exit();
-        }
         if (isset($data['get']['action']) && $data['get']['action'] === 'connexion') {
             $this->session->setParamSession('token', $this->token->createSessionToken());
             $logIn = $this->connexionManager->verifUser($data);

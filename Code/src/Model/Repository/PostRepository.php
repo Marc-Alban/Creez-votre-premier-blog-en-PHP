@@ -40,17 +40,17 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
         return null;
     }
 
-    public function getEmail(User $user): ?User
+    public function getEmailBdd(string $email): ?string
     {
         return null;
     }
 
-    public function getUser(int $user): ?User
+    public function getUser(int $user = null): ?User
     {
         return null;
     }
 
-    public function getPassword(User $user): ?User
+    public function getPassword(string $email): ?string
     {
         return null;
     }

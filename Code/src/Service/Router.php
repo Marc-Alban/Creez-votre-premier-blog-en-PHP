@@ -103,16 +103,20 @@ final class Router
             //--------------------------------A modifier--------------------------------------------------//
             //Repository
             $addRepo = null;
+            $addRepoPage = null;
             $repoPage = $this->pageMaj . 'Repository';
             $repoTab = [
                 'ConnexionRepository' => 'UserRepository',
                 'InscriptionRepository' => 'UserRepository',
+                'PostRepository' => 'UserRepository',
             ];
             if(array_key_exists($repoPage, $repoTab)){
                 $addRepo = 'App\Model\Repository\\'.$repoTab[$repoPage];
                 $repo = new $addRepo($this->database);
+                $addPage = 'App\Model\Repository\\'.$this->pageMaj.'Repository';
+                $addRepoPage = new $addPage($this->database);
             }else if(!array_key_exists($repoPage, $repoTab)){
-                $addRepo = 'App\Model\Repository\\'.$this->pageMaj . 'Repository';
+                $addRepo = 'App\Model\Repository\\'.$this->pageMaj.'Repository';
                 $repo = new $addRepo($this->database);
             }
             //--------------------------------Modifier--------------------------------------------------//
@@ -125,12 +129,12 @@ final class Router
             ];
             if(array_key_exists($managerPage, $managerTab)){
                 $addManager = 'App\Model\Manager\\'.$managerTab[$managerPage];
-                $addManagerInstance = new $addManager(['repository' => $repo ]);
+                $addManagerInstance = new $addManager(['repository' => ['repoAdd'=>$repo,'repoPage'=>$addRepoPage]]);
                 $addPath = 'App\Model\Manager\\'.$managerPage;
-                $managerPage = new $addPath(['repository' => $repo, 'token' => $this->token, 'session' => $this->session]);
+                $managerPage = new $addPath(['repository' => ['repoAdd'=>$repo,'repoPage'=>$addRepoPage], 'token' => $this->token, 'session' => $this->session]);
             }else if(!array_key_exists($managerPage, $managerTab)){
                 $addManager = 'App\Model\Manager\\'.$managerPage;
-                $managerPage = new $addManager(['repository' => $repo, 'token' => $this->token, 'session' => $this->session]);
+                $managerPage = new $addManager(['repository' => ['repoAdd'=>$repo,'repoPage'=>$addRepoPage], 'token' => $this->token, 'session' => $this->session]);
             }
             //Controller 
             $controller = new $controllerClass(['manager' => ['managerAdd' => $addManagerInstance, 'managerPage' => $managerPage],'view' => $this->view, 'error' => $this->error, 'token' => $this->token, 'session' => $this->session]);
