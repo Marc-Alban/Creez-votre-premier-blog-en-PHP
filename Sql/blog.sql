@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : jeu. 24 sep. 2020 à 09:40
+-- Généré le : mer. 30 sep. 2020 à 11:51
 -- Version du serveur :  8.0.21
 -- Version de PHP : 7.4.9
 
@@ -32,13 +32,33 @@ CREATE TABLE IF NOT EXISTS `comment` (
   `idComment` int NOT NULL AUTO_INCREMENT,
   `content` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `disabled` tinyint NOT NULL DEFAULT '1',
+  `signalComment` tinyint NOT NULL DEFAULT '0',
+  `userComment` varchar(255) NOT NULL,
   `UserId` int DEFAULT NULL,
   `PostId` int DEFAULT NULL,
   `dateCreation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idComment`),
   KEY `fk_Comment_User1_idx` (`UserId`),
   KEY `fk_Comment_Post1_idx` (`PostId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `comment`
+--
+
+INSERT INTO `comment` (`idComment`, `content`, `disabled`, `signalComment`, `userComment`, `UserId`, `PostId`, `dateCreation`) VALUES
+(26, 'qscqsc', 1, 0, 'Fatellim', 1, 10, '2020-09-30 10:42:51'),
+(27, 'SDVSD', 1, 0, 'Fatellim', 1, 10, '2020-09-30 10:43:21'),
+(28, 'HJG.?GHJ', 1, 0, 'Fatellim', 1, 1, '2020-09-30 10:44:04'),
+(29, 'CQSDCQSC', 0, 0, 'Fatellim', 1, 1, '2020-09-30 10:44:48'),
+(30, 'QQx', 0, 0, 'Fatellim', 1, 1, '2020-09-30 10:45:39'),
+(31, 'qsdcqs', 1, 0, 'Fatellim', 1, 1, '2020-09-30 10:46:59'),
+(32, 'sqcqs', 1, 0, 'Fatellim', 1, 1, '2020-09-30 10:47:13'),
+(33, 'SDVSD', 1, 0, 'Fatellim', 1, 11, '2020-09-30 13:07:30'),
+(34, 'gfnfgn', 1, 0, 'Fatellim', 1, 11, '2020-09-30 13:08:59'),
+(35, 'vsdv', 1, 0, 'Fatellim', 1, 11, '2020-09-30 13:09:19'),
+(36, 'sdqvsdvs', 1, 0, 'Fatellim', 1, 11, '2020-09-30 13:09:51'),
+(37, 'regrfgh', 1, 0, 'Fatellim', 1, 11, '2020-09-30 13:23:39');
 
 -- --------------------------------------------------------
 

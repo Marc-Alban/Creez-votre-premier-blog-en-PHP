@@ -32,7 +32,6 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
             } elseif ($idBdd === false) {
                 return null;
             }
-
             return $idBdd;
         } elseif ($executeIsOk === false) {
             return null;
@@ -94,7 +93,7 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
         $req = [
             ':idPost' => $postId
         ];
-        $pdo = $this->db->prepare("SELECT content, userComment FROM comment WHERE disabled = 0 AND PostId = :idPost");
+        $pdo = $this->db->prepare("SELECT content, userComment FROM comment WHERE disabled = 0 AND signalComment = 0 AND PostId = :idPost");
         $executeIsOk = $pdo->execute($req);
         if ($executeIsOk === true) {
             $commentBdd = $pdo->fetchObject(Comment::class);
@@ -103,7 +102,6 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
             } elseif ($commentBdd === false) {
                 return null;
             }
-            return null;
         } elseif ($executeIsOk === false) {
             return null;
         }
@@ -112,13 +110,14 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
     public function createComment(string $comment, string $UserComment ,int $idUser, int $idPost): void
     {
         $sql = "
-        INSERT INTO comment(content, disabled, UserComment, UserId, PostId, dateCreation)
-        VALUES(:content, :disabled, :UserComment, :UserId, :PostId, CURRENT_TIMESTAMP)
+        INSERT INTO comment(content, disabled, signalComment,UserComment, UserId, PostId, dateCreation)
+        VALUES(:content, :disabled, :signalComment,:UserComment, :UserId, :PostId, CURRENT_TIMESTAMP)
         ";
 
         $commentArray = [
             ':content' => $comment,
             ':disabled' => 1,
+            ':signalComment' => 1,
             ':UserComment' => $UserComment,
             ':UserId' => $idUser,
             ':PostId' => $idPost,

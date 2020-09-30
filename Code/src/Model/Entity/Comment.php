@@ -9,6 +9,7 @@ final class Comment
     private int $idComment;
     private string $content;
     private int $disabled;
+    private int $signalComment;
     private string $userComment;    
     private int $UserId;
     private int $PostId;
@@ -71,6 +72,26 @@ final class Comment
     public function setDisabled($disabled): self
     {
         $this->disabled = $disabled;
+
+        return $this;
+    }
+
+        /**
+     * Get the value of signalComment
+     */ 
+    public function getSignalComment(): int
+    {
+        return $this->signalComment;
+    }
+
+    /**
+     * Set the value of signalComment
+     *
+     * @return  self
+     */ 
+    public function setSignalComment($signalComment): self
+    {
+        $this->signalComment = $signalComment;
 
         return $this;
     }
@@ -154,4 +175,5 @@ final class Comment
 
         return $this;
     }
+
 }
