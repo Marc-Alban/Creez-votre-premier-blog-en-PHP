@@ -9,6 +9,7 @@ final class Comment
     private int $idComment;
     private string $content;
     private int $disabled;
+    private string $userComment;    
     private int $UserId;
     private int $PostId;
     private string $dateCreation;
@@ -70,6 +71,26 @@ final class Comment
     public function setDisabled($disabled): self
     {
         $this->disabled = $disabled;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of UserComment
+     */
+    public function getUserComment(): string
+    {
+        return $this->userComment;
+    }
+
+    /**
+     * Set the value of UserComment
+     *
+     * @return  self
+     */
+    public function setUserComment($userComment): self
+    {
+        $this->userComment = $userComment;
 
         return $this;
     }

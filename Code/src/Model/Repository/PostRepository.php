@@ -49,6 +49,11 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
     {
         return null;
     }
+    
+    public function getIdUser(): ?int
+    {
+        return null;
+    }
 
     public function getPassword(string $email): ?string
     {
@@ -84,19 +89,37 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
         return false;
     }
 
-    public function getComment(Comment $comment): ?Comment
+    public function getComment(int $postId): ?Comment
     {
+        $req = [
+            ':idPost' => $postId
+        ];
+        $pdo = $this->db->prepare("SELECT content, userComment FROM comment WHERE disabled = 0 AND PostId = :idPost");
+        $executeIsOk = $pdo->execute($req);
+        if ($executeIsOk === true) {
+            $commentBdd = $pdo->fetchObject(Comment::class);
+            if ($commentBdd) {
+                return $commentBdd;
+            } elseif ($commentBdd === false) {
+                return null;
+            }
+            return null;
+        } elseif ($executeIsOk === false) {
+            return null;
+        }
         return null;
     }
-    public function createComment(string $idUser, string $comment, int $idPost): void
+    public function createComment(string $comment, string $UserComment ,int $idUser, int $idPost): void
     {
         $sql = "
-        INSERT INTO comment(content, disabled, UserId, PostId, dateCreation)
-        VALUES(:content, :disabled, :UserId, :PostId, :NOW())
+        INSERT INTO comment(content, disabled, UserComment, UserId, PostId, dateCreation)
+        VALUES(:content, :disabled, :UserComment, :UserId, :PostId, CURRENT_TIMESTAMP)
         ";
+
         $commentArray = [
             ':content' => $comment,
             ':disabled' => 1,
+            ':UserComment' => $UserComment,
             ':UserId' => $idUser,
             ':PostId' => $idPost,
         ];

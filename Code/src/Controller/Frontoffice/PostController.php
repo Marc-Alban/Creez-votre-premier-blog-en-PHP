@@ -32,23 +32,27 @@ final class PostController
 
     public function PostAction(array $datas): void
     {
-        $id = $datas['get']['id'] ?? null;
+        $id = intval($datas['get']['id']) ?? null;
         $action = $datas['get']['action'] ?? null;
         $user = null;
+        $bugComment = null;
 
-        $post = $this->postManager->showOne((int) $id);
-
+        $post = $this->postManager->showOne($id);
+        $comment = $this->postManager->getValidComment($post->getIdPost());
+        $userSession = $this->session->getSession()['user'];
+        
         if ($action === 'signalComment') {
             $this->postManager->signalComment($datas);
         } else if ($action === 'sendComment') {
             $this->session->setParamSession('token', $this->token->createSessionToken());
-            $this->postManager->verifComment($datas);
+            $bugComment = $this->postManager->verifComment($id, $userSession ,$datas);
         }
         
-
+        
+        
         if ($post instanceof Post) {
             $user = $this->userManager->findUser($post->getUserId());
-            $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user]);
+            $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, "bugComment" => $bugComment, 'comment' => $comment]);
         } else if ($post === null || empty($post)) {
             $this->error->ErrorAction();
         }

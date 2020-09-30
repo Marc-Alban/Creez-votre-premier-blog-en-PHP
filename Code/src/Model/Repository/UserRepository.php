@@ -66,6 +66,27 @@ final class UserRepository implements UserRepositoryInterface
         return null;
     }
 
+    public function getIdUser(): ?int
+    {
+
+        $pdo = $this->db->query("SELECT idUser FROM user");
+        $executeIsOk = $pdo->execute();
+        if ($executeIsOk === true) {
+            $idUserBdd = $pdo->fetchObject(User::class);
+            if ($idUserBdd) {
+                $id = $idUserBdd->getIdUser();
+                return $id;
+            } elseif ($idUserBdd === false) {
+                return null;
+            }
+            return null;
+        } elseif ($executeIsOk === false) {
+            return null;
+        }
+        return null;
+    }
+
+
     public function getPassword(string $email): ?string
     {
         $tabPass = [

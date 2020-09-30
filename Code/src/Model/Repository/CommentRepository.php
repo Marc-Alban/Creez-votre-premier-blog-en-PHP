@@ -6,11 +6,11 @@ use App\Model\Repository\Interfaces\CommentRepositoryInterface;
 final class CommentRepository implements CommentRepositoryInterface
 {
 
-    public function getComment(Comment $comment): ?Comment
+    public function getComment(int $postId): ?Comment
     {
         return null;
     }
-    public function createComment(string $name, string $comment, int $idPost): void
+    public function createComment(string $comment, string $UserComment, int $idUser, int $idPost): void
     {
         
     }

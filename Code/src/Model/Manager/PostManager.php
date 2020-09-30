@@ -2,20 +2,29 @@
 declare(strict_types=1);
 namespace App\Model\Manager;
 use App\Model\Entity\Post;
+use App\Model\Entity\Comment;
 use App\Model\Repository\PostRepository;
+use App\Service\Security\Token;
 
 final class PostManager
 {
     private PostRepository $postRepository;
+    private Token $token;
 
     public function __construct(array $dataManager)
     {
         $this->postRepository = $dataManager['repository']['repoPage'];
+        $this->token = $dataManager['token'];
     }
 
     public function showOne(int $dataId): ?Post
     {
         return $this->postRepository->findById($dataId);
+    }
+
+    public function getValidComment(int $postId): ?Comment
+    {  
+        return $this->postRepository->getComment($postId);
     }
 
 
@@ -24,35 +33,32 @@ final class PostManager
     
     }
 
-    public function verifComment(array $data)
+    public function verifComment(int $id, string $user, array $data): ?array
     {
         if (isset($data['post']['submit'])) {
-            $idUser = htmlentities(strip_tags(trim($data['session']['idUser'])));
+            
             $comment = htmlentities(strip_tags(trim($data['post']['comment'])));
-            $idPost = $data['get']['id'] ?? null;
+            $idUser = $data['session']['idUser'];
 
-            $errors = $data["session"]["error"] ?? null;
-            unset($data["session"]["error"]);
+            $errors = $data["errors"] ?? null;
+            unset($data["errors"]);
 
-            $succes = $data["session"]["succes"] ?? null;
-            unset($data["session"]["succes"]);
+            $success = $data["succes"] ?? null;
+            unset($data["succes"]);
 
             if (empty($comment)) {
-                $errors['error']['messageEmpty'] = "Veuillez mettre un commentaire";
+                $errors["errors"]['messageEmpty'] = "Veuillez mettre un commentaire";
             }
 
             if ($this->token->compareTokens($data) !== null) {
-                $errors['error']['tokenEmpty'] = $this->token->compareTokens($data);
-            }
-
-            if ($errors['error']['token'] === null) {
-                unset($errors['error']['token']);
+                $errors["errors"]['tokenEmpty'] = $this->token->compareTokens($data);
             }
 
             if (empty($errors)) {
-                $succes['succes']['send'] = 'Votre commentaire est en attente de validation';
-                $this->postRepository->createComment($idUser, $comment, $idPost);
+                $this->postRepository->createComment($comment, $user, $idUser, $id);
+                return $success["succes"]['send'] = 'Votre commentaire est en attente de validation';
             }
+            return $errors;
         }
     }
 }

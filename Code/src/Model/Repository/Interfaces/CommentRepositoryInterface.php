@@ -6,7 +6,7 @@ use App\Model\Entity\Comment;
 
 interface CommentRepositoryInterface 
 {
-    public function getComment(Comment $comment): ?Comment;
-    public function createComment(string $idUser, string $comment, int $idPost): void;
+    public function getComment(int $postId): ?Comment;
+    public function createComment(string $comment, string $UserComment, int $idUser, int $idPost): void;
     public function deleteComment(Comment $comment): bool;
 }

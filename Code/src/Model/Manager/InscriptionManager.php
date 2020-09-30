@@ -21,7 +21,6 @@ class InscriptionManager
     public function userSignIn(array $data): ?array
     {
 
-
         $action = $data['get']['action'] ?? null;
 
         $errors = $data["session"]["errors"] ?? null;
