@@ -1,0 +1,25 @@
+{% extends "backoffice/layout.html.twig" %}
+
+{% block title %}Gestion de compte
+{% endblock %}
+
+{% block content %}
+	<div class="container">
+		<div  class="mainbox mx-auto col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 mt-5">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="panel-title text-center">Gestion de compte</div>
+				</div>
+				<div class="panel-body mt-5">
+					<form method="POST" action="/?page=dashboard&action=sendDatasUser">
+						<input id="userName" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre Pseudo" type="text" name="userName" value="{{user.name}}"><br>
+						<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email" value="{{user.email}}"><br>
+						<input id="password" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre mot de passe" type="password" name="password" value=""><br>
+						<input type="hidden" name="token" id="token" value="{{session.token}}"/>
+						<button class="btn btn-primary mx-auto" type="submit">Modifier ses infos personnelles</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

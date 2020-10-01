@@ -27,6 +27,10 @@ class InscriptionController {
 
     public function InscriptionAction(array $data): void
     {
+        if(isset($data['session']['user']) && $data['session']['user'] !== null){
+            header('Location: /?page=home');
+            exit();
+        }
         $register = null;
         if (isset($data['get']['action']) && $data['get']['action'] === 'inscription') {
             $this->session->setParamSession('token', $this->token->createSessionToken());

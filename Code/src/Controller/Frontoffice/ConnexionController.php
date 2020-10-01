@@ -25,6 +25,10 @@ class ConnexionController {
     }
 
     public function ConnexionAction(array $data){
+        if(isset($data['session']['user']) && $data['session']['user'] !== null){
+            header('Location: /?page=home');
+            exit();
+        }
         $logIn = null;
         if (isset($data['get']['action']) && $data['get']['action'] === 'connexion') {
             $this->session->setParamSession('token', $this->token->createSessionToken());

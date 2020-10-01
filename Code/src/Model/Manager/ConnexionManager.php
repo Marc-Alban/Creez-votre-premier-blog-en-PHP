@@ -61,6 +61,7 @@ class ConnexionManager
             if (empty($errors)) {
                 $succes['succes']['send'] = 'Content de vous revoir : '. $this->userRepository->getUser();
                 $this->session->setParamSession('user', $this->userRepository->getUser());
+                $this->session->setParamSession('userAdmin', $this->userRepository->getAllFromUser()->getActivated());
                 $this->session->setParamSession('idUser', $this->userRepository->getIdUser());
                 header('Location: /?page=home');               
                 return $succes;

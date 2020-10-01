@@ -35,12 +35,12 @@ final class PostController
         $id = intval($datas['get']['id']) ?? null;
         $action = $datas['get']['action'] ?? null;
         $user = null;
+        $userSession = $this->session->getSession()['user'] ?? null;
         $bugComment = null;
 
         $post = $this->postManager->showOne($id);
         $comment = $this->postManager->getValidComment($post->getIdPost());
-        $userSession = $this->session->getSession()['user'];
-        
+
         if ($action === 'signalComment') {
             $this->postManager->signalComment($datas);
         } else if ($action === 'sendComment') {
