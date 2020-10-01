@@ -9,7 +9,7 @@ final class Post
     private int $idPost;
     private string $title;
     private string $description;
-    private string $chapô;
+    private string $chapo;
     private string $imagePost;
     private string $datePost;
     private int $statuPost;
@@ -76,21 +76,21 @@ final class Post
     }
 
      /**
-     * Get the value of chapô
+     * Get the value of chapo
      */ 
-    public function getChapô(): string
+    public function getChapo(): string
     {
-        return $this->chapô;
+        return $this->chapo;
     }
 
     /**
-     * Set the value of chapô
+     * Set the value of chapo
      *
      * @return  self
      */ 
-    public function setChapô($chapô): self
+    public function setChapo($chapo): self
     {
-        $this->chapô = $chapô;
+        $this->chapo = $chapo;
 
         return $this;
     }

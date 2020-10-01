@@ -11,10 +11,10 @@
 					<div class="panel-title text-center">Gestion de compte</div>
 				</div>
 				<div class="panel-body mt-5">
+					<a href="/?page=password"><button class="btn btn-primary mx-auto mdpBtn">Changer le mot de passe</button></a>
 					<form method="POST" action="/?page=dashboard&action=sendDatasUser">
 						<input id="userName" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre Pseudo" type="text" name="userName" value="{{user.name}}"><br>
 						<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email" value="{{user.email}}"><br>
-						<input id="password" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre mot de passe" type="password" name="password" value=""><br>
 						<input type="hidden" name="token" id="token" value="{{session.token}}"/>
 						<button class="btn btn-primary mx-auto" type="submit">Modifier ses infos personnelles</button>
 					</form>

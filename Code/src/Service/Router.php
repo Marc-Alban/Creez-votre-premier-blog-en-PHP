@@ -41,7 +41,7 @@ final class Router
         $this->page = $_GET['page'] ?? "Home";
         $this->pageMaj = ucfirst($this->page);
         $this->pageFront = ['Home','Post','Blog', 'Connexion', 'Inscription', 'Deconnexion', 'User'];
-        $this->pageBack = ['Dashboard','AllPost','AllCommentaire','AddPost','ModifPost'];
+        $this->pageBack = ['Dashboard','AllPost','AllCommentaire','AddPost','ModifPost','Password'];
     }
 /**
  * Methode return the path of file needed;
