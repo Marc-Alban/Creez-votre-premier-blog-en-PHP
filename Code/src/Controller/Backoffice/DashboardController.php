@@ -28,10 +28,11 @@ final class DashboardController
         $this->session = $classController['session'];
     }
 
-    public function DashboardAction(array $datas): void
+    public function DashboardAction(array $data): void
     {
-        $userSession = $datas['session']['user'] ?? null;
-        $user = null;
+        $userSession = $data['session']['user'] ?? null;
+        $user = $this->dashboardManager->getDataUser();
+        $verifUser = null;
 
         if(!isset($userSession) && $userSession === null){
             header('Location: /?page=connexion');
@@ -40,12 +41,12 @@ final class DashboardController
 
         if (isset($data['get']['action']) && $data['get']['action'] === 'sendDatasUser') {
             $this->session->setParamSession('token', $this->token->createSessionToken());
-            //$user = $this->dashboardManager->getDataUser($data);
+            $verifUser = $this->dashboardManager->verifForm($data);
         }else if(isset($data['get']['action']) && $data['get']['action'] !== 'sendDatasUser' && empty($data['get']['action'])){
             $this->error->ErrorAction();
         }
 
-        $this->view->render('backoffice', 'dashboard', ['user' => $user]);
+        $this->view->render('backoffice', 'dashboard', ['user' => $user, 'verif' => $verifUser]);
     }
 
 }

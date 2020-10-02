@@ -44,14 +44,20 @@ a {
     padding: 1em;
 }
 
-
+.btn-primary:hover {
+    color: #e95e38;
+    background-color: #ffffff;
+    border-color: #ffffff;
 }
 
+
 /* Navbar */
+
 .bg-dark {
     background-color: #000!important;
     font-size: 1.1em;
 }
+
 .navbar-dark .navbar-nav .nav-link {
     color: #fff;
     font-weight: bold;
@@ -61,20 +67,26 @@ a {
     background-color: transparent;
     transition: background-color 0.3s ease-in-out;
 }
+
 .navbar-dark .navbar-nav .nav-link:hover {
     color: #e95e38;
     border-top: 1px solid #e95e38;
 }
 
+
 /* title */
+
 .panel-title {
     font-family: "Nunito", "Segoe UI", sans-serif;
     font-size: 1.5em;
     font-weight: bold;
 }
 
+
 /* MediaQuerie */
+
 @media (max-width: 990px) {}
+
 @media (max-width: 768px) {
     .dropdown-menu {
         right: 0 !important;

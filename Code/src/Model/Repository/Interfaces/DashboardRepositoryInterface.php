@@ -4,5 +4,5 @@ namespace App\Model\Repository\Interfaces;
 
 interface DashboardRepositoryInterface 
 {
-    
+    public function updateUserBdd(array $data, int $idUser): void;
 }

@@ -109,6 +109,7 @@ final class Router
                 'InscriptionRepository' => 'UserRepository',
                 'PostRepository' => 'UserRepository',
                 'DashboardRepository' => 'UserRepository',
+                'PasswordRepository' => 'UserRepository',
             ];
             if(array_key_exists($repoPage, $repoTab)){
                 $addRepo = 'App\Model\Repository\\'.$repoTab[$repoPage];

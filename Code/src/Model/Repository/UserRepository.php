@@ -16,22 +16,9 @@ final class UserRepository implements UserRepositoryInterface
 
     public function getAllFromUser(): ?User
     {
-            $pdo = $this->db->query("SELECT * FROM user");
-            $executeIsOk = $pdo->execute();
-
-        if ($executeIsOk === true) {
-            $userBdd = $pdo->fetchObject(User::class);
-            if ($userBdd) {
-                return $userBdd;
-            } elseif ($userBdd === false) {
-                return null;
-            }
-            return $userBdd;
-        } elseif ($executeIsOk === false) {
-            return null;
-        }
         return null;
     }
+
 
     public function getEmailBdd(string $email): ?string
     {

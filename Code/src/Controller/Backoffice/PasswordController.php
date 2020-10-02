@@ -8,6 +8,7 @@ use App\Service\Http\Session;
 use App\Service\Security\Token;
 use App\View\View;
 use App\Controller\ErrorController;
+use App\Model\Manager\PasswordManager;
 
 final class PasswordController
 {
@@ -15,27 +16,37 @@ final class PasswordController
     private Token $token;
     private ErrorController $error;
     private Session $session;
+    private PasswordManager $passwordManager;
 
     public function __construct(array $classController)
     {
         // Dépendances
-        $this->view = $classController['view'] ?? null; 
+        $this->view = $classController['view']; 
         $this->error = $classController['error'];
         $this->token = $classController['token'];
         $this->session = $classController['session'];
+        $this->passwordManager = $classController['manager']['managerPage'];
     }
 
-    public function PasswordAction(array $datas): void
+    public function PasswordAction(array $data): void
     {
-        $userSession = $datas['session']['user'] ?? null;
-        $user = null;
+        $userSession = $data['session']['user'] ?? null;
+        $verifPassBdd = null;
 
         if(!isset($userSession) && $userSession === null){
             header('Location: /?page=connexion');
             exit();
         }
 
-        $this->view->render('backoffice', 'password', []);
+        if (isset($data['get']['action']) && $data['get']['action'] === 'modifPass') {
+            $this->session->setParamSession('token', $this->token->createSessionToken());
+            $verifPassBdd = $this->passwordManager->verifPass($data, $userSession);
+        }else if(isset($data['get']['action']) && $data['get']['action'] !== 'modifPass' && empty($data['get']['action'])){
+            $this->error->ErrorAction();
+        }
+
+
+        $this->view->render('backoffice', 'password', ['verif' => $verifPassBdd]);
     }
 
 }
