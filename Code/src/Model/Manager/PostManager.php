@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 namespace App\Model\Manager;
+
 use App\Model\Entity\Post;
-use App\Model\Entity\Comment;
 use App\Model\Repository\PostRepository;
 use App\Service\Security\Token;
 
@@ -22,28 +22,27 @@ final class PostManager
         return $this->postRepository->findById($dataId);
     }
 
-    public function getValidComment(int $postId): ?Comment
+    public function getAllComment(int $postId): ?array
     {  
-        return $this->postRepository->getComment($postId);
+        return  $this->postRepository->getComment($postId);
     }
 
-
-    public function signalComment(array $datas)
+    public function signalComment(int $idComment): void
     {
-    
+        $this->postRepository->signalCommentBdd($idComment);
     }
 
     public function verifComment(int $id, string $user, array $data): ?array
     {
-        if (isset($data['post']['submit'])) {
+        if (isset($data['post']['submit']) && $data['get']['action'] === 'sendComment') {
             
             $comment = htmlentities(strip_tags(trim($data['post']['comment'])));
             $idUser = $data['session']['idUser'];
 
-            $errors = $data["errors"] ?? null;
-            unset($data["errors"]);
+            $errors =  $data['session']["errors"] ?? null;
+            unset( $data['session']["errors"]);
 
-            $success = $data["succes"] ?? null;
+            $success =  $data['session']["succes"] ?? null;
             unset($data["succes"]);
 
             if (empty($comment)) {
@@ -55,10 +54,12 @@ final class PostManager
             }
 
             if (empty($errors)) {
+                $success["succes"]['send'] = 'Votre commentaire est en attente de validation';
                 $this->postRepository->createComment($comment, $user, $idUser, $id);
-                return $success["succes"]['send'] = 'Votre commentaire est en attente de validation';
+                return $success;
             }
             return $errors;
         }
+        return null;
     }
 }

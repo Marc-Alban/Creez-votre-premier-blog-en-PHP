@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace App\Controller\Frontoffice;
 
 use App\Model\Entity\Post;
+use App\Model\Entity\Comment;
 use App\Model\Manager\PostManager;
 use App\Model\Manager\UserManager;
 use App\View\View;
@@ -39,22 +40,22 @@ final class PostController
         $bugComment = null;
 
         $post = $this->postManager->showOne($id);
-        $comment = $this->postManager->getValidComment($post->getIdPost());
-
-        if ($action === 'signalComment') {
-            $this->postManager->signalComment($datas);
+        $comments = $this->postManager->getAllComment($post->getIdPost());
+        
+        if ($action === 'signal') {
+            $this->postManager->signalComment((int) $comments[0]['idComment']);
+            header('Location: /?page=post&id='.$id);
+            exit();
         } else if ($action === 'sendComment') {
             $this->session->setParamSession('token', $this->token->createSessionToken());
             $bugComment = $this->postManager->verifComment($id, $userSession ,$datas);
         }
         
-        
-        
         if ($post instanceof Post) {
             $user = $this->userManager->findUser($post->getUserId());
-            $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, "bugComment" => $bugComment, 'comment' => $comment]);
         } else if ($post === null || empty($post)) {
             $this->error->ErrorAction();
         }
+        $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, "bugComment" => $bugComment, 'comment' => $comments]);
     }
 }

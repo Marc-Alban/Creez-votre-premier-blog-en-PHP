@@ -6,7 +6,7 @@ use App\Model\Repository\Interfaces\CommentRepositoryInterface;
 final class CommentRepository implements CommentRepositoryInterface
 {
 
-    public function getComment(int $postId): ?Comment
+    public function getComment(int $postId): ?array
     {
         return null;
     }

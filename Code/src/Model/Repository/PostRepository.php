@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace App\Model\Repository;
 use App\Service\Database;
 use App\Model\Entity\Post;
+use PDO;
 use App\Model\Entity\User;
 use App\Model\Entity\Comment;
 use App\Model\Repository\Interfaces\PostRepositoryInterface;
@@ -37,6 +38,62 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
             return null;
         }
         return null;
+    }
+
+    public function signalCommentBdd(int $idComment): void
+    {
+        $commentArray = [
+            ':signalComment' => 1,
+            ':idComment' => $idComment,
+        ];
+        $req = $this->db->prepare("UPDATE `comment` SET `signalComment`=:signalComment WHERE disabled = 0 AND idComment = :idComment");
+        $req->execute($commentArray);
+        
+    }
+
+    public function getComment(int $postId ): ?array
+    {
+            $req = [
+                ':idPost' => $postId
+            ];
+            $pdo = $this->db->prepare("SELECT * FROM comment WHERE disabled = 0  AND PostId = :idPost");
+            $executeIsOk = $pdo->execute($req);
+
+        if ($executeIsOk === true) {
+            $commentBdd = $pdo->fetchAll();
+            if ($commentBdd) {
+                return $commentBdd;
+            } elseif ($commentBdd === false) {
+                return null;
+            }
+        } elseif ($executeIsOk === false) {
+            return null;
+        }
+        return null;
+    }
+
+
+    public function createComment(string $comment, string $UserComment ,int $idUser, int $idPost): void
+    {
+        $sql = "
+        INSERT INTO comment(content, disabled, signalComment,UserComment, UserId, PostId, dateCreation)
+        VALUES(:content, :disabled, :signalComment,:UserComment, :UserId, :PostId, CURRENT_TIMESTAMP)
+        ";
+
+        $commentArray = [
+            ':content' => $comment,
+            ':disabled' => 1,
+            ':signalComment' => 0,
+            ':UserComment' => $UserComment,
+            ':UserId' => $idUser,
+            ':PostId' => $idPost,
+        ];
+        $req = $this->db->prepare($sql);
+        $req->execute($commentArray);
+    }
+    public function deleteComment(Comment $comment): bool
+    {
+        return false;
     }
 
     public function getEmailBdd(string $email): ?string
@@ -89,48 +146,6 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
     }
 
     public function deleteUser(User $user) : bool
-    {
-        return false;
-    }
-
-    public function getComment(int $postId): ?Comment
-    {
-        $req = [
-            ':idPost' => $postId
-        ];
-        $pdo = $this->db->prepare("SELECT content, userComment FROM comment WHERE disabled = 0 AND signalComment = 0 AND PostId = :idPost");
-        $executeIsOk = $pdo->execute($req);
-        if ($executeIsOk === true) {
-            $commentBdd = $pdo->fetchObject(Comment::class);
-            if ($commentBdd) {
-                return $commentBdd;
-            } elseif ($commentBdd === false) {
-                return null;
-            }
-        } elseif ($executeIsOk === false) {
-            return null;
-        }
-        return null;
-    }
-    public function createComment(string $comment, string $UserComment ,int $idUser, int $idPost): void
-    {
-        $sql = "
-        INSERT INTO comment(content, disabled, signalComment,UserComment, UserId, PostId, dateCreation)
-        VALUES(:content, :disabled, :signalComment,:UserComment, :UserId, :PostId, CURRENT_TIMESTAMP)
-        ";
-
-        $commentArray = [
-            ':content' => $comment,
-            ':disabled' => 1,
-            ':signalComment' => 1,
-            ':UserComment' => $UserComment,
-            ':UserId' => $idUser,
-            ':PostId' => $idPost,
-        ];
-        $req = $this->db->prepare($sql);
-        $req->execute($commentArray);
-    }
-    public function deleteComment(Comment $comment): bool
     {
         return false;
     }

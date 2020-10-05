@@ -44,11 +44,13 @@
 				{% if session.user %}
 					<div class="container">
 						<div class="raw formComment">
-					{# {% if data.bugComment.send %}
-							<div class="alert alert-primary" role="alert">
-								{{bugComment.send}}
+					{% if data.bugComment.succes %}
+						{% for success in data.bugComment.succes %}
+							<div class="alert alert-primary" id="ancre" role="alert">
+								{{success}}
 							</div>
-					{% endif %} #}
+						{% endfor %}
+					{% endif %}
 					{% if data.bugComment.errors %}
 						{% for errorss in data.bugComment.errors %}
 							<div class="alert alert-danger" role="alert">
@@ -56,7 +58,7 @@
 							</div>
 						{% endfor %}
 					{% endif %}
-							<h3 class="commentTitle">Laisser un commentaires:<span class="alert alert-primary">Obligatoire:<i class="fas fa-exclamation-triangle"></i>
+							<h3 class="commentTitle mt-4">Laisser un commentaires:</i>
 								</span>
 							</h3>
 							<form id="myForm" class="col-md-8 col-12 dp-" method="POST" action="/?page=post&id={{data.post.idPost}}&action=sendComment&#ancre">
@@ -83,16 +85,25 @@
 					<div class="raw">
 						<section class="comments">
 						{% if data.comment %}
-							<article class="comment" id="ancre">
-								<div class="comment-body">
-									<div class="text">
-										<p>{{data.comment.content}}</p>
+						{% for com in data.comment %}
+							<article class="comment border border-white p-3">
+								<div class="comment-body">	
+									<div class="text text-white p-0 border-0">
+										<p class="bg-black">{{com.content}}</p>
 									</div>
-									<p class="attribution">de
-										<a href="#">{{data.comment.user}}</a>
-										à {{data.comment.dateCreation}}</p>
+									<div class="d-flex bd-highlight mb-3">
+									<p class="attribution mr-auto p-2 bd-highlight" id="signalComment">de
+										{{com.userComment}}
+										à {{com.dateCreation}}</p>
+										{% if com.signalComment == 1 %}
+											<p class="text-white p-2 bd-highlight">Signalé</p>
+										{% else %}
+											<a href="/?page=post&id={{data.post.idPost}}&action=signal&#signalComment" class="p-2 bd-highlight">Signaler</a>
+										{% endif %}
+									</div>
 								</div>
 							</article>
+							{% endfor %}
 						{% endif %}
 						</section>
 					</div>

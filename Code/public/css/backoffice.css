@@ -13,6 +13,11 @@ a {
     color: #e95e38;
 }
 
+a:hover {
+    color: #fff !important;
+    text-decoration: underline;
+}
+
 .dropdown-menu {
     right: 0;
     left: unset;
