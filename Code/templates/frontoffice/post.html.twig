@@ -98,7 +98,7 @@
 										{% if com.signalComment == 1 %}
 											<p class="text-white p-2 bd-highlight">Signalé</p>
 										{% else %}
-											<a href="/?page=post&id={{data.post.idPost}}&action=signal&#signalComment" class="p-2 bd-highlight">Signaler</a>
+											<a href="/?page=post&id={{data.post.idPost}}&action=signal&idComment={{com.idComment}}&#signalComment" class="p-2 bd-highlight">Signaler</a>
 										{% endif %}
 									</div>
 								</div>

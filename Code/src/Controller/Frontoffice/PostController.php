@@ -41,9 +41,10 @@ final class PostController
 
         $post = $this->postManager->showOne($id);
         $comments = $this->postManager->getAllComment($post->getIdPost());
-        
+
         if ($action === 'signal') {
-            $this->postManager->signalComment((int) $comments[0]['idComment']);
+            $idComment = intval($datas['get']['idComment']) ?? null;
+            $this->postManager->signalComment($idComment);
             header('Location: /?page=post&id='.$id);
             exit();
         } else if ($action === 'sendComment') {

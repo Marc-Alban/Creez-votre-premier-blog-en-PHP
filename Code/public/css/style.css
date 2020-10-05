@@ -19,10 +19,11 @@ a {
     background-color: transparent;
 }
 
-a:hover {
+
+/* a:hover {
     color: #fff !important;
     text-decoration: underline;
-}
+} */
 
 pre {
     display: block;
@@ -602,6 +603,9 @@ main {
         text-transform: uppercase;
         font-weight: bold;
     }
+    #mainNav .navbar-brand:hover {
+        color: #e95e38 !important;
+    }
     #mainNav .nav-link {
         transition: none;
         padding: 2rem 0.5rem;
@@ -626,7 +630,7 @@ main {
         border-bottom: 0.25rem solid transparent;
     }
     #mainNav.navbar-shrink .nav-link:hover {
-        color: #e95e38;
+        color: #e95e38 !important;
     }
     #mainNav.navbar-shrink .nav-link:active {
         color: #467370;

@@ -41,7 +41,7 @@ final class Router
         $this->page = $_GET['page'] ?? "Home";
         $this->pageMaj = ucfirst($this->page);
         $this->pageFront = ['Home','Post','Blog', 'Connexion', 'Inscription', 'Deconnexion', 'User'];
-        $this->pageBack = ['Dashboard','AllPost','AllCommentaire','AddPost','ModifPost','Password'];
+        $this->pageBack = ['Dashboard','AllPost','AllComments','AddPost','ModifPost','Password'];
     }
 /**
  * Methode return the path of file needed;
@@ -110,6 +110,7 @@ final class Router
                 'PostRepository' => 'UserRepository',
                 'DashboardRepository' => 'UserRepository',
                 'PasswordRepository' => 'UserRepository',
+                'AllCommentsRepository' => 'CommentRepository',
             ];
             if(array_key_exists($repoPage, $repoTab)){
                 $addRepo = 'App\Model\Repository\\'.$repoTab[$repoPage];

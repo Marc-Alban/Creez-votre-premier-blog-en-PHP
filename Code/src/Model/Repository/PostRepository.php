@@ -42,11 +42,12 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
 
     public function signalCommentBdd(int $idComment): void
     {
+
         $commentArray = [
             ':signalComment' => 1,
             ':idComment' => $idComment,
         ];
-        $req = $this->db->prepare("UPDATE `comment` SET `signalComment`=:signalComment WHERE disabled = 0 AND idComment = :idComment");
+        $req = $this->db->prepare("UPDATE `comment` SET `signalComment`=:signalComment  WHERE  idComment = :idComment");
         $req->execute($commentArray);
         
     }
@@ -91,11 +92,18 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
         $req = $this->db->prepare($sql);
         $req->execute($commentArray);
     }
-    public function deleteComment(Comment $comment): bool
+    public function validedCommentBdd(int $idComment, int $signal = null): ?string
     {
-        return false;
+        return null;
     }
-
+    public function deletedCommentBdd(int $idComment): ?string
+    {
+        return null;
+    }
+    public function getAllCommentBdd(): ?array
+    {
+        return null;
+    }
     public function getEmailBdd(string $email): ?string
     {
         return null;
