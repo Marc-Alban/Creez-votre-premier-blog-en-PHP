@@ -16,8 +16,9 @@ final class CommentRepository implements CommentRepositoryInterface
         $this->db = $db->getPdo();
     }
 
-    public function validedCommentBdd(int $idComment, int $signal = null): ?string
+    public function validedCommentBdd(int $idComment, int $signal = 0): bool
     {
+
         if(isset($idComment) && $signal === 0){
             $tab = [
                 ':disabled' => 0,
@@ -25,6 +26,7 @@ final class CommentRepository implements CommentRepositoryInterface
             ];
             $pdo = $this->db->prepare("UPDATE comment SET disabled = :disabled WHERE idComment = :idComment");
             $pdo->execute($tab);
+            return true;
         }else if(isset($idComment) && $signal === 1){
             $tab = [
                 ':signalComment' => 0,
@@ -32,10 +34,11 @@ final class CommentRepository implements CommentRepositoryInterface
             ];
             $pdo = $this->db->prepare("UPDATE comment SET signalComment = :signalComment WHERE idComment = :idComment");
             $pdo->execute($tab);
+            return true;
         }
-        return null;
+        return false;
     }
-    public function deletedCommentBdd(int $idComment): ?string
+    public function deletedCommentBdd(int $idComment): bool
     {
         if(isset($idComment)){
             $tab = [
@@ -43,8 +46,9 @@ final class CommentRepository implements CommentRepositoryInterface
             ];
             $pdo = $this->db->prepare("DELETE FROM comment WHERE idComment = :idComment ");
             $pdo->execute($tab);
+            return true;
         }
-        return null;
+        return false;
     }
     public function getAllCommentBdd(): ?array
     {

@@ -30,7 +30,7 @@ class Session
 /************************************End setParamSession*********************************************** */
     public function sessionDestroy(): void
     {
-            session_destroy();
+        session_destroy();
     }
 
 }

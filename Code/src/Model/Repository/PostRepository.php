@@ -92,13 +92,13 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
         $req = $this->db->prepare($sql);
         $req->execute($commentArray);
     }
-    public function validedCommentBdd(int $idComment, int $signal = null): ?string
+    public function validedCommentBdd(int $idComment, int $signal = 0): bool
     {
-        return null;
+        return false;
     }
-    public function deletedCommentBdd(int $idComment): ?string
+    public function deletedCommentBdd(int $idComment): bool
     {
-        return null;
+        return false;
     }
     public function getAllCommentBdd(): ?array
     {

@@ -5,13 +5,18 @@
 
 {% block content %}
 	<div class="container">
-		<div class="mainbox mx-auto col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 mt-5">
+		<div class="mainbox mx-auto col-md-12 col-md-offset-3 col-sm-6 col-sm-offset-3 mt-5 overflow-auto">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<div class="panel-title text-center">Commentaires Ajoutés</div>
 				</div>
-				<div class="panel-body mt-5">
-					<table class="table table-bordered table-hover table-responsive-sm">
+				<div class="panel-body mt-5 h-10">
+					{% if data.val.sendValide %}
+							<div class="alert alert-primary" role="alert"> {{ data.val.sendValide}}</div>
+					{% elseif data.del.sendDelete %}
+							<div class="alert alert-danger" role="alert"> {{ data.del.sendDelete}}</div>
+					{% endif %}
+					<table class="table table-bordered table-hover table-responsive-sm ">
 						<thead class="thead-dark">
 							<tr>
 								<th scope="col">Commentaires</th>
@@ -35,13 +40,12 @@
 					</table>
 				</div>
 			</div>
-
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<div class="panel-title text-center">Commentaires Signalés</div>
 				</div>
 				<div class="panel-body mt-5">
-					<table class="table table-bordered table-hover table-responsive-sm">
+					<table class="table table-bordered table-hover table-responsive-sm ">
 						<thead class="thead-dark">
 							<tr>
 								<th scope="col">Commentaires</th>
