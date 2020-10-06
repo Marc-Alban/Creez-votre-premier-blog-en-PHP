@@ -114,12 +114,11 @@ final class UserRepository implements UserRepositoryInterface
         return null;
     }
 
-
     public function createUser(array $data): void
     {
         $tabUser = [
-            ':userName' => htmlspecialchars(trim($data['post']['userName'])),
-            ':email' => htmlspecialchars(trim($data['post']['email'])),
+            ':userName' => htmlentities(trim($data['post']['userName'])),
+            ':email' => htmlentities(trim($data['post']['email'])),
             ':passwordUser' => password_hash($data['post']['password'], PASSWORD_BCRYPT ),
         ];
         $req = $this->db->prepare("INSERT INTO user (userName, email, passwordUser) VALUES (:userName, :email, :passwordUser)");

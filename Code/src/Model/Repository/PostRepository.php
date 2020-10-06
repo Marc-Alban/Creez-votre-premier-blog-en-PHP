@@ -3,12 +3,11 @@ declare(strict_types=1);
 namespace App\Model\Repository;
 use App\Service\Database;
 use App\Model\Entity\Post;
-use PDO;
 use App\Model\Entity\User;
-use App\Model\Entity\Comment;
 use App\Model\Repository\Interfaces\PostRepositoryInterface;
 use App\Model\Repository\Interfaces\UserRepositoryInterface;
 use App\Model\Repository\Interfaces\CommentRepositoryInterface;
+
 
 final class PostRepository implements PostRepositoryInterface, UserRepositoryInterface, CommentRepositoryInterface
 {
@@ -92,6 +91,7 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
         $req = $this->db->prepare($sql);
         $req->execute($commentArray);
     }
+
     public function validedCommentBdd(int $idComment, int $signal = 0): bool
     {
         return false;
@@ -127,20 +127,6 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
     public function getPassword(string $email): ?string
     {
         return null;
-    }
-    public function createPost(Post $post): void
-    {
-
-    }
-
-    public function updatePost(Post $post) : bool
-    {
-        return false;
-    }
-
-    public function deletePost(Post $post) : bool
-    {
-        return false;
     }
 
     public function createUser(array $data): void

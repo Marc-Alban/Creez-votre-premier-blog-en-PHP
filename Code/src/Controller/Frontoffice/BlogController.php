@@ -10,7 +10,6 @@ class BlogController
 {
     private View $view;
     private BlogManager $blogManager;
-    private ErrorController $errorController;
 
     public function __construct(array $classController)
     {
@@ -32,11 +31,6 @@ class BlogController
             exit();
         }
         
-
-        $dataTable = [
-            "paginationPost" => $paginationPost ?? null,
-        ];
-
-        $this->view->render('Frontoffice', 'blog', $dataTable);
+        $this->view->render('Frontoffice', 'blog', ['paginationPost' => $paginationPost]);
     }
 }

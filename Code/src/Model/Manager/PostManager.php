@@ -36,7 +36,7 @@ final class PostManager
     {
         if (isset($data['post']['submit']) && $data['get']['action'] === 'sendComment') {
             
-            $comment = htmlspecialchars(htmlentities(trim($data['post']['comment'])));
+            $comment = htmlentities(trim($data['post']['comment']));
             $idUser = $data['session']['idUser'];
 
             $errors =  $data['session']["errors"] ?? null;

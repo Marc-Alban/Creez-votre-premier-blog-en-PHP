@@ -17,11 +17,10 @@ class BlogManager
     {
         $perPage = 6;
         $current =  $data['get']['pp'] ?? null;
-        $postFront = null;
+        $post = null;
 
-        
         if(isset($current)){
-            $total = $this->blogRepository->count('front');
+            $total = $this->blogRepository->count();
             $nbPage = ceil($total/$perPage);
             if(empty($current) || ctype_digit($current) === false || $current <= 0){
                 $current = 1;
@@ -31,14 +30,14 @@ class BlogManager
             
             $firstOfPage = ($current - 1) * $perPage;
             $page = (int) $firstOfPage;
-            $postFront = $this->blogRepository->readAllPost($page, $perPage, 'readAllNoOne');
+            $post= $this->blogRepository->readAllPost($page, $perPage);
         }
         
-
+        
         return $tabPost = [
             'current' => (int) $current,
             'nbPage' => (int) $nbPage,
-            'postFront' => $postFront,
+            'post' => $post,
         ];
     }
 }

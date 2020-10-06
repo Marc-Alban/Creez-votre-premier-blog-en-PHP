@@ -6,7 +6,7 @@ namespace App\Model\Manager;
 
 use App\Service\Http\Session;
 
-final class ModifPostManager
+final class UpdatePostManager
 {
     private Session $session;
 

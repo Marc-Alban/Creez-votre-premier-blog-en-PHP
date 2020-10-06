@@ -15,17 +15,11 @@ final class BlogRepository implements BlogRepositoryInterface
     }
     
 
-    public function readAllPost(int $page, int $perPage, string $side): array
+    public function readAllPost(int $page, int $perPage): array
     {
-        if (isset($side) && !empty($side) && $side !== null) {
-            if ($side === "readAll") {
-                $pdoStatement = $this->db->query("SELECT * FROM post ORDER BY idPost LIMIT $page,$perPage");
-            } else if ($side === "readAllNoOne") {
-                $pdoStatement = $this->db->query("SELECT * FROM post WHERE statuPost = 1 ORDER BY idPost DESC LIMIT $page,$perPage");
-            }
-        }
     
-        
+        $pdoStatement = $this->db->query("SELECT * FROM post WHERE statuPost = 1 ORDER BY idPost DESC LIMIT $page,$perPage");
+
         if($pdoStatement === false){
             header('Location: index.php?page=blog&pp=1');
             exit();
@@ -38,18 +32,13 @@ final class BlogRepository implements BlogRepositoryInterface
             exit();
         };
         
-
         return $this->post;
     }
 
-    public function count(string $side): ?string
+    public function count(): ?string
     {
-        if (isset($side) && !empty($side) && $side !== null) {
-            if ($side === 'front') {
-                $this->pdoStatement = $this->db->query("SELECT count(*) AS total FROM post WHERE statuPost = 1 ");
 
-            }
-        }
+        $this->pdoStatement = $this->db->query("SELECT count(*) AS total FROM post WHERE statuPost = 1 ");
 
         if($this->pdoStatement === false){
             return null;

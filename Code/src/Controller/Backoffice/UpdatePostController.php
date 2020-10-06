@@ -9,7 +9,7 @@ use App\Service\Security\Token;
 use App\View\View;
 use App\Controller\ErrorController;
 
-final class ModifPostController
+final class UpdatePostController
 {
     private View $view;
     private Token $token;
@@ -25,7 +25,7 @@ final class ModifPostController
         $this->session = $classController['session'];
     }
 
-    public function ModifPostAction(array $datas): void
+    public function UpdatePostAction(array $datas): void
     {
         $userSession = $datas['session']['user'] ?? null;
         $user = null;
