@@ -6,11 +6,13 @@ class Request
 {
     private $get;
     private $post;
+    private $file;
 
     public function __construct()
     {
         $this->get = new Parameter($_GET);
         $this->post = new Parameter($_POST);
+        $this->file = new $_FILES;
     }
 
     /**
@@ -30,6 +32,14 @@ class Request
     }
 
     /**
+    * @return mixed
+    */
+    public function getFile(): object
+    {
+        return $this->file;
+    }
+
+    /**
      * @return mixed
      */
     public function setGet(): void
@@ -43,6 +53,14 @@ class Request
     public function setPost(): void
     {
         $this->post;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function setFile(): void
+    {
+        $this->file;
     }
 
 }

@@ -62,7 +62,7 @@ final class Router
                     $postRepo = new $repository($this->database);
                     $postManager = new $manager($postRepo);
                     $controller = 'App\Controller\Frontoffice\\' .$pageFront[$pageMin];
-                    $control = new $controller($postManager, $this->view, $this->error, $this->token, $this->session);
+                    $control = new $controller($postManager, $this->view,$this->request,$this->error, $this->token, $this->session);
                     $methode = $pageMin.'Action';
                     $control->$methode();
                 break;
@@ -85,7 +85,7 @@ final class Router
                     $postRepo = new $repository($this->database);
                     $postManager = new $manager($postRepo);
                     $controller = 'App\Controller\Backoffice\\' .$pageFront[$pageMin];
-                    $control = new $controller($postManager, $this->view, $this->token, $this->session);
+                    $control = new $controller($postManager, $this->view, $this->token, $this->session,$this->request);
                     $methode = $pageMin.'Action';
                     $control->$methode();
                 break;
@@ -93,7 +93,7 @@ final class Router
                     $commentRepo = new $repository($this->database);
                     $commentManager = new $manager($commentRepo);
                     $controller = 'App\Controller\Backoffice\\' .$pageFront[$pageMin];
-                    $control = new $controller($commentManager,$this->view,$this->request);
+                    $control = new $controller($commentManager,$this->view,$this->session,$this->request);
                     $methode = $pageMin.'Action';
                     $control->$methode();
                 break;

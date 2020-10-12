@@ -1,119 +1,93 @@
 <?php
 declare(strict_types=1);
 namespace App\Model\Manager;
-
 use App\Model\Entity\Post;
 use App\Model\Repository\PostRepository;
 use App\Service\Http\Request;
+use App\Service\Http\Session;
 use App\Service\Security\Token;
 
 final class PostManager
 {
     private PostRepository $postRepository;
-    private Token $token;
-    private Request $request;
-
-    public function __construct(PostRepository $postRepository,Token $token, Request $request)
+    public function __construct(PostRepository $postRepository)
     {
         $this->postRepository = $postRepository;
-        $this->token = $token;
-        $this->request = $request;
     }
-
-    public function showOne(int $dataId): ?Post
+    public function showOne(int $id): ?Post
     {
-        return $this->postRepository->findById($dataId);
+        return $this->postRepository->findById($id);
     }
-
-    public function paginationPost(array $data): array
+    public function paginationPost(int $pp = null): array
     {
         $perPage = 6;
-        $current =  $data['get']['pp'] ?? null;
         $post = null;
-
-        if(isset($current)){
-            $total = $this->blogRepository->count();
+        if(isset($pp)){
+            $total = $this->postRepository->count();
             $nbPage = ceil($total/$perPage);
-            if(empty($current) || ctype_digit($current) === false || $current <= 0){
-                $current = 1;
-            }else if ($current > $nbPage){
-                $current = $nbPage;
+            if(empty($pp) || ctype_digit($pp) === false || $pp <= 0){
+                $pp = 1;
+            }else if ($pp > $nbPage){
+                $pp = $nbPage;
             }
             
-            $firstOfPage = ($current - 1) * $perPage;
+            $firstOfPage = ($pp - 1) * $perPage;
             $page = (int) $firstOfPage;
-            $post= $this->blogRepository->readAllPost($page, $perPage);
+            $post= $this->postRepository->readAllPost($page, $perPage);
         }
-        
-        
         return $tabPost = [
-            'current' => (int) $current,
+            'current' => (int) $pp,
             'nbPage' => (int) $nbPage,
             'post' => $post,
         ];
     }
-
- 
-    public function verifFormAddPost(array $datas): ?array
+    public function verifFormAddPost(Session $session,Token $token,Request $request): ?array
     {
-        $post = $datas["post"] ?? null;
-
+        $post = $request->getPost() ?? null;
+        $file = $request->getFile()['imagePost'] ?? null;
         if (isset($post)) {
-            $title = htmlentities(trim($datas["post"]['title'])) ?? null;
-            $chapo = htmlentities(trim($datas["post"]['chapo'])) ?? null;
-            $description = htmlentities(trim($datas["post"]['description'])) ?? null;
-            $tmpName = $datas['files']['imagePost']['tmp_name'] ?? null;
-            $size = $datas['files']['imagePost']['size'] ?? null;
-            $file = (empty($datas['files']['imagePost']['name'])) ? 'default.png' : $datas['files']['imagePost']['name'];
+            $title = $post->get('title') ?? null;
+            $chapo = $post->get('chapo') ?? null;
+            $description = $post->get('description') ?? null;
+            $tmpName = $file['tmp_name'] ?? null;
+            $size = $file['size'] ?? null;
+            $file = (empty($file['name'])) ? 'default.png' : $file['name'];
             $extention = strtolower(substr(strrchr($file, '.'), 1)) ?? null;
             $extentions = ['jpg', 'png', 'gif', 'jpeg'];
             $tailleMax = 2097152;
-
-            $succes = $datas['succes'] ?? null;
-            unset($succes['succes']);
-
-            $errors = $datas['wrong'] ?? null;
-            unset($datas['wrong']);
-
+            $succes = $session['succes'] ?? null;
+            unset($succes);
+            $errors = $session['wrong'] ?? null;
+            unset($errors);
             if (empty($title) && empty($chapo) && empty($description) && empty($tmpName)) {
                 $errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
             } else if (empty($title)){
                 $errors['error']["titleEmpty"] = 'Veuillez renseigner un titre';
-            } else if (empty($tmpName)) {
-                $errors['error']["imgEmpty"] = 'Image obligatoire';
-            } else if (!in_array($extention, $extentions)) {
-                $errors['error']["imgWrong"] = 'Image n\'est pas valide';
-            } else if ($size > $tailleMax) {
-                $errors['error']["imgLarge"] = "Image trop grande, mettre une image en dessous de 2 MO ";
-            } else if (empty($chapo)) {
-                $errors['error']["chapoEmpty"] = "Veuillez mettre un chapô";
-            } else if (strlen($chapo) <= 15) {
-                $errors['error']["chapoShort"] = "Chapô trop petit, doit être inférieur ou égal à 15 caractères minimum";
-            } else if (strlen($description) <= 6) {
+            } else if (empty($tmpName) || in_array($extention, $extentions) || $size > $tailleMax) {
+                $errors['error']["imgWrong"] = 'Image n\'est pas valide, doit être en dessous de 2MO';
+            } else if (empty($chapo)|| strlen($chapo) <= 15) {
+                $errors['error']["chapoEmpty"] = "Chapô obligatoire, doit être inférieur ou égal à 15 caractères minimum";
+            } else if (strlen($description) <= 15) {
                 $errors['error']["descShort"] = "Description trop petite, doit être inférieur ou égal à 15 caractères";
             } 
-            if ($this->token->compareTokens($datas) !== null) {
+            if ($token->compareTokens($session,$post->get('token')) !== null) {
                 $errors['error']['token'] = "Formulaire incorrect";
             }
-
             $dataForm = [
                 'title' => $title,
                 'tmpName' => $tmpName,
                 'extention' => $extention,
                 'chapo' => $chapo,
                 'description' => $description,
-                'idUser' => $datas['session']['idUser'],
+                'idUser' => $session['idUser'],
             ];
-
             if (empty($errors)) {
-                $this->AddPostRepository->createPost($dataForm);
+                $this->postRepository->createPost($dataForm);
                 $succes['sendPost'] = "Article bien enregistré";
                 return $succes;
             }
-
             return $errors;
         }
-
         return null;
     }
 }

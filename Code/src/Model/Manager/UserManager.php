@@ -41,11 +41,9 @@ final class UserManager
             } else if (empty($password) || !password_verify($password, $passwordBdd)) {
                 $errors['error']["passwordEmpty"] = 'Mot de passe incorrect';
             }
-            /************************************Token Session************************************************* */
             if ($token->compareTokens($session,$tokenForm) !== null) {
                 $errors['error']['formRgister'] = "Formulaire incorrect";
             }
-            /************************************End Token Session************************************************* */
             if (empty($errors)) {
                 $succes['succes']['send'] = 'Content de vous revoir : ' . $this->userRepositorysitory->getUser();
                 $session->setParamSession('user', $this->userRepositorysitory->getUser());

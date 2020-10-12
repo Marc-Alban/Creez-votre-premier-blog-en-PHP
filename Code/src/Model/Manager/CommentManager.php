@@ -1,31 +1,27 @@
 <?php
-
 declare(strict_types=1);
-
 namespace App\Model\Manager;
-
 use App\Model\Repository\CommentRepository;
+use App\Model\Repository\PostRepository;
 use App\Service\Http\Request;
+use App\Service\Http\Session;
+use App\Service\Security\Token;
 
 final class CommentManager
 {
     private CommentRepository $commentRepository;
-    private Request $request;
-
-    public function __construct(CommentRepository $commentRepository, Request $request)
+    private PostRepository $postRepository;
+    public function __construct(CommentRepository $commentRepository)
     {
         $this->commentRepository = $commentRepository;
-        $this->request = $request;
     }
-
     public function getAllComments(): ?array
     {
         return $this->commentRepository->getAllCommentBdd();
     }
-
-    public function validedComment(int $idComment, int $signal = null, array $datas): ?array
+    public function validedComment(int $idComment, int $signal = null, Session $session): ?array
     {
-        $validation =  $datas['session']['valide'] ?? null;
+        $validation =  $session['valide'] ?? null;
         unset($validation);
         $validComment = $this->commentRepository->validedCommentBdd($idComment, $signal);
         if($validComment === true){
@@ -34,10 +30,9 @@ final class CommentManager
         }
         return null;
     }
-
-    public function deletedComment(int $idComment, array $datas): ?array
+    public function deletedComment(int $idComment, Session $session): ?array
     {
-        $suppression =  $datas['session']['deleted'] ?? null;
+        $suppression =  $session['deleted'] ?? null;
         unset($suppression);
         $delComment = $this->commentRepository->deletedCommentBdd($idComment);
         if ($delComment === true) {
@@ -46,38 +41,32 @@ final class CommentManager
         }
         return null;
     }
-
     public function getAllComment(int $postId): ?array
     {  
         return  $this->postRepository->getComment($postId);
     }
-
     public function signalComment(int $idComment): void
     {
         $this->postRepository->signalCommentBdd($idComment);
     }
-
-    public function verifComment(int $id, string $user, array $data): ?array
+    public function verifComment(int $id, string $user, Request $request, Session $session,Token $token): ?array
     {
-        if (isset($data['post']['submit']) && $data['get']['action'] === 'sendComment') {
-            
-            $comment = htmlentities(trim($data['post']['comment']));
-            $idUser = $data['session']['idUser'];
-
-            $errors =  $data['session']["errors"] ?? null;
-            unset( $data['session']["errors"]);
-
-            $success =  $data['session']["succes"] ?? null;
+        $post = $request->getPost() ?? null;
+        $submit = $post->get('submit') ?? null;
+        $get = $request->getGet() ?? null;
+        if (isset($submit) && $get->get('action') === 'sendComment'){
+            $comment = $post->get('comment');
+            $idUser = $session['idUser'];
+            $errors =  $session["errors"] ?? null;
+            unset( $session["errors"]);
+            $success =  $session["succes"] ?? null;
             unset($data["succes"]);
-
             if (empty($comment)) {
                 $errors["errors"]['messageEmpty'] = "Veuillez mettre un commentaire";
             }
-
-            if ($this->token->compareTokens($data) !== null) {
-                $errors["errors"]['tokenEmpty'] = $this->token->compareTokens($data);
+            if ($token->compareTokens($session,$post->get('token')) !== null) {
+                $errors["errors"]['tokenEmpty'] = $this->token->compareTokens($session,$post->get('token'));
             }
-
             if (empty($errors)) {
                 $success["succes"]['send'] = 'Votre commentaire est en attente de validation';
                 $this->postRepository->createComment($comment, $user, $idUser, $id);
@@ -87,6 +76,4 @@ final class CommentManager
         }
         return null;
     }
-
-
 }
