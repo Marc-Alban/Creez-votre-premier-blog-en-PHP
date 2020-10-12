@@ -77,9 +77,9 @@ final class User
     }
 
 
-        /**
+    /**
      * Get the value of passwordUser
-     */ 
+     */
     public function getPasswordUser(): string
     {
         return $this->passwordUser;
@@ -89,7 +89,7 @@ final class User
      * Set the value of passwordUser
      *
      * @return  self
-     */ 
+     */
     public function setPasswordUser($passwordUser): self
     {
         $this->passwordUser = $passwordUser;
@@ -176,6 +176,4 @@ final class User
 
         return $this;
     }
-
-
 }

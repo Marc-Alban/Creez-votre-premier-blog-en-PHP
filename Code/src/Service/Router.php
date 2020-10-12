@@ -1,12 +1,14 @@
 <?php
 declare(strict_types=1);
 namespace  App\Service;
-use App\Service\Database;
+
 use App\Controller\ErrorController;
-use App\Service\Security\Token;
-use App\Service\Http\Session;
+use App\Service\Database;
 use App\Service\Http\Request;
+use App\Service\Http\Session;
+use App\Service\Security\Token;
 use App\View\View;
+
 final class Router
 {
     private ConfigProperties $configProperties;
@@ -25,7 +27,7 @@ final class Router
         $this->view = new View($this->session);
         $this->error = new ErrorController($this->view);
     }
-    public function run()
+    public function run(): void
     {
         $this->page = $this->request->getGet()->get('page') ?? 'home';
         $pageMin = lcfirst($this->page);
@@ -44,12 +46,12 @@ final class Router
         'updatePost' => 'PostController',
         'password' => 'UserController'
         ];
-        if(array_key_exists($pageMin, $pageFront)){
-            $repositoryName = str_replace('Controller','Repository',$pageFront[$pageMin]);
-            $managerName = str_replace('Controller','Manager',$pageFront[$pageMin]);
+        if (array_key_exists($pageMin, $pageFront)) {
+            $repositoryName = str_replace('Controller', 'Repository', $pageFront[$pageMin]);
+            $managerName = str_replace('Controller', 'Manager', $pageFront[$pageMin]);
             $repository = 'App\Model\Repository\\' .$repositoryName;
             $manager = 'App\Model\Manager\\' .$managerName;
-            switch($pageFront[$pageMin]){
+            switch ($pageFront[$pageMin]) {
                 case 'UserController':
                     $userRepo = new $repository($this->database);
                     $userManager = new $manager($userRepo);
@@ -62,17 +64,17 @@ final class Router
                     $postRepo = new $repository($this->database);
                     $postManager = new $manager($postRepo);
                     $controller = 'App\Controller\Frontoffice\\' .$pageFront[$pageMin];
-                    $control = new $controller($postManager, $this->view,$this->request,$this->error, $this->token, $this->session);
+                    $control = new $controller($postManager, $this->view, $this->request, $this->error, $this->token, $this->session);
                     $methode = $pageMin.'Action';
                     $control->$methode();
                 break;
             }
-        }else if(array_key_exists($pageMin, $pageBack)){
-            $repositoryName = str_replace('Controller','Repository',$pageBack[$pageMin]);
-            $managerName = str_replace('Controller','Manager',$pageBack[$pageMin]);
+        } elseif (array_key_exists($pageMin, $pageBack)) {
+            $repositoryName = str_replace('Controller', 'Repository', $pageBack[$pageMin]);
+            $managerName = str_replace('Controller', 'Manager', $pageBack[$pageMin]);
             $repository = 'App\Model\Repository\\' .$repositoryName;
             $manager = 'App\Model\Manager\\' .$managerName;
-            switch($pageBack[$pageMin]){
+            switch ($pageBack[$pageMin]) {
                 case 'UserController':
                     $userRepo = new $repository($this->database);
                     $userManager = new $manager($userRepo, $this->request);
@@ -85,7 +87,7 @@ final class Router
                     $postRepo = new $repository($this->database);
                     $postManager = new $manager($postRepo);
                     $controller = 'App\Controller\Backoffice\\' .$pageFront[$pageMin];
-                    $control = new $controller($postManager, $this->view, $this->token, $this->session,$this->request);
+                    $control = new $controller($postManager, $this->view, $this->token, $this->session, $this->request);
                     $methode = $pageMin.'Action';
                     $control->$methode();
                 break;
@@ -93,12 +95,12 @@ final class Router
                     $commentRepo = new $repository($this->database);
                     $commentManager = new $manager($commentRepo);
                     $controller = 'App\Controller\Backoffice\\' .$pageFront[$pageMin];
-                    $control = new $controller($commentManager,$this->view,$this->session,$this->request);
+                    $control = new $controller($commentManager, $this->view, $this->session, $this->request);
                     $methode = $pageMin.'Action';
                     $control->$methode();
                 break;
             }
-        }else if(!array_key_exists($pageMin, $pageFront) || !array_key_exists($pageMin, $pageBack)){
+        } elseif (!array_key_exists($pageMin, $pageFront) || !array_key_exists($pageMin, $pageBack)) {
             $this->error->notFound();
         }
     }

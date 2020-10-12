@@ -22,7 +22,7 @@ final class UserManager
     {
         return $this->userRepository->getUser($user);
     }
-    public function verifUser(Session $session,Token $token,Request $request,string $action = null): ?array
+    public function verifUser(Session $session, Token $token, Request $request, string $action = null): ?array
     {
         $post = $request->getPost() ?? null;
         $tokenForm = $request->getPost()->get('token') ?? null;
@@ -36,12 +36,12 @@ final class UserManager
             $passwordBdd = $this->userRepositorysitory->getPassword($email);
             if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
                 $errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-            } else if (empty($email) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email) || $email !== $this->userRepositorysitory->getEmailBdd($email) ) {
+            } elseif (empty($email) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email) || $email !== $this->userRepositorysitory->getEmailBdd($email)) {
                 $errors['error']["emailEmpty"] = 'E-mail invalid ou inexistant ';
-            } else if (empty($password) || !password_verify($password, $passwordBdd)) {
+            } elseif (empty($password) || !password_verify($password, $passwordBdd)) {
                 $errors['error']["passwordEmpty"] = 'Mot de passe incorrect';
             }
-            if ($token->compareTokens($session,$tokenForm) !== null) {
+            if ($token->compareTokens($session, $tokenForm) !== null) {
                 $errors['error']['formRgister'] = "Formulaire incorrect";
             }
             if (empty($errors)) {
@@ -56,7 +56,7 @@ final class UserManager
         }
         return null;
     }
-    public function userSignIn(Session $session,Token $token,Request $request,string $action = null): ?array
+    public function userSignIn(Session $session, Token $token, Request $request, string $action = null): ?array
     {
         $post = $request->getPost() ?? null;
         $errors = $session["errors"] ?? null;
@@ -66,25 +66,25 @@ final class UserManager
         if (isset($post) && $action === "inscription") {
             $pseudo = $post->get('userName') ?? null;
             $email = $post->get('email') ?? null;
-            $emailBdd = $this->userRepositorysitory->getEmailBdd(strtolower($email));
+            $emailBdd = $this->userRepositorysitory->getEmailBdd(mb_strtolower($email));
             $password =  $post->get('password') ?? null;
             $passwordConfirmation = $post->get('passwordConfirmation') ?? null;
             if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
                 $errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-            } else if (empty($pseudo)) {
+            } elseif (empty($pseudo)) {
                 $errors['error']["pseudoEmpty"] = 'Veuillez mettre un pseudo ';
-            } else if (empty($email)) {
+            } elseif (empty($email)) {
                 $errors['error']["emailEmpty"] = 'Veuillez mettre un mail ';
-            } else if (!preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
+            } elseif (!preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
                 $errors['error']['emailWrong'] = "L'adresse e-mail est invalide";
-            } else if ($emailBdd !== null && $email === $emailBdd) {
+            } elseif ($emailBdd !== null && $email === $emailBdd) {
                 $errors['error']['emailFalse'] = "L'adresse e-mail est déjà présente en bdd";
-            } else if (empty($password) || strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password)) {
+            } elseif (empty($password) || mb_strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password)) {
                 $errors['error']["passwordEmpty"] = 'Mot de passe invalid, doit avoir minuscule-majuscule-chiffres-caractères ';
-            } else if ($password !== $passwordConfirmation) {
+            } elseif ($password !== $passwordConfirmation) {
                 $errors['error']['passwordWrong'] = 'Mot de passe et mot de passe de confirmation ne corresponde pas.. ';
-            } 
-            if ($token->compareTokens($session,$post->get('token')) !== null) {
+            }
+            if ($token->compareTokens($session, $post->get('token')) !== null) {
                 $errors['error']['formRgister'] = "Formulaire incorrect";
             }
             if (empty($errors)) {
@@ -101,7 +101,7 @@ final class UserManager
     {
         return $this->userRepository->getPassword($user);
     }
-    public function verifPass(Session $session,Request $request,Token $token,string $action,string $user)
+    public function verifPass(Session $session, Request $request, Token $token, string $action, string $user)
     {
         $idUser = $session['idUser'] ?? null;
         $pass = $this->getPassBdd($user);
@@ -113,12 +113,12 @@ final class UserManager
         if (isset($post) && $action === "modifPass") {
             $password = $post['password'] ?? null;
             $passwordConf = $post['passwordConfirmation'] ?? null;
-            if (empty($password) || $password !== $passwordConf || strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password)) {
+            if (empty($password) || $password !== $passwordConf || mb_strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password)) {
                 $errors['error']["passwordEmpty"] = 'Mot de passe invalid, mot de passe doit être identique à celui de confirmation, supérieur à 8 caractères et doit avoir minuscule-majuscule-chiffres-caractères ';
-            } else if (empty($passwordConf) || password_verify($password, $pass)) {
+            } elseif (empty($passwordConf) || password_verify($password, $pass)) {
                 $errors['error']["passwordConfEmpty"] = 'Mot de passe de confirmation absent ou ne correspond pas à celui en bdd';
             }
-            if ($token->compareTokens($session,$post->get('token')) === true) {
+            if ($token->compareTokens($session, $post->get('token')) === true) {
                 $errors['error']['tokenEmpty'] = 'Formulaire incorrect';
             }
             if (empty($errors)) {
@@ -140,7 +140,7 @@ final class UserManager
         $message = require_once ROOT . 'templates\frontoffice\mail.html.twig';
         mail('millet.marcalban@gmail.com', 'Envoi depuis page home', $message, $entete);
     }
-    public function verifMail(Session $session,Token $token ,Request $request, string $action =null): ?array
+    public function verifMail(Session $session, Token $token, Request $request, string $action =null): ?array
     {
         $post = $request->getPost() ?? null;
         if (isset($post) && $action === "send") {
@@ -151,16 +151,16 @@ final class UserManager
             $session = $session->getSession()['token'] ?? null;
             if (empty($mail) && empty($message) && empty($name) && empty($lastName)) {
                 $errors['error']['allEmpty'] = "Veuillez remplir le formulaire";
-            } else if (empty($name)) {
+            } elseif (empty($name)) {
                 $errors['error']['nameEmpty'] = "Veuillez mettre un nom";
-            } else if (empty($lastName)) {
+            } elseif (empty($lastName)) {
                 $errors['error']['lastNameEmpty'] = "Veuillez mettre un prénom";
-            } else if (empty($mail) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $mail)) {
+            } elseif (empty($mail) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $mail)) {
                 $errors['error']['mailEmpty'] = "Veuillez mettre un mail valide";
-            } else if (empty($message)) {
+            } elseif (empty($message)) {
                 $errors['error']['messageEmpty'] = "Veuillez mettre un message";
             }
-            if ($token->compareTokens($session,$post->get('token')) === true) {
+            if ($token->compareTokens($session, $post->get('token')) === true) {
                 $errors['error']['tokenEmpty'] = 'Formulaire incorrect';
             }
             if (empty($errors)) {
@@ -176,7 +176,7 @@ final class UserManager
     {
         return $this->userRepository->getAllFromUser();
     }
-    public function verifForm(Session $session,Request $request,Token $token,string $action = null)
+    public function verifForm(Session $session, Request $request, Token $token, string $action = null)
     {
         $post = $request->getPost() ?? null;
         $errors = $session["errors"] ?? null;
@@ -190,15 +190,15 @@ final class UserManager
             $idUser = $this->getDataUser()->getIdUser();
             if (empty($email) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
                 $errors['error']["emailEmpty"] = 'L\'adresse e-mail est invalide" ';
-            }else if (empty($userName)) {
+            } elseif (empty($userName)) {
                 $errors['error']["userEmpty"] = 'Veuillez mettre un utilisateur';
             }
-            if ($token->compareTokens($session,$post->get('token')) === true) {
+            if ($token->compareTokens($session, $post->get('token')) === true) {
                 $errors['error']['tokenEmpty'] = 'Formulaire incorrect';
             }
             if (empty($errors)) {
                 $succes['succes']['send'] = 'Utilisateur bien mis à jour:';
-                $this->userRepository->updateUserBdd($idUser,$email,$userName);
+                $this->userRepository->updateUserBdd($idUser, $email, $userName);
                 $session->setParamSession('user', $userBdd);
                 $session->setParamSession('userAdmin', $this->getDataUser()->getActivated());
                 $session->setParamSession('idUser', $this->getDataUser()->getIdUser());

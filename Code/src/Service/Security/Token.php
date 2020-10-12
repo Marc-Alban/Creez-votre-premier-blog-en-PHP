@@ -1,20 +1,21 @@
 <?php
-declare (strict_types = 1);
+declare(strict_types = 1);
 namespace App\Service\Security;
+
 use App\Service\Http\Session;
 
 class Token
 {
     private $token;
 
-/************************************Create Token Session************************************************ */
+    /************************************Create Token Session************************************************ */
     public function createSessionToken(): string
     {
         $this->token = bin2hex(random_bytes(32));
         return $this->token;
     }
-/************************************End Create Token Session************************************************ */
-/************************************Compare Token Session************************************************ */
+    /************************************End Create Token Session************************************************ */
+    /************************************Compare Token Session************************************************ */
 
     public function compareTokens(Session $session, string $token): bool
     {
@@ -23,5 +24,5 @@ class Token
         }
         return false;
     }
-/************************************End Compare Token Session************************************************ */
+    /************************************End Compare Token Session************************************************ */
 }

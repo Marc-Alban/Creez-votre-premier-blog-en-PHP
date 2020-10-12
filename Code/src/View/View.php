@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\View;
 
-use Twig\Environment;
 use App\Service\Http\Session;
+use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
-
 
 final class View
 {

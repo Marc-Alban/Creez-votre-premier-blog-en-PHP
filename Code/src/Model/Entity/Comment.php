@@ -10,7 +10,7 @@ final class Comment
     private string $content;
     private int $disabled;
     private int $signalComment;
-    private string $userComment;    
+    private string $userComment;
     private int $UserId;
     private int $PostId;
     private string $dateCreation;
@@ -76,9 +76,9 @@ final class Comment
         return $this;
     }
 
-        /**
+    /**
      * Get the value of signalComment
-     */ 
+     */
     public function getSignalComment(): int
     {
         return $this->signalComment;
@@ -88,7 +88,7 @@ final class Comment
      * Set the value of signalComment
      *
      * @return  self
-     */ 
+     */
     public function setSignalComment($signalComment): self
     {
         $this->signalComment = $signalComment;
@@ -156,7 +156,7 @@ final class Comment
         return $this;
     }
 
-        /**
+    /**
      * Get the value of dateCreation
      */
     public function getDateCreation(): string
@@ -175,5 +175,4 @@ final class Comment
 
         return $this;
     }
-
 }

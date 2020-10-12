@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
 namespace App\Service\Http;
+
 use App\Service\Http\Parameter;
+
 class Request
 {
     private $get;
@@ -12,7 +14,7 @@ class Request
     {
         $this->get = new Parameter($_GET);
         $this->post = new Parameter($_POST);
-        $this->file = new $_FILES;
+        $this->file = $_FILES;
     }
 
     /**
@@ -34,7 +36,7 @@ class Request
     /**
     * @return mixed
     */
-    public function getFile(): object
+    public function getFile(): array
     {
         return $this->file;
     }
@@ -62,5 +64,4 @@ class Request
     {
         $this->file;
     }
-
 }

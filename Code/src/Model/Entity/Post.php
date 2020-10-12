@@ -75,9 +75,9 @@ final class Post
         return $this;
     }
 
-     /**
-     * Get the value of chapo
-     */ 
+    /**
+    * Get the value of chapo
+    */
     public function getChapo(): string
     {
         return $this->chapo;
@@ -87,7 +87,7 @@ final class Post
      * Set the value of chapo
      *
      * @return  self
-     */ 
+     */
     public function setChapo($chapo): self
     {
         $this->chapo = $chapo;
@@ -116,7 +116,7 @@ final class Post
 
     /**
      * Get the value of datePost
-     */ 
+     */
     public function getDatePost(): string
     {
         return $this->datePost;
@@ -126,7 +126,7 @@ final class Post
      * Set the value of datePost
      *
      * @return  self
-     */ 
+     */
     public function setDatePost($datePost): self
     {
         $this->datePost = $datePost;
@@ -173,5 +173,4 @@ final class Post
 
         return $this;
     }
-
 }

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Frontoffice;
 
-use App\Model\Manager\UserManager;
-use App\View\View;
 use App\Controller\ErrorController;
+use App\Model\Manager\UserManager;
+use App\Service\Http\Request;
 use App\Service\Http\Session;
 use App\Service\Security\Token;
-use App\Service\Http\Request;
+use App\View\View;
 
 final class UserController
 {
@@ -39,8 +39,8 @@ final class UserController
         $mail = null;
         if (isset($this->action) && $this->action === 'sendMessage') {
             $this->session->setParamSession('token', $this->token->createSessionToken());
-            $mail = $this->userManager->verifMail($this->session,$this->token,$this->request,$this->action);
-        } else if (isset($this->action) && $this->action === "logout") {
+            $mail = $this->userManager->verifMail($this->session, $this->token, $this->request, $this->action);
+        } elseif (isset($this->action) && $this->action === "logout") {
             $this->session->sessionDestroy();
             header('Location: /?p=home');
             exit();
@@ -56,8 +56,8 @@ final class UserController
         $register = null;
         if (isset($this->action) && $this->action === 'inscription') {
             $this->session->setParamSession('token', $this->token->createSessionToken());
-            $register = $this->userManager->userSignIn($this->session,$this->token,$this->request,$this->action);
-        } else if (isset($this->action) && $this->action !== 'inscription' && empty($this->action)) {
+            $register = $this->userManager->userSignIn($this->session, $this->token, $this->request, $this->action);
+        } elseif (isset($this->action) && $this->action !== 'inscription' && empty($this->action)) {
             $this->error->notFound();
         }
         $this->view->render('Frontoffice', 'inscription', ["register" => $register]);
@@ -71,8 +71,8 @@ final class UserController
         $logIn = null;
         if (isset($this->action) && $this->action === 'connexion') {
             $this->session->setParamSession('token', $this->token->createSessionToken());
-            $logIn = $this->userManager->verifUser($this->session,$this->token,$this->request,$this->action);
-        } else if (isset($this->action) && $this->action !== 'connexion' && empty($this->action)) {
+            $logIn = $this->userManager->verifUser($this->session, $this->token, $this->request, $this->action);
+        } elseif (isset($this->action) && $this->action !== 'connexion' && empty($this->action)) {
             $this->error->notFound();
         }
         $this->view->render('Frontoffice', 'Connexion', ["logIn" => $logIn]);

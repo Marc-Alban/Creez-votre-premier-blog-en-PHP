@@ -1,12 +1,14 @@
 <?php
 declare(strict_types=1);
 namespace App\Controller\Backoffice;
-use App\Model\Manager\UserManager;
-use App\View\View;
-use App\Service\Security\Token;
+
 use App\Controller\ErrorController;
-use App\Service\Http\Session;
+use App\Model\Manager\UserManager;
 use App\Service\Http\Request;
+use App\Service\Http\Session;
+use App\Service\Security\Token;
+use App\View\View;
+
 final class UserController
 {
     private UserManager $userManager;
@@ -33,14 +35,14 @@ final class UserController
         $userSession = $this->session['user'] ?? null;
         $user = $this->userManager->getDataUser();
         $verifUser = null;
-        if(!isset($userSession) && $userSession === null){
+        if (!isset($userSession) && $userSession === null) {
             header('Location: /?page=connexion');
             exit();
         }
         if (isset($this->action) && $this->action === 'sendDatasUser') {
             $this->session->setParamSession('token', $this->token->createSessionToken());
-            $verifUser = $this->userManager->verifForm($this->session,$this->request,$this->token,$this->action);
-        }else if(isset($this->action) && $this->action !== 'sendDatasUser' && empty($this->action)){
+            $verifUser = $this->userManager->verifForm($this->session, $this->request, $this->token, $this->action);
+        } elseif (isset($this->action) && $this->action !== 'sendDatasUser' && empty($this->action)) {
             $this->error->notFound();
         }
         $this->view->render('backoffice', 'dashboard', ['user' => $user, 'verif' => $verifUser]);
@@ -49,14 +51,14 @@ final class UserController
     {
         $userSession = $this->session['user'] ?? null;
         $verifPassBdd = null;
-        if(!isset($userSession) && $userSession === null){
+        if (!isset($userSession) && $userSession === null) {
             header('Location: /?page=connexion');
             exit();
         }
         if (isset($this->action) && $this->action === 'modifPass') {
             $this->session->setParamSession('token', $this->token->createSessionToken());
-            $verifPassBdd = $this->userManager->verifPass($this->session,$this->request,$this->token,$this->action,$userSession);
-        }else if(isset($this->action) && $this->action !== 'modifPass' && empty($this->action)){
+            $verifPassBdd = $this->userManager->verifPass($this->session, $this->request, $this->token, $this->action, $userSession);
+        } elseif (isset($this->action) && $this->action !== 'modifPass' && empty($this->action)) {
             $this->error->notFound();
         }
         $this->view->render('backoffice', 'password', ['verif' => $verifPassBdd]);
@@ -64,7 +66,7 @@ final class UserController
     public function updatePostAction(): void
     {
         $userSession = $this->session['user'] ?? null;
-        if(!isset($userSession) && $userSession === null){
+        if (!isset($userSession) && $userSession === null) {
             header('Location: /?page=connexion');
             exit();
         }

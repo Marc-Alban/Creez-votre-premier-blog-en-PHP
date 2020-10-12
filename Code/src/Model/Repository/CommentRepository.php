@@ -4,9 +4,8 @@ namespace App\Model\Repository;
 
 use App\Service\Database;
 
-final class CommentRepository 
+final class CommentRepository
 {
-
     private $db;
 
     public function __construct(Database $db)
@@ -16,8 +15,7 @@ final class CommentRepository
 
     public function validedCommentBdd(int $idComment, int $signal = 0): bool
     {
-
-        if(isset($idComment) && $signal === 0){
+        if (isset($idComment) && $signal === 0) {
             $tab = [
                 ':disabled' => 0,
                 ':idComment' => $idComment
@@ -25,7 +23,7 @@ final class CommentRepository
             $pdo = $this->db->prepare("UPDATE comment SET disabled = :disabled WHERE idComment = :idComment");
             $pdo->execute($tab);
             return true;
-        }else if(isset($idComment) && $signal === 1){
+        } elseif (isset($idComment) && $signal === 1) {
             $tab = [
                 ':signalComment' => 0,
                 ':idComment' => $idComment
@@ -38,7 +36,7 @@ final class CommentRepository
     }
     public function deletedCommentBdd(int $idComment): bool
     {
-        if(isset($idComment)){
+        if (isset($idComment)) {
             $tab = [
                 ':idComment' => $idComment,
             ];
@@ -64,5 +62,4 @@ final class CommentRepository
         }
         return null;
     }
-
 }

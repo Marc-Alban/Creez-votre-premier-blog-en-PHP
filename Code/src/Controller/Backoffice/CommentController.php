@@ -9,7 +9,6 @@ use App\Service\Http\Request;
 use App\Service\Http\Session;
 use App\View\View;
 
-
 final class CommentController
 {
     private CommentManager $commentManager;
@@ -30,22 +29,21 @@ final class CommentController
         $idComment = $this->request->getGet()->get('id') ?? null;
         $val = null;
         $del = null;
-        if(!isset($userSession) && $userSession === null){
+        if (!isset($userSession) && $userSession === null) {
             header('Location: /?page=connexion');
             exit();
         }
         $comments = $this->commentManager->getAllComments();
-        if($action === 'valide' && isset($action) && $action !== null){
+        if ($action === 'valide' && isset($action) && $action !== null) {
             $val = $this->commentManager->validedComment((int) $idComment, 0, $this->session);
-            header ("Refresh: 1;/?page=allComments");
-        }else if($action === 'valideSignal' && isset($action) && $action !== null){
+            header("Refresh: 1;/?page=allComments");
+        } elseif ($action === 'valideSignal' && isset($action) && $action !== null) {
             $val = $this->commentManager->validedComment((int) $idComment, 1);
-            header ("Refresh: 1;/?page=allComments");
-        }else if ($action === 'deleted' || $action === 'deletedSignal' && isset($action) && $action !== null){
+            header("Refresh: 1;/?page=allComments");
+        } elseif ($action === 'deleted' || $action === 'deletedSignal' && isset($action) && $action !== null) {
             $del = $this->commentManager->deletedComment((int) $idComment, $this->session);
-            header ("Refresh: 1;/?page=allComments");
-        }    
+            header("Refresh: 1;/?page=allComments");
+        }
         $this->view->render('backoffice', 'allComments', ["comments" => $comments, 'val' => $val, 'del' => $del]);
     }
-
 }

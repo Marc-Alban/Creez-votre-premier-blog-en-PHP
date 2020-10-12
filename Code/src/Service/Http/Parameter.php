@@ -14,8 +14,7 @@ class Parameter
 
     public function get($name): ?string
     {
-        if(isset($this->parameter[$name]))
-        {
+        if (isset($this->parameter[$name])) {
             return htmlentities(strip_tags(trim($this->parameter[$name])));
         }
         return null;
@@ -25,5 +24,4 @@ class Parameter
     {
         $this->parameter[$name] = $value;
     }
-
 }

@@ -5,7 +5,6 @@ namespace App\Controller;
 
 use App\View\View;
 
-
 final class ErrorController
 {
     private View $view;
@@ -17,11 +16,11 @@ final class ErrorController
     
     public function errorServer(): void
     {
-        $this->view->render('frontoffice','error', []);
+        $this->view->render('frontoffice', 'error', []);
     }
 
     public function notFound(): void
     {
-        $this->view->render('frontoffice','404', []);
+        $this->view->render('frontoffice', '404', []);
     }
 }

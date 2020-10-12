@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace App\Model\Manager;
+
 use App\Model\Entity\Post;
 use App\Model\Repository\PostRepository;
 use App\Service\Http\Request;
@@ -22,12 +23,12 @@ final class PostManager
     {
         $perPage = 6;
         $post = null;
-        if(isset($pp)){
+        if (isset($pp)) {
             $total = $this->postRepository->count();
             $nbPage = ceil($total/$perPage);
-            if(empty($pp) || ctype_digit($pp) === false || $pp <= 0){
+            if (empty($pp) || ctype_digit($pp) === false || $pp <= 0) {
                 $pp = 1;
-            }else if ($pp > $nbPage){
+            } elseif ($pp > $nbPage) {
                 $pp = $nbPage;
             }
             
@@ -41,7 +42,7 @@ final class PostManager
             'post' => $post,
         ];
     }
-    public function verifFormAddPost(Session $session,Token $token,Request $request): ?array
+    public function verifFormAddPost(Session $session, Token $token, Request $request): ?array
     {
         $post = $request->getPost() ?? null;
         $file = $request->getFile()['imagePost'] ?? null;
@@ -52,7 +53,7 @@ final class PostManager
             $tmpName = $file['tmp_name'] ?? null;
             $size = $file['size'] ?? null;
             $file = (empty($file['name'])) ? 'default.png' : $file['name'];
-            $extention = strtolower(substr(strrchr($file, '.'), 1)) ?? null;
+            $extention = mb_strtolower(mb_substr(mb_strrchr($file, '.'), 1)) ?? null;
             $extentions = ['jpg', 'png', 'gif', 'jpeg'];
             $tailleMax = 2097152;
             $succes = $session['succes'] ?? null;
@@ -61,16 +62,16 @@ final class PostManager
             unset($errors);
             if (empty($title) && empty($chapo) && empty($description) && empty($tmpName)) {
                 $errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-            } else if (empty($title)){
+            } elseif (empty($title)) {
                 $errors['error']["titleEmpty"] = 'Veuillez renseigner un titre';
-            } else if (empty($tmpName) || in_array($extention, $extentions) || $size > $tailleMax) {
+            } elseif (empty($tmpName) || in_array($extention, $extentions, true) || $size > $tailleMax) {
                 $errors['error']["imgWrong"] = 'Image n\'est pas valide, doit être en dessous de 2MO';
-            } else if (empty($chapo)|| strlen($chapo) <= 15) {
+            } elseif (empty($chapo)|| mb_strlen($chapo) <= 15) {
                 $errors['error']["chapoEmpty"] = "Chapô obligatoire, doit être inférieur ou égal à 15 caractères minimum";
-            } else if (strlen($description) <= 15) {
+            } elseif (mb_strlen($description) <= 15) {
                 $errors['error']["descShort"] = "Description trop petite, doit être inférieur ou égal à 15 caractères";
-            } 
-            if ($token->compareTokens($session,$post->get('token')) !== null) {
+            }
+            if ($token->compareTokens($session, $post->get('token')) !== null) {
                 $errors['error']['token'] = "Formulaire incorrect";
             }
             $dataForm = [

@@ -1,8 +1,10 @@
 <?php
 declare(strict_types=1);
 namespace App\Service;
+
 use \Exception;
-class ConfigProperties 
+
+class ConfigProperties
 {
     private array $ini;
     private $DbHost;
@@ -11,10 +13,10 @@ class ConfigProperties
     private $DbPass;
     public function __construct()
     {
-        try{
+        try {
             $this->ini = parse_ini_file(ROOT.'config.ini', false);
-        }catch(Exception $e) {
-            die('Erreur : Problème avec le fichier de config ' );
+        } catch (Exception $e) {
+            die('Erreur : Problème avec le fichier de config ');
         }
         $this->DbHost  = $this->ini['DbHost'];
         $this->DbName  = $this->ini['DbName'];
@@ -28,6 +30,5 @@ class ConfigProperties
             'user' => $this->DbUser,
             'pass' => $this->DbPass
         ];
-        
     }
 }

@@ -1,8 +1,10 @@
 <?php
 declare(strict_types=1);
 namespace App\Model\Repository;
-use App\Service\Database;
+
 use App\Model\Entity\User;
+use App\Service\Database;
+
 final class UserRepository
 {
     private $db;
@@ -32,13 +34,13 @@ final class UserRepository
         $tabUser = [
             ':userName' => $data['post']['userName'],
             ':email' => $data['post']['email'],
-            ':passwordUser' => password_hash($data['post']['password'], PASSWORD_BCRYPT ),
+            ':passwordUser' => password_hash($data['post']['password'], PASSWORD_BCRYPT),
         ];
         $req = $this->db->prepare("INSERT INTO user (userName, email, passwordUser) VALUES (:userName, :email, :passwordUser)");
         $req->execute($tabUser);
     }
     public function updateUserBdd(int $idUser, string $email, string $userName): void
-    { 
+    {
         $commentArray = [
             ':idUser' => $idUser,
             ':email' => $email,
@@ -70,13 +72,13 @@ final class UserRepository
     }
     public function getUser(int $user = null): ?string
     {
-        if($user !== null){
+        if ($user !== null) {
             $req = [
                 ':idUser' => $user
             ];
             $pdo = $this->db->prepare("SELECT userName FROM user WHERE idUser = :idUser");
             $executeIsOk = $pdo->execute($req);
-        }else if($user === null){
+        } elseif ($user === null) {
             $pdo = $this->db->query("SELECT userName FROM user");
             $executeIsOk = $pdo->execute();
         }
@@ -114,13 +116,13 @@ final class UserRepository
     }
     public function getPassword(string $user = null, string $email = null): ?string
     {
-        if(isset($user)){
+        if (isset($user)) {
             $tabPass = [
                 ':userName' => $user
             ];
             $pdo = $this->db->prepare("SELECT passwordUser FROM `user` WHERE userName = :userName");
             $executeIsOk = $pdo->execute($tabPass);
-        }else if(isset($email)){
+        } elseif (isset($email)) {
             $tabPass = [
                 ':email' => $email
             ];
