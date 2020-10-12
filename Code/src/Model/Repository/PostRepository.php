@@ -3,19 +3,35 @@ declare(strict_types=1);
 namespace App\Model\Repository;
 use App\Service\Database;
 use App\Model\Entity\Post;
-use App\Model\Entity\User;
-use App\Model\Repository\Interfaces\PostRepositoryInterface;
-use App\Model\Repository\Interfaces\UserRepositoryInterface;
-use App\Model\Repository\Interfaces\CommentRepositoryInterface;
 
 
-final class PostRepository implements PostRepositoryInterface, UserRepositoryInterface, CommentRepositoryInterface
+final class PostRepository 
 {
     private $db;
 
     public function __construct(Database $db)
     {
         $this->db = $db->getPdo();
+    }
+
+    public function createPost(array $dataForm): ?array
+    {
+        
+        $idPostMax = $this->db->query('SELECT MAX(idPost) FROM post ORDER BY idPost');
+        $response = $idPostMax->fetch();
+        $id = $response['MAX(idPost)'] + 1;
+        $req = [
+            ':title'=>$dataForm['title'],
+            ':description'=>$dataForm['description'],
+            ':chapo'=>$dataForm['chapo'],
+            ':imagePost'=>$id.".".$dataForm['extention'],
+            ':statuPost'=>1,
+            ':UserId'=>$dataForm['idUser']
+        ];
+        $pdoStatement = $this->db->prepare('INSERT INTO post(title,description,chapo,imagePost, datePost, statuPost, UserId) VALUES (:title,:description, :chapo,:imagePost, NOW(), :statuPost,:UserId)');
+        $pdoStatement->execute($req);
+        move_uploaded_file($dataForm['tmpName'], "images/post/" . $id . '.' . $dataForm['extention']);
+        return null;
     }
     
     public function findById(int $id): ?Post
@@ -92,56 +108,40 @@ final class PostRepository implements PostRepositoryInterface, UserRepositoryInt
         $req->execute($commentArray);
     }
 
-    public function validedCommentBdd(int $idComment, int $signal = 0): bool
+    public function readAllPost(int $page, int $perPage): array
     {
-        return false;
-    }
-    public function deletedCommentBdd(int $idComment): bool
-    {
-        return false;
-    }
-    public function getAllCommentBdd(): ?array
-    {
-        return null;
-    }
-    public function getEmailBdd(string $email): ?string
-    {
-        return null;
-    }
-
-    public function getAllFromUser(): ?User
-    {
-        return null;
-    }
-
-    public function getUser(int $user = null): ?string
-    {
-        return null;
-    }
     
-    public function getIdUser(): ?int
-    {
-        return null;
+        $pdoStatement = $this->db->query("SELECT * FROM post WHERE statuPost = 1 ORDER BY idPost DESC LIMIT $page,$perPage");
+
+        if($pdoStatement === false){
+            header('Location: index.php?page=blog&pp=1');
+            exit();
+        }
+        
+        $this->post = $pdoStatement->fetchAll();
+
+        if ($this->post === false) {
+            header('Location: index.php?page=blog&pp=1');
+            exit();
+        };
+        
+        return $this->post;
     }
 
-    public function getPassword(string $email): ?string
-    {
-        return null;
-    }
-
-    public function createUser(array $data): void
+    public function count(): ?string
     {
 
-    }
+        $this->pdoStatement = $this->db->query("SELECT count(*) AS total FROM post WHERE statuPost = 1 ");
 
-    public function updateUser(User $user) : bool
-    {
-        return false;
+        if($this->pdoStatement === false){
+            return null;
+        }else if(!$this->pdoStatement === false){
+            $req = $this->pdoStatement->fetch();
+            if ($req) {
+                $total = $req['total'];
+                return $total;
+            }
+            return null;
+        }
     }
-
-    public function deleteUser(User $user) : bool
-    {
-        return false;
-    }
-
 }

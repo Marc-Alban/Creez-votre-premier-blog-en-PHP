@@ -20,18 +20,16 @@ final class PostController
     private Token $token;
     private Session $session;
 
-    public function __construct(array $classController)
+    public function __construct(PostManager $postManager, View $view, ErrorController $error, Token $token, Session $session)
     {
-        // Dépendances
-        $this->view = $classController['view'];
-        $this->postManager = $classController['manager']['managerPage'];
-        $this->userManager = $classController['manager']['managerAdd'];
-        $this->error = $classController['error'];
-        $this->token = $classController['token'];
-        $this->session = $classController['session'];
+        $this->postManager = $postManager;
+        $this->view = $view;
+        $this->error = $error;
+        $this->token = $token;
+        $this->session = $session;
     }
 
-    public function PostAction(array $datas): void
+    public function postAction(): void
     {
         $id = intval($datas['get']['id']) ?? null;
         $action = $datas['get']['action'] ?? null;
@@ -55,8 +53,24 @@ final class PostController
         if ($post instanceof Post) {
             $user = $this->userManager->findUser($post->getUserId());
         } else if ($post === null || empty($post)) {
-            $this->error->ErrorAction();
+            $this->error->notFound();
         }
         $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, "bugComment" => $bugComment, 'comment' => $comments]);
     }
+
+    public function postsAction(): void
+    {
+        if (isset($data['get']['pp']) && !empty($data['get']['pp'])) {
+            $paginationPost =  $this->blogManager->paginationPost($data);
+        }else if(isset($data['get']['page']) && $data['get']['page'] === 'blog' && !isset($data['get']['pp'])){
+            header('Location: /?page=blog&pp=1');
+            exit();
+        }else if(isset($data['get']['page']) || !isset($data['get']['pp']) || empty($data['get']['pp']) || $data['get']['pp'] !== '0'){
+            header('Location: /?page=blog&pp=1');
+            exit();
+        }
+        $this->view->render('Frontoffice', 'blog', ['paginationPost' => $paginationPost]);
+    }
+
+
 }

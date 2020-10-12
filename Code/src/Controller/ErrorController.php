@@ -15,8 +15,13 @@ final class ErrorController
         $this->view = $view;
     }
     
-    public function ErrorAction(): void
+    public function errorServer(): void
     {
         $this->view->render('frontoffice','error', []);
+    }
+
+    public function notFound(): void
+    {
+        $this->view->render('frontoffice','404', []);
     }
 }

@@ -1,12 +1,10 @@
 <?php
 declare(strict_types=1);
 namespace App\Model\Repository;
-use App\Model\Entity\Comment;
-use App\Model\Repository\Interfaces\CommentRepositoryInterface;
 
 use App\Service\Database;
 
-final class CommentRepository implements CommentRepositoryInterface
+final class CommentRepository 
 {
 
     private $db;
@@ -66,16 +64,5 @@ final class CommentRepository implements CommentRepositoryInterface
         }
         return null;
     }
-    public function getComment(int $postId): ?array
-    {
-        return null;
-    }
-    public function createComment(string $comment, string $UserComment, int $idUser, int $idPost): void
-    {
-        
-    }
-    public function signalCommentBdd(int $idComment): void
-    {
 
-    }
 }

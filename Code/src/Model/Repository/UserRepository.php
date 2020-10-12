@@ -3,23 +3,50 @@ declare(strict_types=1);
 namespace App\Model\Repository;
 use App\Service\Database;
 use App\Model\Entity\User;
-use App\Model\Repository\Interfaces\UserRepositoryInterface;
-
-final class UserRepository implements UserRepositoryInterface
+final class UserRepository
 {
     private $db;
-
     public function __construct(Database $db)
     {
         $this->db = $db->getPdo();
     }
-
     public function getAllFromUser(): ?User
     {
+        $pdo = $this->db->query("SELECT * FROM user");
+        $executeIsOk = $pdo->execute();
+        if ($executeIsOk === true) {
+            $userBdd = $pdo->fetchObject(User::class);
+            if ($userBdd) {
+                return $userBdd;
+            } elseif ($userBdd === false) {
+                return null;
+            }
+            return $userBdd;
+        } elseif ($executeIsOk === false) {
+            return null;
+        }
         return null;
     }
-
-
+    public function createUser(array $data): void
+    {
+        $tabUser = [
+            ':userName' => $data['post']['userName'],
+            ':email' => $data['post']['email'],
+            ':passwordUser' => password_hash($data['post']['password'], PASSWORD_BCRYPT ),
+        ];
+        $req = $this->db->prepare("INSERT INTO user (userName, email, passwordUser) VALUES (:userName, :email, :passwordUser)");
+        $req->execute($tabUser);
+    }
+    public function updateUserBdd(int $idUser, string $email, string $userName): void
+    { 
+        $commentArray = [
+            ':idUser' => $idUser,
+            ':email' => $email,
+            ':userName' => $userName,
+        ];
+        $req = $this->db->prepare("UPDATE `user` SET `userName`=:userName,`email`=:email WHERE idUser = :idUser");
+        $req->execute($commentArray);
+    }
     public function getEmailBdd(string $email): ?string
     {
         $tabEmail = [
@@ -41,11 +68,8 @@ final class UserRepository implements UserRepositoryInterface
         }
         return null;
     }
-
-
     public function getUser(int $user = null): ?string
     {
-
         if($user !== null){
             $req = [
                 ':idUser' => $user
@@ -70,10 +94,8 @@ final class UserRepository implements UserRepositoryInterface
         }
         return null;
     }
-
     public function getIdUser(): ?int
     {
-
         $pdo = $this->db->query("SELECT idUser FROM user");
         $executeIsOk = $pdo->execute();
         if ($executeIsOk === true) {
@@ -90,15 +112,21 @@ final class UserRepository implements UserRepositoryInterface
         }
         return null;
     }
-
-
-    public function getPassword(string $email): ?string
+    public function getPassword(string $user = null, string $email = null): ?string
     {
-        $tabPass = [
-            ':email' => $email
-        ];
-        $pdo = $this->db->prepare("SELECT passwordUser FROM user WHERE email = :email");
-        $executeIsOk = $pdo->execute($tabPass);
+        if(isset($user)){
+            $tabPass = [
+                ':userName' => $user
+            ];
+            $pdo = $this->db->prepare("SELECT passwordUser FROM `user` WHERE userName = :userName");
+            $executeIsOk = $pdo->execute($tabPass);
+        }else if(isset($email)){
+            $tabPass = [
+                ':email' => $email
+            ];
+            $pdo = $this->db->prepare("SELECT passwordUser FROM user WHERE email = :email");
+            $executeIsOk = $pdo->execute($tabPass);
+        }
         if ($executeIsOk === true) {
             $passwordBdd = $pdo->fetchObject(User::class);
             if ($passwordBdd) {
@@ -113,26 +141,13 @@ final class UserRepository implements UserRepositoryInterface
         }
         return null;
     }
-
-    public function createUser(array $data): void
+    public function updatePassBdd(string $pass, int $idUser): void
     {
-        $tabUser = [
-            ':userName' => htmlentities(trim($data['post']['userName'])),
-            ':email' => htmlentities(trim($data['post']['email'])),
-            ':passwordUser' => password_hash($data['post']['password'], PASSWORD_BCRYPT ),
+        $commentArray = [
+            ':passwordUser' => $pass,
+            ':idUser' => $idUser,
         ];
-        $req = $this->db->prepare("INSERT INTO user (userName, email, passwordUser) VALUES (:userName, :email, :passwordUser)");
-        $req->execute($tabUser);
+        $req = $this->db->prepare("UPDATE `user` SET `passwordUser`=:passwordUser WHERE idUser = :idUser");
+        $req->execute($commentArray);
     }
-
-    public function updateUser(User $user): bool
-    {
-        return false;
-    }
-
-    public function deleteUser(User $user): bool
-    {
-        return false;
-    }
-
 }

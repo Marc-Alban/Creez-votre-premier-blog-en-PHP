@@ -60,6 +60,14 @@ a:hover {
 }
 
 
+/* pagination */
+
+.paginationPost {
+    display: flex;
+    list-style: none;
+}
+
+
 /* Navbar */
 
 .bg-dark {

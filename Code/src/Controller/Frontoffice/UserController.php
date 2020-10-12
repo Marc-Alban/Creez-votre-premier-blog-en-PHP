@@ -9,6 +9,7 @@ use App\View\View;
 use App\Controller\ErrorController;
 use App\Service\Http\Session;
 use App\Service\Security\Token;
+use App\Service\Http\Request;
 
 final class UserController
 {
@@ -16,20 +17,64 @@ final class UserController
     private View $view;
     private ErrorController $error;
     private Session $session;
-
-    public function __construct(array $classController)
+    private Request $request;
+    private $action;
+    public function __construct(UserManager $userManager, View $view, ErrorController $error, Token $token, Session $session, Request $request)
     {
-        // Dépendances
-        $this->userManager = $classController['manager'] ?? null;
-        $this->view = $classController['view'] ?? null;
-        $this->error = $classController['error'] ?? null;
-        $this->token = $classController['token'] ?? null;
-        $this->session = $classController['session'] ?? null;
+        $this->userManager = $userManager;
+        $this->view = $view;
+        $this->error = $error;
+        $this->token = $token;
+        $this->session = $session;
+        $this->request = $request;
+        $this->action = $request->getGet()->get('action') ?? null;
     }
-
-    public function UserAction(array $datas): void
+    /**
+     * Return page home
+     *
+     * @return void
+     */
+    public function homeAction(): void
     {
-
+        $mail = null;
+        if (isset($this->action) && $this->action === 'sendMessage') {
+            $this->session->setParamSession('token', $this->token->createSessionToken());
+            $mail = $this->userManager->verifMail($this->session,$this->token,$this->request,$this->action);
+        } else if (isset($this->action) && $this->action === "logout") {
+            $this->session->sessionDestroy();
+            header('Location: /?p=home');
+            exit();
+        }
+        $this->view->render('Frontoffice', 'home', ['mail' => $mail]);
     }
-
+    public function inscriptionAction(): void
+    {
+        if (isset($this->session->getSession()['user']) && $this->session->getSession()['user'] !== null) {
+            header('Location: /?page=home');
+            exit();
+        }
+        $register = null;
+        if (isset($this->action) && $this->action === 'inscription') {
+            $this->session->setParamSession('token', $this->token->createSessionToken());
+            $register = $this->userManager->userSignIn($this->session,$this->token,$this->request,$this->action);
+        } else if (isset($this->action) && $this->action !== 'inscription' && empty($this->action)) {
+            $this->error->notFound();
+        }
+        $this->view->render('Frontoffice', 'inscription', ["register" => $register]);
+    }
+    public function connexionAction(): void
+    {
+        if (isset($this->session->getSession()['user']) && $this->session->getSession()['user'] !== null) {
+            header('Location: /?page=home');
+            exit();
+        }
+        $logIn = null;
+        if (isset($this->action) && $this->action === 'connexion') {
+            $this->session->setParamSession('token', $this->token->createSessionToken());
+            $logIn = $this->userManager->verifUser($this->session,$this->token,$this->request,$this->action);
+        } else if (isset($this->action) && $this->action !== 'connexion' && empty($this->action)) {
+            $this->error->notFound();
+        }
+        $this->view->render('Frontoffice', 'Connexion', ["logIn" => $logIn]);
+    }
 }

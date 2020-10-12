@@ -10,4 +10,4 @@ $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
 $whoops->register();
 
 $router = new Router();
-$router->start();
+$router->run();

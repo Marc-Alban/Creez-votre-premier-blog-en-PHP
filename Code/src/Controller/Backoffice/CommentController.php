@@ -4,46 +4,47 @@ declare(strict_types=1);
 
 namespace App\Controller\Backoffice;
 
-use App\Model\Manager\AllCommentsManager;
+use App\Model\Manager\CommentManager;
+use App\Service\Http\Request;
 use App\View\View;
-use App\Service\Http\Session;
 
 
-final class AllCommentsController
+final class CommentController
 {
+    private CommentManager $commentManager;
     private View $view;
-    private AllCommentsManager $AllCommentsManager;
+    private Request $request;
 
-
-    public function __construct(array $classController)
+    public function __construct(CommentManager $commentManager, View $view, Request $request)
     {
-        // Dépendances
-        $this->AllCommentsManager = $classController['manager']['managerPage'];
-        $this->view = $classController['view']; 
+        $this->commentManager = $commentManager;
+        $this->view = $view;
+        $this->request = $request;
     }
 
-    public function AllCommentsAction(array $datas): void
+    public function commentAction(): void
     {
         $userSession = $datas['session']['user'] ?? null;
         $action = $datas['get']['action'] ?? null;
         $idComment = $datas['get']['id'] ?? null;
         $val = null;
         $del = null;
+
         if(!isset($userSession) && $userSession === null){
             header('Location: /?page=connexion');
             exit();
         }
 
-        $comments = $this->AllCommentsManager->getAllComments();
+        $comments = $this->commentsManager->getAllComments();
         
         if($action === 'valide' && isset($action) && $action !== null){
-            $val = $this->AllCommentsManager->validedComment((int) $idComment, 0, $datas);
+            $val = $this->commentsManager->validedComment((int) $idComment, 0);
             header ("Refresh: 1;/?page=allComments");
         }else if($action === 'valideSignal' && isset($action) && $action !== null){
-            $val = $this->AllCommentsManager->validedComment((int) $idComment, 1, $datas );
+            $val = $this->commentsManager->validedComment((int) $idComment, 1);
             header ("Refresh: 1;/?page=allComments");
         }else if ($action === 'deleted' || $action === 'deletedSignal' && isset($action) && $action !== null){
-            $del = $this->AllCommentsManager->deletedComment((int) $idComment, $datas);
+            $del = $this->commentsManager->deletedComment((int) $idComment);
             header ("Refresh: 1;/?page=allComments");
         }    
 
