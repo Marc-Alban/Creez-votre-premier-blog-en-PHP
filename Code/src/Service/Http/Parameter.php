@@ -12,7 +12,7 @@ class Parameter
         $this->parameter = $parameter;
     }
 
-    public function get($name): ?string
+    public function get($name = null): ?string
     {
         if (isset($this->parameter[$name])) {
             return htmlentities(strip_tags(trim($this->parameter[$name])));

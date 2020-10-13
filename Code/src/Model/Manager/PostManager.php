@@ -19,26 +19,26 @@ final class PostManager
     {
         return $this->postRepository->findById($id);
     }
-    public function paginationPost(int $pp = null): array
+    public function paginationPost(int $perpage = null): array
     {
-        $perPage = 6;
+        $minPost = 6;
         $post = null;
-        if (isset($pp)) {
+        if (isset($perpage)) {
             $total = $this->postRepository->count();
-            $nbPage = ceil($total/$perPage);
-            if (empty($pp) || ctype_digit($pp) === false || $pp <= 0) {
-                $pp = 1;
-            } elseif ($pp > $nbPage) {
-                $pp = $nbPage;
+            $nbPage = ceil($total/$minPost);
+            if (empty($perpage) || ctype_digit($perpage) === true || $perpage <= 0) {
+                $perpage = 1;
+            } elseif ($perpage > $nbPage) {
+                $perpage = $nbPage;
             }
-            
-            $firstOfPage = ($pp - 1) * $perPage;
-            $page = (int) $firstOfPage;
-            $post= $this->postRepository->readAllPost($page, $perPage);
+            $firstOfPage = ($perpage - 1) * $minPost;
+            $page = $firstOfPage;
+            $post= $this->postRepository->readAllPost($page, $minPost);
         }
+        
         return $tabPost = [
-            'current' => (int) $pp,
-            'nbPage' => (int) $nbPage,
+            'current' => $perpage,
+            'nbPage' => $nbPage,
             'post' => $post,
         ];
     }

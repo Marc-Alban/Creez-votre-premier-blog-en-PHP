@@ -46,6 +46,51 @@ final class CommentRepository
         }
         return false;
     }
+    public function signalCommentBdd(int $idComment): void
+    {
+        $commentArray = [
+            ':signalComment' => 1,
+            ':idComment' => $idComment,
+        ];
+        $req = $this->db->prepare("UPDATE `comment` SET `signalComment`=:signalComment  WHERE  idComment = :idComment");
+        $req->execute($commentArray);
+    }
+    public function getComment(int $postId): ?array
+    {
+        $req = [
+                ':idPost' => $postId
+            ];
+        $pdo = $this->db->prepare("SELECT * FROM comment WHERE disabled = 0  AND PostId = :idPost");
+        $executeIsOk = $pdo->execute($req);
+        if ($executeIsOk === true) {
+            $commentBdd = $pdo->fetchAll();
+            if ($commentBdd) {
+                return $commentBdd;
+            } elseif ($commentBdd === false) {
+                return null;
+            }
+        } elseif ($executeIsOk === false) {
+            return null;
+        }
+        return null;
+    }
+    public function createComment(string $comment, string $UserComment, int $idUser, int $idPost): void
+    {
+        $sql = "
+        INSERT INTO comment(content, disabled, signalComment,UserComment, UserId, PostId, dateCreation)
+        VALUES(:content, :disabled, :signalComment,:UserComment, :UserId, :PostId, CURRENT_TIMESTAMP)
+        ";
+        $commentArray = [
+            ':content' => $comment,
+            ':disabled' => 1,
+            ':signalComment' => 0,
+            ':UserComment' => $UserComment,
+            ':UserId' => $idUser,
+            ':PostId' => $idPost,
+        ];
+        $req = $this->db->prepare($sql);
+        $req->execute($commentArray);
+    }
     public function getAllCommentBdd(): ?array
     {
         $pdo = $this->db->query("SELECT * FROM comment");

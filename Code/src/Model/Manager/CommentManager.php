@@ -3,7 +3,6 @@ declare(strict_types=1);
 namespace App\Model\Manager;
 
 use App\Model\Repository\CommentRepository;
-use App\Model\Repository\PostRepository;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
 use App\Service\Security\Token;
@@ -11,7 +10,6 @@ use App\Service\Security\Token;
 final class CommentManager
 {
     private CommentRepository $commentRepository;
-    private PostRepository $postRepository;
     public function __construct(CommentRepository $commentRepository)
     {
         $this->commentRepository = $commentRepository;
@@ -44,11 +42,11 @@ final class CommentManager
     }
     public function getAllComment(int $postId): ?array
     {
-        return  $this->postRepository->getComment($postId);
+        return  $this->commentRepository->getComment($postId);
     }
     public function signalComment(int $idComment): void
     {
-        $this->postRepository->signalCommentBdd($idComment);
+        $this->commentRepository->signalCommentBdd($idComment);
     }
     public function verifComment(int $id, string $user, Request $request, Session $session, Token $token): ?array
     {
@@ -70,7 +68,7 @@ final class CommentManager
             }
             if (empty($errors)) {
                 $success["succes"]['send'] = 'Votre commentaire est en attente de validation';
-                $this->postRepository->createComment($comment, $user, $idUser, $id);
+                $this->commentRepository->createComment($comment, $user, $idUser, $id);
                 return $success;
             }
             return $errors;

@@ -25,7 +25,7 @@ final class PostController
     }
     public function addPostAction(): void
     {
-        $userSession = $this->session['user'] ?? null;
+        $userSession = $this->session->getSession('user') ?? null;
         $action = $this->request->getGet()->get('action') ?? null;
         $valdel = null;
         if (!isset($userSession) && $userSession === null) {
@@ -33,23 +33,23 @@ final class PostController
             exit();
         }
         if (isset($action) && $action === 'addPost') {
-            $this->session->setParamSession('token', $this->token->createSessionToken());
+            $this->session->setSession('token', $this->token->createSessionToken());
             $valdel = $this->postManager->verifFormAddPost($this->session, $this->token, $this->request);
         }
         $this->view->render('backoffice', 'addPost', ["valdel" => $valdel]);
     }
     public function allPostAction(): void
     {
-        $userSession = $this->session['user'] ?? null;
-        $pp = intval($this->request->getGet()->get('pp')) ?? null;
+        $userSession = $this->session->getSession('user') ?? null;
+        $perpage = intval($this->request->getGet()->get('perpage')) ?? null;
         if (!isset($userSession) || $userSession === null) {
             header('Location: /?page=connexion');
             exit();
-        } elseif (!isset($pp) || $pp === null || empty($pp) || is_string($pp)) {
-            header('Location: /?page=allPost&pp=1');
+        } elseif (!isset($perpage) || $perpage === null || empty($perpage) || is_string($perpage)) {
+            header('Location: /?page=allPost&perpage=1');
             exit();
         }
-        $post = $this->postManager->paginationPost($pp);
+        $post = $this->postManager->paginationPost($perpage);
         $this->view->render('backoffice', 'allPost', ['allPosts' => $post]);
     }
 }

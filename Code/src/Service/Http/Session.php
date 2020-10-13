@@ -11,20 +11,17 @@ class Session
             session_start();
         }
     }
-
-    /************************************getSession************************************************ */
-    public function getSession(): array
+    public function getSession($name): ?array
     {
-        return $_SESSION;
+        if (isset($_SESSION[$name])) {
+            return $_SESSION[$name];
+        }
+        return null;
     }
-    /************************************End getSession************************************************ */
-    /************************************setParamSession************************************************ */
-    public function setParamSession($name, $instance): array
+    public function setSession($name, $instance): void
     {
         $_SESSION["$name"] = $instance;
-        return $_SESSION;
     }
-    /************************************End setParamSession*********************************************** */
     public function sessionDestroy(): void
     {
         session_destroy();

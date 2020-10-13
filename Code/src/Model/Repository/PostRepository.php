@@ -50,77 +50,23 @@ final class PostRepository
         }
         return null;
     }
-    public function signalCommentBdd(int $idComment): void
+    public function readAllPost(int $page, int $perPage): ?array
     {
-        $commentArray = [
-            ':signalComment' => 1,
-            ':idComment' => $idComment,
-        ];
-        $req = $this->db->prepare("UPDATE `comment` SET `signalComment`=:signalComment  WHERE  idComment = :idComment");
-        $req->execute($commentArray);
-    }
-    public function getComment(int $postId): ?array
-    {
-        $req = [
-                ':idPost' => $postId
-            ];
-        $pdo = $this->db->prepare("SELECT * FROM comment WHERE disabled = 0  AND PostId = :idPost");
-        $executeIsOk = $pdo->execute($req);
-        if ($executeIsOk === true) {
-            $commentBdd = $pdo->fetchAll();
-            if ($commentBdd) {
-                return $commentBdd;
-            } elseif ($commentBdd === false) {
-                return null;
-            }
-        } elseif ($executeIsOk === false) {
+        $pdo = $this->db->query("SELECT * FROM post WHERE statuPost = 1 ORDER BY idPost DESC LIMIT $page,$perPage ");
+        $postAll = $pdo->fetchAll();
+        if ($postAll === false) {
             return null;
         }
-        return null;
-    }
-    public function createComment(string $comment, string $UserComment, int $idUser, int $idPost): void
-    {
-        $sql = "
-        INSERT INTO comment(content, disabled, signalComment,UserComment, UserId, PostId, dateCreation)
-        VALUES(:content, :disabled, :signalComment,:UserComment, :UserId, :PostId, CURRENT_TIMESTAMP)
-        ";
-        $commentArray = [
-            ':content' => $comment,
-            ':disabled' => 1,
-            ':signalComment' => 0,
-            ':UserComment' => $UserComment,
-            ':UserId' => $idUser,
-            ':PostId' => $idPost,
-        ];
-        $req = $this->db->prepare($sql);
-        $req->execute($commentArray);
-    }
-    public function readAllPost(int $page, int $perPage): array
-    {
-        $pdoStatement = $this->db->query("SELECT * FROM post WHERE statuPost = 1 ORDER BY idPost DESC LIMIT $page,$perPage");
-        if ($pdoStatement === false) {
-            header('Location: index.php?page=blog&pp=1');
-            exit();
-        }
-        $this->post = $pdoStatement->fetchAll();
-        if ($this->post === false) {
-            header('Location: index.php?page=blog&pp=1');
-            exit();
-        };
-        return $this->post;
+        return $postAll;
     }
     public function count(): ?string
     {
         $this->pdoStatement = $this->db->query("SELECT count(*) AS total FROM post WHERE statuPost = 1 ");
         if ($this->pdoStatement === false) {
             return null;
-        } elseif (!$this->pdoStatement === false) {
-            $req = $this->pdoStatement->fetch();
-            if ($req) {
-                $total = $req['total'];
-                return $total;
-            }
-            return null;
         }
+        $req = $this->pdoStatement->fetch();
+        $total = $req['total'];
+        return $total;
     }
 }

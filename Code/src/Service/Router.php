@@ -3,6 +3,10 @@ declare(strict_types=1);
 namespace  App\Service;
 
 use App\Controller\ErrorController;
+use App\Model\Manager\CommentManager;
+use App\Model\Manager\UserManager;
+use App\Model\Repository\CommentRepository;
+use App\Model\Repository\UserRepository;
 use App\Service\Database;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
@@ -56,7 +60,7 @@ final class Router
                     $userRepo = new $repository($this->database);
                     $userManager = new $manager($userRepo);
                     $controller = 'App\Controller\Frontoffice\\' .$pageFront[$pageMin];
-                    $control = new $controller($userManager, $this->view, $this->error, $this->token, $this->session, $this->request);
+                    $control = new $controller($userManager, $this->view, $this->token, $this->session, $this->request);
                     $methode = $pageMin.'Action';
                     $control->$methode();
                 break;
@@ -64,9 +68,17 @@ final class Router
                     $postRepo = new $repository($this->database);
                     $postManager = new $manager($postRepo);
                     $controller = 'App\Controller\Frontoffice\\' .$pageFront[$pageMin];
-                    $control = new $controller($postManager, $this->view, $this->request, $this->error, $this->token, $this->session);
+                    $control = new $controller($postManager, $this->view, $this->request, $this->token, $this->session);
                     $methode = $pageMin.'Action';
-                    $control->$methode();
+                    if ($pageMin === 'post') {
+                        $commentRepo = new CommentRepository($this->database);
+                        $commentManager = new CommentManager($commentRepo);
+                        $userRepo = new UserRepository($this->database);
+                        $userManager = new UserManager($userRepo);
+                        $control->postAction($commentManager, $userManager);
+                    } elseif ($pageMin !== 'post') {
+                        $control->$methode();
+                    }
                 break;
             }
         } elseif (array_key_exists($pageMin, $pageBack)) {
@@ -77,9 +89,9 @@ final class Router
             switch ($pageBack[$pageMin]) {
                 case 'UserController':
                     $userRepo = new $repository($this->database);
-                    $userManager = new $manager($userRepo, $this->request);
+                    $userManager = new $manager($userRepo);
                     $controller = 'App\Controller\Backoffice\\' .$pageFront[$pageMin];
-                    $control = new $controller($userManager, $this->view, $this->error, $this->token, $this->session, $this->request);
+                    $control = new $controller($userManager, $this->view, $this->token, $this->session, $this->request);
                     $methode = $pageMin.'Action';
                     $control->$methode();
                 break;

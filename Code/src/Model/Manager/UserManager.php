@@ -46,9 +46,9 @@ final class UserManager
             }
             if (empty($errors)) {
                 $succes['succes']['send'] = 'Content de vous revoir : ' . $this->userRepositorysitory->getUser();
-                $session->setParamSession('user', $this->userRepositorysitory->getUser());
-                $session->setParamSession('userAdmin', $this->userRepositorysitory->getIdUser());
-                $session->setParamSession('idUser', $this->userRepositorysitory->getIdUser());
+                $session->setSession('user', $this->userRepositorysitory->getUser());
+                $session->setSession('userAdmin', $this->userRepositorysitory->getIdUser());
+                $session->setSession('idUser', $this->userRepositorysitory->getIdUser());
                 header('Location: /?page=home');
                 return $succes;
             }
@@ -88,7 +88,7 @@ final class UserManager
                 $errors['error']['formRgister'] = "Formulaire incorrect";
             }
             if (empty($errors)) {
-                $session->setParamSession('user', $pseudo);
+                $session->setSession('user', $pseudo);
                 $this->userRepositorysitory->createUser();
                 $succes['succes']['send'] = 'Utilisateur est bien inscrit';
                 return $succes;
@@ -148,7 +148,7 @@ final class UserManager
             $name = $post->get('name') ?? null;
             $lastName = $post->get('lastName') ?? null;
             $message = $post->get('message') ?? null;
-            $session = $session->getSession()['token'] ?? null;
+            $session = $session->getSession('token') ?? null;
             if (empty($mail) && empty($message) && empty($name) && empty($lastName)) {
                 $errors['error']['allEmpty'] = "Veuillez remplir le formulaire";
             } elseif (empty($name)) {
@@ -199,9 +199,9 @@ final class UserManager
             if (empty($errors)) {
                 $succes['succes']['send'] = 'Utilisateur bien mis à jour:';
                 $this->userRepository->updateUserBdd($idUser, $email, $userName);
-                $session->setParamSession('user', $userBdd);
-                $session->setParamSession('userAdmin', $this->getDataUser()->getActivated());
-                $session->setParamSession('idUser', $this->getDataUser()->getIdUser());
+                $session->setSession('user', $userBdd);
+                $session->setSession('userAdmin', $this->getDataUser()->getActivated());
+                $session->setSession('idUser', $this->getDataUser()->getIdUser());
                 header('Location: /?page=dashboard');
                 return $succes;
             }

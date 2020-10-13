@@ -24,7 +24,7 @@ final class CommentController
     }
     public function commentAction(): void
     {
-        $userSession = $this->session['user'] ?? null;
+        $userSession = $this->session->getSession('user') ?? null;
         $action = $this->request->getGet()->get('action') ?? null;
         $idComment = $this->request->getGet()->get('id') ?? null;
         $val = null;
