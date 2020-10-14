@@ -4,6 +4,7 @@ namespace App\Model\Repository;
 
 use App\Model\Entity\User;
 use App\Service\Database;
+use App\Service\Http\Parameter;
 
 final class UserRepository
 {
@@ -12,34 +13,17 @@ final class UserRepository
     {
         $this->db = $db->getPdo();
     }
-    public function getAllFromUser(): ?User
+    public function create(Parameter $dataPost): void
     {
-        $pdo = $this->db->query("SELECT * FROM user");
-        $executeIsOk = $pdo->execute();
-        if ($executeIsOk === true) {
-            $userBdd = $pdo->fetchObject(User::class);
-            if ($userBdd) {
-                return $userBdd;
-            } elseif ($userBdd === false) {
-                return null;
-            }
-            return $userBdd;
-        } elseif ($executeIsOk === false) {
-            return null;
-        }
-        return null;
+        // $tabUser = [
+        //     ':userName' => $data['post']['userName'],
+        //     ':email' => $data['post']['email'],
+        //     ':passwordUser' => password_hash($data['post']['password'], PASSWORD_BCRYPT),
+        // ];
+        // $req = $this->db->prepare("INSERT INTO user (userName, email, passwordUser) VALUES (:userName, :email, :passwordUser)");
+        // $req->execute($tabUser);
     }
-    public function createUser(array $data): void
-    {
-        $tabUser = [
-            ':userName' => $data['post']['userName'],
-            ':email' => $data['post']['email'],
-            ':passwordUser' => password_hash($data['post']['password'], PASSWORD_BCRYPT),
-        ];
-        $req = $this->db->prepare("INSERT INTO user (userName, email, passwordUser) VALUES (:userName, :email, :passwordUser)");
-        $req->execute($tabUser);
-    }
-    public function updateUserBdd(int $idUser, string $email, string $userName): void
+    public function update(int $idUser, string $email, string $userName): void
     {
         $commentArray = [
             ':idUser' => $idUser,
@@ -49,7 +33,60 @@ final class UserRepository
         $req = $this->db->prepare("UPDATE `user` SET `userName`=:userName,`email`=:email WHERE idUser = :idUser");
         $req->execute($commentArray);
     }
-    public function getEmailBdd(string $email): ?string
+    public function updatePassword(string $pass, int $idUser): void
+    {
+        $commentArray = [
+            ':passwordUser' => $pass,
+            ':idUser' => $idUser,
+        ];
+        $req = $this->db->prepare("UPDATE `user` SET `passwordUser`=:passwordUser WHERE idUser = :idUser");
+        $req->execute($commentArray);
+    }
+    public function findId(): ?int
+    {
+        $pdo = $this->db->query("SELECT idUser FROM user");
+        $executeIsOk = $pdo->execute();
+        if ($executeIsOk === true) {
+            $idUserBdd = $pdo->fetchObject(User::class);
+            if ($idUserBdd) {
+                $id = $idUserBdd->getIdUser();
+                return $id;
+            } elseif ($idUserBdd === false) {
+                return null;
+            }
+            return null;
+        } elseif ($executeIsOk === false) {
+            return null;
+        }
+        return null;
+    }
+    public function findById(int $idUser = null): ?string
+    {
+        if ($idUser !== null) {
+            $req = [
+                ':idUser' => $idUser
+            ];
+            $pdo = $this->db->prepare("SELECT userName FROM user WHERE idUser = :idUser");
+            $executeIsOk = $pdo->execute($req);
+        } elseif ($idUser === null) {
+            $pdo = $this->db->query("SELECT userName FROM user");
+            $executeIsOk = $pdo->execute();
+        }
+        if ($executeIsOk === true) {
+            $userBdd = $pdo->fetchObject(User::class);
+            if ($userBdd){
+                $idUser = $userBdd->getUserName();
+                return $idUser;
+            } elseif ($userBdd === false) {
+                return null;
+            }
+            return $userBdd;
+        } elseif ($executeIsOk === false) {
+            return null;
+        }
+        return null;
+    }
+    public function findByEmail(string $email): ?string
     {
         $tabEmail = [
             ':email' => $email
@@ -70,51 +107,7 @@ final class UserRepository
         }
         return null;
     }
-    public function getUser(int $user = null): ?string
-    {
-        if ($user !== null) {
-            $req = [
-                ':idUser' => $user
-            ];
-            $pdo = $this->db->prepare("SELECT userName FROM user WHERE idUser = :idUser");
-            $executeIsOk = $pdo->execute($req);
-        } elseif ($user === null) {
-            $pdo = $this->db->query("SELECT userName FROM user");
-            $executeIsOk = $pdo->execute();
-        }
-        if ($executeIsOk === true) {
-            $userBdd = $pdo->fetchObject(User::class);
-            if ($userBdd) {
-                $user = $userBdd->getUserName();
-                return $user;
-            } elseif ($userBdd === false) {
-                return null;
-            }
-            return $userBdd;
-        } elseif ($executeIsOk === false) {
-            return null;
-        }
-        return null;
-    }
-    public function getIdUser(): ?int
-    {
-        $pdo = $this->db->query("SELECT idUser FROM user");
-        $executeIsOk = $pdo->execute();
-        if ($executeIsOk === true) {
-            $idUserBdd = $pdo->fetchObject(User::class);
-            if ($idUserBdd) {
-                $id = $idUserBdd->getIdUser();
-                return $id;
-            } elseif ($idUserBdd === false) {
-                return null;
-            }
-            return null;
-        } elseif ($executeIsOk === false) {
-            return null;
-        }
-        return null;
-    }
-    public function getPassword(string $user = null, string $email = null): ?string
+    public function findPasswordByUserAndEmail(string $user = null, string $email = null): ?string
     {
         if (isset($user)) {
             $tabPass = [
@@ -143,13 +136,21 @@ final class UserRepository
         }
         return null;
     }
-    public function updatePassBdd(string $pass, int $idUser): void
+    public function findAll(): ?User
     {
-        $commentArray = [
-            ':passwordUser' => $pass,
-            ':idUser' => $idUser,
-        ];
-        $req = $this->db->prepare("UPDATE `user` SET `passwordUser`=:passwordUser WHERE idUser = :idUser");
-        $req->execute($commentArray);
+        $pdo = $this->db->query("SELECT * FROM user");
+        $executeIsOk = $pdo->execute();
+        if ($executeIsOk === true) {
+            $userBdd = $pdo->fetchObject(User::class);
+            if ($userBdd) {
+                return $userBdd;
+            } elseif ($userBdd === false) {
+                return null;
+            }
+            return $userBdd;
+        } elseif ($executeIsOk === false) {
+            return null;
+        }
+        return null;
     }
 }

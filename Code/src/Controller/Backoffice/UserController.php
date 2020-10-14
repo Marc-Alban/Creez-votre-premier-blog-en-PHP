@@ -16,6 +16,7 @@ final class UserController
     private Session $session;
     private Request $request;
     private $action;
+    private $sessionToken;
     public function __construct(UserManager $userManager, View $view, Token $token, Session $session, Request $request)
     {
         $this->userManager = $userManager;
@@ -24,19 +25,20 @@ final class UserController
         $this->session = $session;
         $this->request = $request;
         $this->action = $this->request->getGet()->get('action') ?? null;
+        $this->sessionToken = $this->session->setSession('token', $this->token->createSessionToken());
     }
     public function dashboardAction(): void
     {
-        $userSession =  $this->session->getSession('user') ?? null;
-        $user = $this->userManager->getDataUser();
+        $userSession =  $this->session->getSessionName('user') ?? null;
+        $user = $this->userManager->findAllUser();
         $verifUser = null;
         if (!isset($userSession) && $userSession === null) {
             header('Location: /?page=connexion');
             exit();
         }
         if (isset($this->action) && $this->action === 'sendDatasUser') {
-            $this->session->setSession('token', $this->token->createSessionToken());
-            $verifUser = $this->userManager->verifForm($this->session, $this->request, $this->token, $this->action);
+            $this->sessionToken;
+            $verifUser = $this->userManager->checkForm($this->session, $this->request, $this->token, $this->action);
         } elseif (isset($this->action) && $this->action !== 'sendDatasUser' && empty($this->action)) {
             header('Location: /?page=home');
             exit();
@@ -45,15 +47,15 @@ final class UserController
     }
     public function passwordAction(): void
     {
-        $userSession =  $this->session->getSession('user') ?? null;
+        $userSession =  $this->session->getSessionName('user') ?? null;
         $verifPassBdd = null;
         if (!isset($userSession) && $userSession === null) {
             header('Location: /?page=connexion');
             exit();
         }
         if (isset($this->action) && $this->action === 'modifPass') {
-            $this->session->setSession('token', $this->token->createSessionToken());
-            $verifPassBdd = $this->userManager->verifPass($this->session, $this->request, $this->token, $this->action, $userSession);
+            $this->sessionToken;
+            $verifPassBdd = $this->userManager->checkPassword($this->session, $this->request, $this->token, $this->action, $userSession);
         } elseif (isset($this->action) && $this->action !== 'modifPass' && empty($this->action)) {
             header('Location: /?page=home');
             exit();
@@ -62,7 +64,7 @@ final class UserController
     }
     public function updatePostAction(): void
     {
-        $userSession =  $this->session->getSession('user') ?? null;
+        $userSession =  $this->session->getSessionName('user') ?? null;
         if (!isset($userSession) && $userSession === null) {
             header('Location: /?page=connexion');
             exit();

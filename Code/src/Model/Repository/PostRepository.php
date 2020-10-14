@@ -12,7 +12,7 @@ final class PostRepository
     {
         $this->db = $db->getPdo();
     }
-    public function createPost(array $dataForm): ?array
+    public function create(array $dataForm): ?array
     {
         $idPostMax = $this->db->query('SELECT MAX(idPost) FROM post ORDER BY idPost');
         $response = $idPostMax->fetch();
@@ -50,10 +50,17 @@ final class PostRepository
         }
         return null;
     }
-    public function readAllPost(int $page, int $perPage): ?array
+    public function findAll(int $page, int $perPage): ?array
     {
-        $pdo = $this->db->query("SELECT * FROM post WHERE statuPost = 1 ORDER BY idPost DESC LIMIT $page,$perPage ");
-        $postAll = $pdo->fetchAll();
+        $tab = [
+            ':pagePost' => $page,
+            ':perPage' => $perPage
+        ];
+        $req = $this->db->prepare("SELECT * FROM post WHERE statuPost = 1 ORDER BY idPost DESC LIMIT :pagePost, :perPage");
+        $req->execute($tab);
+        $postAll = $req->fetchAll();
+        var_dump($postAll, $req->fetchAll());
+        die();
         if ($postAll === false) {
             return null;
         }

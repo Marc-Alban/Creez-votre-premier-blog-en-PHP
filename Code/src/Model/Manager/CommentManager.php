@@ -10,68 +10,62 @@ use App\Service\Security\Token;
 final class CommentManager
 {
     private CommentRepository $commentRepository;
+    private $errors = null;
+    private $succes = null;
+    
     public function __construct(CommentRepository $commentRepository)
     {
         $this->commentRepository = $commentRepository;
     }
-    public function getAllComments(): ?array
+
+    public function validComment(int $idComment, int $signal = null): ?array
     {
-        return $this->commentRepository->getAllCommentBdd();
-    }
-    public function validedComment(int $idComment, int $signal = null, Session $session): ?array
-    {
-        $validation =  $session['valide'] ?? null;
-        unset($validation);
-        $validComment = $this->commentRepository->validedCommentBdd($idComment, $signal);
+        $validComment = $this->commentRepository->valid($idComment, $signal);
         if ($validComment === true) {
-            $validation['sendValide'] = "Commentaire validé";
-            return $validation;
+            $this->succes['sendValide'] = "Commentaire validé";
+            return $this->succes;
         }
         return null;
     }
-    public function deletedComment(int $idComment, Session $session): ?array
+    public function deleteComment(int $idComment): ?array
     {
-        $suppression =  $session['deleted'] ?? null;
-        unset($suppression);
-        $delComment = $this->commentRepository->deletedCommentBdd($idComment);
+        $delComment = $this->commentRepository->delete($idComment);
         if ($delComment === true) {
-            $suppression['sendDelete'] = "Commentaire supprimé";
-            return $suppression;
+            $this->errors['sendDelete'] = "Commentaire supprimé";
+            return $this->errors;
         }
         return null;
     }
-    public function getAllComment(int $postId): ?array
+    public function findAllComments(): ?array
     {
-        return  $this->commentRepository->getComment($postId);
+        return $this->commentRepository->findAll();
+    }
+    public function findByIdComment(int $postId): ?array
+    {
+        return  $this->commentRepository->findById($postId);
     }
     public function signalComment(int $idComment): void
     {
-        $this->commentRepository->signalCommentBdd($idComment);
+        $this->commentRepository->signal($idComment);
     }
-    public function verifComment(int $id, string $user, Request $request, Session $session, Token $token): ?array
+    public function checkComment(int $id, Request $request, Session $session, Token $token): ?array
     {
         $post = $request->getPost() ?? null;
-        $submit = $post->get('submit') ?? null;
         $get = $request->getGet() ?? null;
-        if (isset($submit) && $get->get('action') === 'sendComment') {
+        if (isset($post) && $get->get('action') === 'sendComment') {
             $comment = $post->get('comment');
-            $idUser = $session['idUser'];
-            $errors =  $session["errors"] ?? null;
-            unset($session["errors"]);
-            $success =  $session["succes"] ?? null;
-            unset($data["succes"]);
             if (empty($comment)) {
-                $errors["errors"]['messageEmpty'] = "Veuillez mettre un commentaire";
+                $this->errors["error"]['messageEmpty'] = "Veuillez mettre un commentaire";
             }
-            if ($token->compareTokens($session, $post->get('token')) !== null) {
-                $errors["errors"]['tokenEmpty'] = $this->token->compareTokens($session, $post->get('token'));
+            if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
+                $this->errors['error']['formRgister'] = "Formulaire incorrect";
             }
-            if (empty($errors)) {
-                $success["succes"]['send'] = 'Votre commentaire est en attente de validation';
-                $this->commentRepository->createComment($comment, $user, $idUser, $id);
-                return $success;
+            if (empty($this->errors)) {
+                $this->success["succes"]['send'] = 'Votre commentaire est en attente de validation';
+                $this->commentRepository->create($comment, $this->session->getSessionName('user'), $this->session->getSessionName('idUser'), $id);
+                return $this->success;
             }
-            return $errors;
+            return $this->errors;
         }
         return null;
     }

@@ -17,9 +17,9 @@ class Token
     /************************************End Create Token Session************************************************ */
     /************************************Compare Token Session************************************************ */
 
-    public function compareTokens(Session $session, string $token): bool
+    public function compareTokens(string $sessionToken, string $token): bool
     {
-        if (empty($session['token']) || empty($token) || $session['token'] !== $token) {
+        if (empty($sessionToken) || empty($token) || $sessionToken !== $token) {
             return true;
         }
         return false;

@@ -24,7 +24,7 @@ final class CommentController
     }
     public function commentAction(): void
     {
-        $userSession = $this->session->getSession('user') ?? null;
+        $userSession = $this->session->getSessionName('user') ?? null;
         $action = $this->request->getGet()->get('action') ?? null;
         $idComment = $this->request->getGet()->get('id') ?? null;
         $val = null;
@@ -33,15 +33,15 @@ final class CommentController
             header('Location: /?page=connexion');
             exit();
         }
-        $comments = $this->commentManager->getAllComments();
+        $comments = $this->commentManager->findAllComments();
         if ($action === 'valide' && isset($action) && $action !== null) {
-            $val = $this->commentManager->validedComment((int) $idComment, 0, $this->session);
+            $val = $this->commentManager->validComment((int) $idComment, 0, $this->session);
             header("Refresh: 1;/?page=allComments");
         } elseif ($action === 'valideSignal' && isset($action) && $action !== null) {
-            $val = $this->commentManager->validedComment((int) $idComment, 1);
+            $val = $this->commentManager->validComment((int) $idComment, 1);
             header("Refresh: 1;/?page=allComments");
         } elseif ($action === 'deleted' || $action === 'deletedSignal' && isset($action) && $action !== null) {
-            $del = $this->commentManager->deletedComment((int) $idComment, $this->session);
+            $del = $this->commentManager->deleteComment((int) $idComment, $this->session);
             header("Refresh: 1;/?page=allComments");
         }
         $this->view->render('backoffice', 'allComments', ["comments" => $comments, 'val' => $val, 'del' => $del]);

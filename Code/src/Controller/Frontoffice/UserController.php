@@ -17,6 +17,7 @@ final class UserController
     private Session $session;
     private Request $request;
     private $action;
+    private $sessionToken;
     public function __construct(UserManager $userManager, View $view, Token $token, Session $session, Request $request)
     {
         $this->userManager = $userManager;
@@ -25,18 +26,14 @@ final class UserController
         $this->session = $session;
         $this->request = $request;
         $this->action = $request->getGet()->get('action') ?? null;
+        $this->sessionToken =  $this->session->setSession('token', $this->token->createSessionToken());
     }
-    /**
-     * Return page home
-     *
-     * @return void
-     */
     public function homeAction(): void
     {
         $mail = null;
         if (isset($this->action) && $this->action === 'sendMessage') {
-            $this->session->setSession('token', $this->token->createSessionToken());
-            $mail = $this->userManager->verifMail($this->session, $this->token, $this->request, $this->action);
+            $this->sessionToken;
+            $mail = $this->userManager->checkMail($this->session, $this->token, $this->request, $this->action);
         } elseif (isset($this->action) && $this->action === "logout") {
             $this->session->sessionDestroy();
             header('Location: /?p=home');
@@ -46,14 +43,14 @@ final class UserController
     }
     public function inscriptionAction(): void
     {
-        $user = $this->session->getSession('user') ?? null;
+        $user = $this->session->getSessionName('user') ?? null;
         if (isset($user) && $user !== null) {
             header('Location: /?page=home');
             exit();
         }
         $register = null;
         if (isset($this->action) && $this->action === 'inscription') {
-            $this->session->setSession('token', $this->token->createSessionToken());
+            $this->sessionToken;
             $register = $this->userManager->userSignIn($this->session, $this->token, $this->request, $this->action);
         } elseif (isset($this->action) && $this->action !== 'inscription' && empty($this->action)) {
             header('Location: /?page=home');
@@ -63,15 +60,15 @@ final class UserController
     }
     public function connexionAction(): void
     {
-        $user = $this->session->getSession('user') ?? null;
+        $user = $this->session->getSessionName('user') ?? null;
         if (isset($user) && $user !== null) {
             header('Location: /?page=home');
             exit();
         }
         $logIn = null;
         if (isset($this->action) && $this->action === 'connexion') {
-            $this->session->setSession('token', $this->token->createSessionToken());
-            $logIn = $this->userManager->verifUser($this->session, $this->token, $this->request, $this->action);
+            $this->sessionToken;
+            $logIn = $this->userManager->checkUser($this->session, $this->token, $this->request, $this->action);
         } elseif (isset($this->action) && $this->action !== 'connexion' && empty($this->action)) {
             header('Location: /?page=home');
             exit();

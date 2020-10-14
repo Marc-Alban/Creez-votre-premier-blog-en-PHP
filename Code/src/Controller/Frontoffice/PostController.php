@@ -30,9 +30,8 @@ final class PostController
     {
         $id = intval($this->request->getGet()->get('id')) ?? null;
         $action = $this->request->getGet()->get('action') ?? null;
-        $userSession = $this->session->getSession('user') ?? null;
-        $post = $this->postManager->showOne($id);
-        $comments = $commentManager->getAllComment($post->getIdPost());
+        $post = $this->postManager->findByIdPost($id);
+        $comments = $commentManager->findByIdComment($post->getIdPost());
         $user = null;
         $bugComment = null;
         if ($action === 'signal') {
@@ -42,12 +41,13 @@ final class PostController
             exit();
         } elseif ($action === 'sendComment') {
             $this->session->setSession('token', $this->token->createSessionToken());
-            $bugComment = $commentManager->verifComment($id, $userSession, $this->request, $this->session, $this->token);
+            $bugComment = $commentManager->checkComment($id,$this->request, $this->session, $this->token);
         }
         if ($post instanceof Post) {
-            $user = $userManager->findUser($post->getUserId());
+            $user = $userManager->findByIdUser($post->getUserId());
         } elseif ($post === null || empty($post)) {
-            $this->error->notFound();
+            header('Location: /?page=post&id=1');
+            exit();
         }
         $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, "bugComment" => $bugComment, 'comment' => $comments]);
     }
@@ -66,7 +66,6 @@ final class PostController
             header('Location: /?page=posts&perpage=1');
             exit();
         }
-
         $this->view->render('Frontoffice', 'posts', ['paginationPost' => $paginationPost]);
     }
 }

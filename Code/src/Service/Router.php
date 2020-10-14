@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 namespace  App\Service;
-
 use App\Controller\ErrorController;
 use App\Model\Manager\CommentManager;
 use App\Model\Manager\UserManager;
