@@ -44,7 +44,6 @@ final class UserManager
                 $session->setSession('user', $this->userRepository->findById());
                 $session->setSession('userAdmin', $this->userRepository->findById());
                 $session->setSession('idUser', $this->userRepository->findById());
-                header('Location: /?page=home');
                 return $this->succes;
             }
             return $this->errors;
@@ -178,7 +177,6 @@ final class UserManager
                 $session->setSession('user', $userBdd);
                 $session->setSession('userAdmin', $this->findAllUser()->getActivated());
                 $session->setSession('idUser', $this->findAllUser()->getIdUser());
-                header('Location: /?page=dashboard');
                 return $this->succes;
             }
             return $this->errors;

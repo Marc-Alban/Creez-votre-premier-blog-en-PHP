@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace  App\Service;
+
 use App\Controller\ErrorController;
 use App\Model\Manager\CommentManager;
 use App\Model\Manager\UserManager;
@@ -89,7 +90,7 @@ final class Router
                 case 'UserController':
                     $userRepo = new $repository($this->database);
                     $userManager = new $manager($userRepo);
-                    $controller = 'App\Controller\Backoffice\\' .$pageFront[$pageMin];
+                    $controller = 'App\Controller\Backoffice\\' .$pageBack[$pageMin];
                     $control = new $controller($userManager, $this->view, $this->token, $this->session, $this->request);
                     $methode = $pageMin.'Action';
                     $control->$methode();
@@ -97,7 +98,7 @@ final class Router
                 case 'PostController':
                     $postRepo = new $repository($this->database);
                     $postManager = new $manager($postRepo);
-                    $controller = 'App\Controller\Backoffice\\' .$pageFront[$pageMin];
+                    $controller = 'App\Controller\Backoffice\\' .$pageBack[$pageMin];
                     $control = new $controller($postManager, $this->view, $this->token, $this->session, $this->request);
                     $methode = $pageMin.'Action';
                     $control->$methode();
@@ -105,7 +106,7 @@ final class Router
                 case 'CommentController':
                     $commentRepo = new $repository($this->database);
                     $commentManager = new $manager($commentRepo);
-                    $controller = 'App\Controller\Backoffice\\' .$pageFront[$pageMin];
+                    $controller = 'App\Controller\Backoffice\\' .$pageBack[$pageMin];
                     $control = new $controller($commentManager, $this->view, $this->session, $this->request);
                     $methode = $pageMin.'Action';
                     $control->$methode();

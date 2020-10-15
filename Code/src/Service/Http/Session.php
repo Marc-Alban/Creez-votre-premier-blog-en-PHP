@@ -10,7 +10,7 @@ class Session
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
-            $this->session = $_SESSION; 
+            $this->session = $_SESSION;
         }
     }
     public function getSession():array
@@ -19,7 +19,7 @@ class Session
     }
     public function getSessionName($name): ?string
     {
-        if(isset($this->session[$name])) {
+        if (isset($this->session[$name])) {
             return $this->session[$name];
         }
         return null;

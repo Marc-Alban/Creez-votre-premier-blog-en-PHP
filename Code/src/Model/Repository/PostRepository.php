@@ -50,30 +50,26 @@ final class PostRepository
         }
         return null;
     }
-    public function findAll(int $page, int $perPage): ?array
+    public function findAll(int $pagePost, int $perPage): ?array
     {
-        $tab = [
-            ':pagePost' => $page,
-            ':perPage' => $perPage
-        ];
         $req = $this->db->prepare("SELECT * FROM post WHERE statuPost = 1 ORDER BY idPost DESC LIMIT :pagePost, :perPage");
-        $req->execute($tab);
-        $postAll = $req->fetchAll();
-        var_dump($postAll, $req->fetchAll());
-        die();
-        if ($postAll === false) {
+        $req->execute(array(":pagePost"=>$pagePost,":perPage"=>$perPage));
+        $pdoStatement = $req->fetchAll();
+        if ($pdoStatement === false) {
             return null;
         }
-        return $postAll;
+        return $pdoStatement;
     }
-    public function count(): ?string
+    public function count(): string
     {
+        $total = null;
         $this->pdoStatement = $this->db->query("SELECT count(*) AS total FROM post WHERE statuPost = 1 ");
         if ($this->pdoStatement === false) {
-            return null;
+            $total = "1";
+        }else if ($this->pdoStatement !== false){
+            $req = $this->pdoStatement->fetch();
+            $total = $req['total'];
         }
-        $req = $this->pdoStatement->fetch();
-        $total = $req['total'];
         return $total;
     }
 }

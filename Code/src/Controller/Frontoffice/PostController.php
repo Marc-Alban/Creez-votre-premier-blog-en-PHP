@@ -41,7 +41,7 @@ final class PostController
             exit();
         } elseif ($action === 'sendComment') {
             $this->session->setSession('token', $this->token->createSessionToken());
-            $bugComment = $commentManager->checkComment($id,$this->request, $this->session, $this->token);
+            $bugComment = $commentManager->checkComment($id, $this->request, $this->session, $this->token);
         }
         if ($post instanceof Post) {
             $user = $userManager->findByIdUser($post->getUserId());

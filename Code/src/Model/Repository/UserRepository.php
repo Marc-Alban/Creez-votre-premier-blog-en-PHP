@@ -74,7 +74,7 @@ final class UserRepository
         }
         if ($executeIsOk === true) {
             $userBdd = $pdo->fetchObject(User::class);
-            if ($userBdd){
+            if ($userBdd) {
                 $idUser = $userBdd->getUserName();
                 return $idUser;
             } elseif ($userBdd === false) {

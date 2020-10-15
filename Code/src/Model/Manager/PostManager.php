@@ -21,10 +21,13 @@ final class PostManager
     {
         return $this->postRepository->findById($id);
     }
+    public function findAllPost(int $page, int $minPost): ?array
+    {
+        return $this->postRepository->findAll($page, $minPost);
+    }
     public function paginationPost(int $perpage = null): array
     {
         $minPost = 6;
-        $post = null;
         if (isset($perpage)) {
             $total = $this->postRepository->count();
             $nbPage = ceil($total/$minPost);
@@ -33,15 +36,13 @@ final class PostManager
             } elseif ($perpage > $nbPage) {
                 $perpage = $nbPage;
             }
-            $firstOfPage = ($perpage - 1) * $minPost;
-            $page = $firstOfPage;
-            $post= $this->postRepository->findAll($page, $minPost);
+            $page = intval($perpage-1) * $minPost;
         }
-        
+        $post = $this->findAllPost($page,$minPost);
         return $tabPost = [
             'current' => $perpage,
             'nbPage' => $nbPage,
-            'post' => $post,
+            'post' => $post
         ];
     }
     public function checkFormAddPost(Session $session, Token $token, Request $request): ?array
