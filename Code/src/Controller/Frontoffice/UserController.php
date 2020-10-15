@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Frontoffice;
 
+use App\Model\Manager\MailManager;
 use App\Model\Manager\UserManager;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
@@ -16,6 +17,7 @@ final class UserController
     private View $view;
     private Session $session;
     private Request $request;
+    private Token $token;
     private $action;
     private $sessionToken;
     public function __construct(UserManager $userManager, View $view, Token $token, Session $session, Request $request)
@@ -28,12 +30,15 @@ final class UserController
         $this->action = $request->getGet()->get('action') ?? null;
         $this->sessionToken =  $this->session->setSession('token', $this->token->createSessionToken());
     }
-    public function homeAction(): void
+    public function homeAction(MailManager $mailManager = null): void
     {
         $mail = null;
         if (isset($this->action) && $this->action === 'sendMessage') {
             $this->sessionToken;
-            $mail = $this->userManager->checkMail($this->session, $this->token, $this->request, $this->action);
+            $mail = $mailManager->checkMail($this->session, $this->token, $this->request, $this->action);
+            var_dump($mail);
+            die();
+            // if($mail === )
         } elseif (isset($this->action) && $this->action === "logout") {
             $this->session->sessionDestroy();
             header('Location: /?p=home');

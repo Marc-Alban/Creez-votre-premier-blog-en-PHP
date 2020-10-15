@@ -4,6 +4,7 @@ namespace  App\Service;
 
 use App\Controller\ErrorController;
 use App\Model\Manager\CommentManager;
+use App\Model\Manager\MailManager;
 use App\Model\Manager\UserManager;
 use App\Model\Repository\CommentRepository;
 use App\Model\Repository\UserRepository;
@@ -19,6 +20,7 @@ final class Router
     private Database $database;
     private Request $request;
     private Token $token;
+    private Session $session;
     private View $view;
     private ErrorController $error;
     public function __construct()
@@ -33,8 +35,8 @@ final class Router
     }
     public function run(): void
     {
-        $this->page = $this->request->getGet()->get('page') ?? 'home';
-        $pageMin = lcfirst($this->page);
+        $page = $this->request->getGet()->get('page') ?? 'home';
+        $pageMin = lcfirst($page);
         $pageFront = [
         'home' => 'UserController',
         'post' => 'PostController',
@@ -61,8 +63,13 @@ final class Router
                     $userManager = new $manager($userRepo);
                     $controller = 'App\Controller\Frontoffice\\' .$pageFront[$pageMin];
                     $control = new $controller($userManager, $this->view, $this->token, $this->session, $this->request);
-                    $methode = $pageMin.'Action';
-                    $control->$methode();
+                    if($pageMin === 'home'){
+                        $mailManager = new MailManager();
+                        $control->homeAction($mailManager);
+                    }else if($pageMin !== 'home'){
+                        $methode = $pageMin.'Action';
+                        $control->$methode();
+                    }
                 break;
                 case 'PostController':
                     $postRepo = new $repository($this->database);

@@ -107,15 +107,15 @@ final class UserRepository
         }
         return null;
     }
-    public function findPasswordByUserAndEmail(string $user = null, string $email = null): ?string
+    public function findPasswordByUserOrEmail(string $user = null, string $email = null): ?string
     {
-        if (isset($user)) {
+        if ($user !== null && $email === null) {
             $tabPass = [
                 ':userName' => $user
             ];
             $pdo = $this->db->prepare("SELECT passwordUser FROM `user` WHERE userName = :userName");
             $executeIsOk = $pdo->execute($tabPass);
-        } elseif (isset($email)) {
+        } elseif ($user === null && $email !== null) {
             $tabPass = [
                 ':email' => $email
             ];
@@ -127,9 +127,7 @@ final class UserRepository
             if ($passwordBdd) {
                 $pass = $passwordBdd->getPasswordUser();
                 return $pass;
-            } elseif ($passwordBdd === false) {
-                return null;
-            }
+            } 
             return null;
         } elseif ($executeIsOk === false) {
             return null;

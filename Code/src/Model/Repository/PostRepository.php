@@ -4,6 +4,7 @@ namespace App\Model\Repository;
 
 use App\Model\Entity\Post;
 use App\Service\Database;
+use PDO;
 
 final class PostRepository
 {
@@ -53,8 +54,10 @@ final class PostRepository
     public function findAll(int $pagePost, int $perPage): ?array
     {
         $req = $this->db->prepare("SELECT * FROM post WHERE statuPost = 1 ORDER BY idPost DESC LIMIT :pagePost, :perPage");
-        $req->execute(array(":pagePost"=>$pagePost,":perPage"=>$perPage));
-        $pdoStatement = $req->fetchAll();
+        $req->bindValue(":pagePost", $pagePost, PDO::PARAM_INT);
+        $req->bindValue(":perPage", $perPage, PDO::PARAM_INT);
+        $req->execute();
+        $pdoStatement = $req->fetchAll(PDO::FETCH_CLASS);
         if ($pdoStatement === false) {
             return null;
         }
@@ -63,11 +66,11 @@ final class PostRepository
     public function count(): string
     {
         $total = null;
-        $this->pdoStatement = $this->db->query("SELECT count(*) AS total FROM post WHERE statuPost = 1 ");
-        if ($this->pdoStatement === false) {
+        $pdoStatement = $this->db->query("SELECT count(*) AS total FROM post WHERE statuPost = 1 ");
+        if ($pdoStatement === false) {
             $total = "1";
-        }else if ($this->pdoStatement !== false){
-            $req = $this->pdoStatement->fetch();
+        } elseif ($pdoStatement !== false) {
+            $req = $pdoStatement->fetch();
             $total = $req['total'];
         }
         return $total;

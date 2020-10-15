@@ -61,9 +61,9 @@ final class CommentManager
                 $this->errors['error']['formRgister'] = "Formulaire incorrect";
             }
             if (empty($this->errors)) {
-                $this->success["succes"]['send'] = 'Votre commentaire est en attente de validation';
-                $this->commentRepository->create($comment, $this->session->getSessionName('user'), $this->session->getSessionName('idUser'), $id);
-                return $this->success;
+                $this->succes["succes"]['send'] = 'Votre commentaire est en attente de validation';
+                $this->commentRepository->create($comment, $session->getSessionName('user'), $session->getSession()['idUser'], $id);
+                return $this->succes;
             }
             return $this->errors;
         }

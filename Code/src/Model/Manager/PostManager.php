@@ -38,7 +38,7 @@ final class PostManager
             }
             $page = intval($perpage-1) * $minPost;
         }
-        $post = $this->findAllPost($page,$minPost);
+        $post = $this->findAllPost($page, $minPost);
         return $tabPost = [
             'current' => $perpage,
             'nbPage' => $nbPage,
