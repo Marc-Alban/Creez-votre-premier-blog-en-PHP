@@ -28,11 +28,11 @@ final class PostController
         $userSession = $this->session->getSessionName('user') ?? null;
         $action = $this->request->getGet()->get('action') ?? null;
         $valdel = null;
-        if (!isset($userSession) && $userSession === null) {
+        if ($userSession === null) {
             header('Location: /?page=connexion');
             exit();
         }
-        if (isset($action) && $action === 'addPost') {
+        if ($action === 'addPost') {
             $this->session->setSession('token', $this->token->createSessionToken());
             $valdel = $this->postManager->checkFormAddPost($this->session, $this->token, $this->request);
         }
@@ -42,10 +42,10 @@ final class PostController
     {
         $userSession = $this->session->getSessionName('user') ?? null;
         $perpage = intval($this->request->getGet()->get('perpage')) ?? null;
-        if (!isset($userSession) || $userSession === null) {
+        if ($userSession === null) {
             header('Location: /?page=connexion');
             exit();
-        } elseif (!isset($perpage) || $perpage === null || empty($perpage) || is_string($perpage)) {
+        } elseif (!is_int($perpage) || empty($perpage)) {
             header('Location: /?page=allPost&perpage=1');
             exit();
         }

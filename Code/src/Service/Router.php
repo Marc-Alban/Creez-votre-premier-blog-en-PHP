@@ -63,10 +63,10 @@ final class Router
                     $userManager = new $manager($userRepo);
                     $controller = 'App\Controller\Frontoffice\\' .$pageFront[$pageMin];
                     $control = new $controller($userManager, $this->view, $this->token, $this->session, $this->request);
-                    if($pageMin === 'home'){
+                    if ($pageMin === 'home') {
                         $mailManager = new MailManager();
                         $control->homeAction($mailManager);
-                    }else if($pageMin !== 'home'){
+                    } elseif ($pageMin !== 'home') {
                         $methode = $pageMin.'Action';
                         $control->$methode();
                     }

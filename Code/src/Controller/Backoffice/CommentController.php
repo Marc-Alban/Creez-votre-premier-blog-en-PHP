@@ -34,14 +34,14 @@ final class CommentController
             exit();
         }
         $comments = $this->commentManager->findAllComments();
-        if ($action === 'valide' && isset($action) && $action !== null) {
-            $val = $this->commentManager->validComment((int) $idComment, 0, $this->session);
+        if ($action === 'valide') {
+            $val = $this->commentManager->validComment((int) $idComment, 0);
             header("Refresh: 1;/?page=allComments");
-        } elseif ($action === 'valideSignal' && isset($action) && $action !== null) {
+        } elseif ($action === 'valideSignal') {
             $val = $this->commentManager->validComment((int) $idComment, 1);
             header("Refresh: 1;/?page=allComments");
-        } elseif ($action === 'deleted' || $action === 'deletedSignal' && isset($action) && $action !== null) {
-            $del = $this->commentManager->deleteComment((int) $idComment, $this->session);
+        } elseif ($action === 'deleted' || $action === 'deletedSignal') {
+            $del = $this->commentManager->deleteComment((int) $idComment);
             header("Refresh: 1;/?page=allComments");
         }
         $this->view->render('backoffice', 'allComments', ["comments" => $comments, 'val' => $val, 'del' => $del]);

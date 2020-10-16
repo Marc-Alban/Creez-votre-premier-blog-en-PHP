@@ -28,6 +28,8 @@ final class PostManager
     public function paginationPost(int $perpage = null): array
     {
         $minPost = 6;
+        $page = null;
+        $nbPage = null;
         if (isset($perpage)) {
             $total = $this->postRepository->count();
             $nbPage = ceil($total/$minPost);
@@ -49,7 +51,7 @@ final class PostManager
     {
         $post = $request->getPost() ?? null;
         $file = $request->getFile()['imagePost'] ?? null;
-        if (isset($post)) {
+        if ($post->get('submit')) {
             $title = $post->get('title') ?? null;
             $chapo = $post->get('chapo') ?? null;
             $description = $post->get('description') ?? null;

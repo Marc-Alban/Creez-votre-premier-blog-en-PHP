@@ -2,15 +2,15 @@
 declare(strict_types=1);
 namespace App\Model\Manager;
 
-use App\Service\Security\Token;
-use App\Service\Http\Session;
 use App\Service\Http\Request;
+use App\Service\Http\Session;
+use App\Service\Security\Token;
 
 final class MailManager
 {
     private $errors = null;
     private $succes = null;
-    private function sendMail(Request $request): void
+    public function sendMail(Request $request): void
     {
         $message = $request->getPost()->get('message');
         $entete  = 'MIME-Version: 1.0' . "\r\n";
@@ -22,7 +22,7 @@ final class MailManager
     public function checkMail(Session $session, Token $token, Request $request, string $action = null): ?array
     {
         $post = $request->getPost() ?? null;
-        if (isset($post) && $action === "send") {
+        if ($action === "send") {
             $mail = $post->get('mail') ?? null;
             $name = $post->get('name') ?? null;
             $lastName = $post->get('lastName') ?? null;

@@ -19,9 +19,4 @@ class Parameter
         }
         return null;
     }
-    
-    public function set($name, $value): void
-    {
-        $this->parameter[$name] = $value;
-    }
 }

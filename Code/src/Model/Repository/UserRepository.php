@@ -62,6 +62,8 @@ final class UserRepository
     }
     public function findById(int $idUser = null): ?string
     {
+        $executeIsOk = null;
+        $pdo = null;
         if ($idUser !== null) {
             $req = [
                 ':idUser' => $idUser
@@ -109,6 +111,8 @@ final class UserRepository
     }
     public function findPasswordByUserOrEmail(string $user = null, string $email = null): ?string
     {
+        $executeIsOk = null;
+        $pdo = null;
         if ($user !== null && $email === null) {
             $tabPass = [
                 ':userName' => $user
@@ -127,7 +131,7 @@ final class UserRepository
             if ($passwordBdd) {
                 $pass = $passwordBdd->getPasswordUser();
                 return $pass;
-            } 
+            }
             return null;
         } elseif ($executeIsOk === false) {
             return null;
@@ -138,17 +142,9 @@ final class UserRepository
     {
         $pdo = $this->db->query("SELECT * FROM user");
         $executeIsOk = $pdo->execute();
-        if ($executeIsOk === true) {
-            $userBdd = $pdo->fetchObject(User::class);
-            if ($userBdd) {
-                return $userBdd;
-            } elseif ($userBdd === false) {
-                return null;
-            }
-            return $userBdd;
-        } elseif ($executeIsOk === false) {
+        if ($executeIsOk === false) {
             return null;
         }
-        return null;
+        return $pdo->fetchObject(User::class);
     }
 }

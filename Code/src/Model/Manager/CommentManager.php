@@ -52,7 +52,7 @@ final class CommentManager
     {
         $post = $request->getPost() ?? null;
         $get = $request->getGet() ?? null;
-        if (isset($post) && $get->get('action') === 'sendComment') {
+        if ($get->get('action') === 'sendComment') {
             $comment = $post->get('comment');
             if (empty($comment)) {
                 $this->errors["error"]['messageEmpty'] = "Veuillez mettre un commentaire";

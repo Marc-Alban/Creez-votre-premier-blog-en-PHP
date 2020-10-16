@@ -45,7 +45,7 @@ final class PostController
         }
         if ($post instanceof Post) {
             $user = $userManager->findByIdUser($post->getUserId());
-        } elseif ($post === null || empty($post)) {
+        } elseif ($post === null) {
             header('Location: /?page=post&id=1');
             exit();
         }
@@ -56,10 +56,10 @@ final class PostController
         $perpage = intval($this->request->getGet()->get('perpage')) ?? null;
         $page = $this->request->getGet()->get('page') ?? null;
         $paginationPost =  $this->postManager->paginationPost($perpage);
-        if (isset($page) && $page === 'posts' && !isset($perpage)) {
+        if ($page === 'posts') {
             header('Location: /?page=posts&perpage=1');
             exit();
-        } elseif (!isset($perpage) || empty($perpage) || $perpage === '0') {
+        } elseif (empty($perpage) || $perpage === 0) {
             header('Location: /?page=posts&perpage=1');
             exit();
         } elseif ($paginationPost['post'] === null) {

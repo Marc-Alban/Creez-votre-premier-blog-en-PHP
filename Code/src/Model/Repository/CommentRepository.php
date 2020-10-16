@@ -40,10 +40,7 @@ final class CommentRepository
             $commentBdd = $pdo->fetchAll();
             if ($commentBdd) {
                 return $commentBdd;
-            } elseif ($commentBdd === false) {
-                return null;
             }
-        } elseif ($executeIsOk === false) {
             return null;
         }
         return null;
@@ -56,54 +53,43 @@ final class CommentRepository
             $commentBdd = $pdo->fetchAll();
             if ($commentBdd) {
                 return $commentBdd;
-            } elseif ($commentBdd === false) {
-                return null;
             }
-        } elseif ($executeIsOk === false) {
             return null;
         }
         return null;
     }
     public function valid(int $idComment, int $signal = 0): bool
     {
-        if (isset($idComment) && $signal === 0) {
+        if ($signal === 0) {
             $tab = [
                 ':disabled' => 0,
                 ':idComment' => $idComment
             ];
             $pdo = $this->db->prepare("UPDATE comment SET disabled = :disabled WHERE idComment = :idComment");
-            $pdo->execute($tab);
-            return true;
-        } elseif (isset($idComment) && $signal === 1) {
-            $tab = [
-                ':signalComment' => 0,
-                ':idComment' => $idComment
-            ];
-            $pdo = $this->db->prepare("UPDATE comment SET signalComment = :signalComment WHERE idComment = :idComment");
-            $pdo->execute($tab);
-            return true;
+            return $pdo->execute($tab);
         }
-        return false;
+        $tab = [
+            ':signalComment' => 0,
+            ':idComment' => $idComment
+        ];
+        $pdo = $this->db->prepare("UPDATE comment SET signalComment = :signalComment WHERE idComment = :idComment");
+        return $pdo->execute($tab);
     }
     public function delete(int $idComment): bool
     {
-        if (isset($idComment)) {
-            $tab = [
-                ':idComment' => $idComment,
-            ];
-            $pdo = $this->db->prepare("DELETE FROM comment WHERE idComment = :idComment ");
-            $pdo->execute($tab);
-            return true;
-        }
-        return false;
+        $tab = [
+            ':idComment' => $idComment,
+        ];
+        $pdo = $this->db->prepare("DELETE FROM comment WHERE idComment = :idComment ");
+        return $pdo->execute($tab);
     }
-    public function signal(int $idComment): void
+    public function signal(int $idComment): bool
     {
         $commentArray = [
             ':signalComment' => 1,
             ':idComment' => $idComment,
         ];
         $req = $this->db->prepare("UPDATE `comment` SET `signalComment`=:signalComment  WHERE  idComment = :idComment");
-        $req->execute($commentArray);
+        return $req->execute($commentArray);
     }
 }

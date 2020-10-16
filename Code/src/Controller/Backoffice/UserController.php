@@ -16,7 +16,6 @@ final class UserController
     private Session $session;
     private Request $request;
     private $action;
-    private $sessionToken;
     public function __construct(UserManager $userManager, View $view, Token $token, Session $session, Request $request)
     {
         $this->userManager = $userManager;
@@ -25,7 +24,6 @@ final class UserController
         $this->session = $session;
         $this->request = $request;
         $this->action = $this->request->getGet()->get('action') ?? null;
-        $this->sessionToken = $this->session->setSession('token', $this->token->createSessionToken());
     }
     public function dashboardAction(): void
     {
@@ -37,7 +35,7 @@ final class UserController
             exit();
         }
         if (isset($this->action) && $this->action === 'sendDatasUser') {
-            $this->sessionToken;
+            $this->session->setSession('token', $this->token->createSessionToken());
             $verifUser = $this->userManager->checkForm($this->session, $this->request, $this->token, $this->action);
         } elseif (isset($this->action) && $this->action !== 'sendDatasUser' && empty($this->action)) {
             header('Location: /?page=home');
@@ -54,7 +52,7 @@ final class UserController
             exit();
         }
         if (isset($this->action) && $this->action === 'modifPass') {
-            $this->sessionToken;
+            $this->session->setSession('token', $this->token->createSessionToken());
             $verifPassBdd = $this->userManager->checkPassword($this->session, $this->request, $this->token, $this->action, $userSession);
         } elseif (isset($this->action) && $this->action !== 'modifPass' && empty($this->action)) {
             header('Location: /?page=home');

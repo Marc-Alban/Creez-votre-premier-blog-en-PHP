@@ -29,10 +29,10 @@ final class UserManager
     public function checkUser(Session $session, Token $token, Request $request, string $action = null): ?array
     {
         $post = $request->getPost() ?? null;
-        if (isset($post) && $action === "connexion") {
+        if ($action === "connexion") {
             $email = $post->get('email') ?? null;
             $password = $post->get('password') ?? null;
-            $passwordBdd = $this->userRepository->findPasswordByUserOrEmail(null,$email);
+            $passwordBdd = $this->userRepository->findPasswordByUserOrEmail(null, $email);
             if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
                 $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
             } elseif (empty($email) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email) || $email !== $this->userRepository->findByEmail($email)) {
@@ -57,7 +57,7 @@ final class UserManager
     public function userSignIn(Session $session, Token $token, Request $request, string $action = null): ?array
     {
         $dataPost = $request->getPost() ?? null;
-        if (isset($dataPost) && $action === "inscription") {
+        if ($action === "inscription") {
             $pseudo = $dataPost->get('userName') ?? null;
             $email = $dataPost->get('email') ?? null;
             $emailBdd = $this->userRepository->findByEmail(mb_strtolower($email));
@@ -91,12 +91,12 @@ final class UserManager
     }
     public function checkPassword(Session $session, Request $request, Token $token, string $action, string $user)
     {
-        $idUser = $session['idUser'] ?? null;
+        $idUser = $session->getSession()['idUser'] ?? null;
         $pass = $this->findPasswordByUser($user);
         $post = $request->getPost() ?? null;
-        if (isset($post) && $action === "modifPass") {
-            $password = $post['password'] ?? null;
-            $passwordConf = $post['passwordConfirmation'] ?? null;
+        if ($action === "modifPass") {
+            $password = $post->get('password') ?? null;
+            $passwordConf = $post->get('passwordConfirmation') ?? null;
             if (empty($password) || $password !== $passwordConf || mb_strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password)) {
                 $this->errors['error']["passwordEmpty"] = 'Mot de passe invalid, mot de passe doit être identique à celui de confirmation, supérieur à 8 caractères et doit avoir minuscule-majuscule-chiffres-caractères ';
             } elseif (empty($passwordConf) || password_verify($password, $pass)) {
@@ -119,7 +119,7 @@ final class UserManager
     public function checkForm(Session $session, Request $request, Token $token, string $action = null)
     {
         $post = $request->getPost() ?? null;
-        if (isset($post) && $action === "sendDatasUser") {
+        if ($action === "sendDatasUser") {
             $email = $post->get('email') ?? null;
             $userName = $post->get('userName') ?? null;
             $userBdd = $this->findAllUser()->getUserName();

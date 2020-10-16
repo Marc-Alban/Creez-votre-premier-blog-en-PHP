@@ -38,18 +38,10 @@ final class PostRepository
         ];
         $pdo = $this->db->prepare("SELECT * FROM post WHERE idPost= :idPost");
         $executeIsOk = $pdo->execute($req);
-        if ($executeIsOk === true) {
-            $idBdd = $pdo->fetchObject(Post::class) ;
-            if ($idBdd) {
-                return $idBdd;
-            } elseif ($idBdd === false) {
-                return null;
-            }
-            return $idBdd;
-        } elseif ($executeIsOk === false) {
+        if ($executeIsOk === false) {
             return null;
         }
-        return null;
+        return $pdo->fetchObject(Post::class);
     }
     public function findAll(int $pagePost, int $perPage): ?array
     {
