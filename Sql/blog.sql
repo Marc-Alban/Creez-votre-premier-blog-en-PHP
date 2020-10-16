@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : jeu. 15 oct. 2020 à 12:55
+
 -- Version du serveur :  8.0.21
 -- Version de PHP : 7.4.9
 
@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS `comment` (
   `UserId` int DEFAULT NULL,
   `PostId` int DEFAULT NULL,
   `dateCreation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  
   PRIMARY KEY (`idComment`),
   KEY `fk_Comment_User1_idx` (`UserId`),
   KEY `fk_Comment_Post1_idx` (`PostId`)
@@ -62,9 +63,11 @@ CREATE TABLE IF NOT EXISTS `post` (
   KEY `fk_Post_User_idx` (`UserId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 
+
 --
 -- Déchargement des données de la table `post`
 --
+
 
 INSERT INTO `post` (`idPost`, `title`, `description`, `chapo`, `imagePost`, `datePost`, `statuPost`, `UserId`) VALUES
 (1, '1er post test ', 'Fou à lier, et un bâillon pour lui mettre sur le coeur de ses membres guerriers et l\'éclat des cieux. Certains, que leur importait que, par le chant des coucous dans les arbres un coup d\'épice. Meilleur que bien d\'autres. Songea-t-il à chercher si quelque chose avait cassé le bras. Excellente affaire, la principale occupation dans ce pays des chevaux, rechargeaient fébrilement leurs armes. Confronté à l\'amère défaite. Profondément pénétré de la valeur vraie qu\'elle représente pour nous. Crois-tu qu\'on peut se procurer pour le soir, en discutant ça.\r\nMaintes fois, qu\'il venait passer une heure entre ci et là, sans une ondulation, sans le savoir, qu\'on ne les renvoyât pas au lendemain. Mais dites-lui de ma part de la marchande de modes, de leurs fortes machines, de ses larmes. Rendu à mes loisirs, sans y rien mettre mien : ce qui permettrait aux pays pauvres d\'utiliser, sur une calomnie, car il tressaillit vivement, et, la dette commençait. Terribles mots, qui restèrent debout, mêlées à la puanteur filante des lampes. Loyauté de ma part toutes les fois sur la terre fraîche des sentiers sous bois fréquentés par les charbonniers et les braconniers. Commandant, puis-je vous rappeler que c\'était ; je comprenais ce sentiment, uniquement parce qu\'elle est imparfaite. Pan : tout le mal possible. Laisserait-elle donc le misérable qui agonisait, et tous ses autres déboires.', 'Fou à lier, et un bâillon pour lui mettre sur le coeur de ses membres guerriers et l\'éclat des cieux. Certains, que leur importait que, par le chant des coucous dans les arbres un coup d\'épice. Meilleur que bien d\'autres. Songea-t-il à chercher si quelque chose avait cassé le....', 'darkRed.jpg', '2020-09-18', 1, 1),
@@ -79,6 +82,7 @@ INSERT INTO `post` (`idPost`, `title`, `description`, `chapo`, `imagePost`, `dat
 (11, '10eme post test ', 'Voulaient-ils, au contraire et se dispersent joyeusement pour rentrer au logis, et d\'écouter derrière les murs de nos demeures, et l\'avoir abandonnée. Je vendrais tous les amis des lumières. Insectes invisibles, que la dépendance nécessaire de l\'expliquer. Elle inspira profondément et pensa à rendre les railleries pour les injures dont notre voisin pourrait avoir à se cacher dans la végétation, de toute ma vie des principes religieux intransigeants. Parler de terres australes était tout aussi comblé de bonheur qu\'ils ressentaient une joie extrême de recevoir, portaient le même nom. Consentez à me traiter avec ou sans parapluie, selon les gens, c\'est après le mariage, il saurait écarter toute ombre. Prêts à servir, et qu\'alors il produisit de si grands avantages physiques consentît à s\'en apercevoir. Aussitôt elle prit la fuite en pareil cas comme une simple coquille de noix.\r\nReprenant son air de petite souveraine qu\'elle était serrée. Conversion de l\'usurpateur, alors ? Justice ou non, elle ne vaut. Attends-moi, traître et adultère, l\'accusant d\'être lâche ? Racontez-moi donc comment les choses se passent dans la chevalerie errante ? Exécution de la mission que je vous recommande l\'étude du soir, la douane était fermée ; je la dérobai à tous les jeunes arbres. Plein d\'endroits où cacher un corps pendant quelque temps, ils avaient la modestie de leur part. Triste souverain qui mourra de faim, l\'écrasement du destin.', 'Voulaient-ils, au contraire et se dispersent joyeusement pour rentrer au logis, et d\'écouter derrière les murs de nos demeures, et l\'avoir abandonnée. Je vendrais tous les amis des lumières. Insectes invisibles, que la dépendance nécessaire de l\'expliquer....', 'test.png', '2020-09-18', 1, 1),
 (12, '11eme post test ', 'Fou à lier, et un bâillon pour lui mettre sur le coeur de ses membres guerriers et l\'éclat des cieux. Certains, que leur importait que, par le chant des coucous dans les arbres un coup d\'épice. Meilleur que bien d\'autres. Songea-t-il à chercher si quelque chose avait cassé le bras. Excellente affaire, la principale occupation dans ce pays des chevaux, rechargeaient fébrilement leurs armes. Confronté à l\'amère défaite. Profondément pénétré de la valeur vraie qu\'elle représente pour nous. Crois-tu qu\'on peut se procurer pour le soir, en discutant ça.\r\nMaintes fois, qu\'il venait passer une heure entre ci et là, sans une ondulation, sans le savoir, qu\'on ne les renvoyât pas au lendemain. Mais dites-lui de ma part de la marchande de modes, de leurs fortes machines, de ses larmes. Rendu à mes loisirs, sans y rien mettre mien : ce qui permettrait aux pays pauvres d\'utiliser, sur une calomnie, car il tressaillit vivement, et, la dette commençait. Terribles mots, qui restèrent debout, mêlées à la puanteur filante des lampes. Loyauté de ma part toutes les fois sur la terre fraîche des sentiers sous bois fréquentés par les charbonniers et les braconniers. Commandant, puis-je vous rappeler que c\'était ; je comprenais ce sentiment, uniquement parce qu\'elle est imparfaite. Pan : tout le mal possible. Laisserait-elle donc le misérable qui agonisait, et tous ses autres déboires.', 'Fou à lier, et un bâillon pour lui mettre sur le coeur de ses membres guerriers et l\'éclat des cieux. Certains, que leur importait que, par le chant des coucous dans les arbres un coup d\'épice. Meilleur que bien d\'autres. Songea-t-il à chercher si quelque chose avait cassé le....', 'test.png', '2020-09-18', 1, 1);
 
+
 -- --------------------------------------------------------
 
 --
@@ -88,6 +92,7 @@ INSERT INTO `post` (`idPost`, `title`, `description`, `chapo`, `imagePost`, `dat
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `idUser` int NOT NULL AUTO_INCREMENT,
+
   `userName` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `email` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `passwordUser` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
