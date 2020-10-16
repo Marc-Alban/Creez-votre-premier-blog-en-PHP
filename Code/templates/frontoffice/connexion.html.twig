@@ -1,0 +1,37 @@
+{% extends "frontoffice/layout.html.twig" %}
+
+{% block title %}Connexion
+{% endblock %}
+
+{% block content %}
+	<div class="container">
+		<div id="loginbox" class="mainbox col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="panel-title text-center">Connexion</div>
+				</div>
+				<div class="panel-body">
+					{% if data.logIn %}
+						{#--------------------------ERROR-MESSAGE----------------------------#}
+						{% for errors in data.logIn.error %}
+							<div class="alert alert-danger" role="alert">
+								{{errors}}
+							</div>
+						{% endfor %}
+						{#--------------------------ERROR-MESSAGE----------------------------#}
+					{% endif %}
+					{#--------------------------END-CONDITION-DATA----------------------------#}
+					<form method="POST" action="/?page=connexion&action=connexion">
+						<div class="container mb-5">
+								<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email"><br>
+								<input id="password" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre mot de passe" type="password" name="password"><br>
+							<input type="hidden" name="token" id="token" value="{{session.token}}"/>
+						</div>
+					</div>
+					<button class="btn btn-primary mx-auto" type="submit">Se connecter</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

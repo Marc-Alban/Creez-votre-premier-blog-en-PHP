@@ -1,0 +1,45 @@
+{% extends "backoffice/layout.html.twig" %}
+
+{% block title %}Gestion de compte
+{% endblock %}
+
+{% block content %}
+	<div class="container">
+		<div  class="mainbox mx-auto col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 mt-5">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="panel-title text-center">Gestion de compte</div>
+				</div>
+				<div class="panel-body mt-5">
+				{#--------------------------CONDITION-DATA----------------------------#}
+					{% if data.verif %}
+						{#--------------------------SUCCES-MESSAGE----------------------------#}
+						{% for success in data.verif.succes %}
+							<div class="alert alert-primary" role="alert"> {{success}}
+						</div>
+					{% endfor %}
+						{#-------------------------END-CONDITION-DATA----------------------------#}
+						{#-------------------------END-SUCCES-MESSAGE----------------------------#}
+					{% endif %}
+					{#--------------------------CONDITION-DATA----------------------------#}
+					{% if data.verif %}
+						{#--------------------------ERROR-MESSAGE----------------------------#}
+						{% for errors in data.verif.error %}
+							<div class="alert alert-danger" role="alert">
+								{{errors}}
+							</div>
+						{% endfor %}
+						{#--------------------------ERROR-MESSAGE----------------------------#}
+					{% endif %}
+					<a href="/?page=password"><button class="btn btn-primary mx-auto mdpBtn">Changer le mot de passe</button></a>
+					<form method="POST" action="/?page=dashboard&action=sendDatasUser">
+						<input id="userName" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre Pseudo" type="text" name="userName" value="{{data.user.userName}}"><br>
+						<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email" value="{{data.user.email}}"><br>
+						<input type="hidden" name="token" id="token" value="{{session.token}}"/>
+						<button class="btn btn-primary mx-auto" type="submit">Modifier ses infos personnelles</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "backoffice/layout.html.twig" %}
+
+{% block title %}Commentaires
+{% endblock %}
+
+{% block content %}
+	<div class="container">
+		<div class="mainbox mx-auto col-md-12 col-md-offset-3 col-sm-6 col-sm-offset-3 mt-5 overflow-auto">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="panel-title text-center">Commentaires Ajoutés</div>
+				</div>
+				<div class="panel-body mt-5 h-10">
+					{% if data.val.sendValide %}
+							<div class="alert alert-primary" role="alert"> {{ data.val.sendValide}}</div>
+					{% elseif data.del.sendDelete %}
+							<div class="alert alert-danger" role="alert"> {{ data.del.sendDelete}}</div>
+					{% endif %}
+					<table class="table table-bordered table-hover table-responsive-sm ">
+						<thead class="thead-dark">
+							<tr>
+								<th scope="col">Commentaires</th>
+								<th scope="col">Articles</th>
+								<th scope="col">Accepter</th>
+								<th scope="col">Refuser</th>
+							</tr>
+						</thead>
+						<tbody>
+						{% for comment in data.comments %}
+							{% if comment.disabled == 1 and comment.signalComment != 1 %}
+							<tr>
+								<td scope="row">{{comment.content}}</td>
+								<td scope="row" ><a href='/?page=post&id={{comment.PostId}}' class="text-dark">{{comment.PostId - 1}}</a></td>
+								<td><a href="/?page=allComments&action=valide&id={{comment.idComment}}" class="linkHover">Valider</a></td>
+								<td><a href="/?page=allComments&action=deleted&id={{comment.idComment}}" class="linkHover">Supprimer</a></td>
+							</tr>
+							{% endif %}
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="panel-title text-center">Commentaires Signalés</div>
+				</div>
+				<div class="panel-body mt-5">
+					<table class="table table-bordered table-hover table-responsive-sm ">
+						<thead class="thead-dark">
+							<tr>
+								<th scope="col">Commentaires</th>
+								<th scope="col">Articles</th>
+								<th scope="col">Accepter</th>
+								<th scope="col">Refuser</th>
+							</tr>
+						</thead>
+						<tbody>
+						{% for comment in data.comments %}
+						{% if comment.disabled == 0 and comment.signalComment == 1 %}
+							<tr>
+								<th scope="row">{{comment.content}}</th>
+								<td scope="row" ><a href='/?page=post&id={{comment.PostId}}' class="text-dark">{{comment.PostId - 1}}</a></td>
+								<td><a href="/?page=allComments&action=valideSignal&id={{comment.idComment}}" class="linkHover">Valider</a></td>
+								<td><a href="/?page=allComments&action=deletedSignal&id={{comment.idComment}}" class="linkHover">Supprimer</a></td>
+							</tr>
+						{% endif %}
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

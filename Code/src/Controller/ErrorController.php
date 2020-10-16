@@ -9,13 +9,18 @@ final class ErrorController
 {
     private View $view;
 
-    public function __construct()
+    public function __construct(View $view)
     {
-        $this->view = new View;
+        $this->view = $view;
     }
     
-    public function ErrorAction(): void
+    public function errorServer(): void
     {
-        $this->view->render('frontoffice','error', []);
+        $this->view->render('frontoffice', 'error', []);
+    }
+
+    public function notFound(): void
+    {
+        $this->view->render('frontoffice', '404', []);
     }
 }

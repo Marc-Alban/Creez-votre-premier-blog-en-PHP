@@ -3,154 +3,124 @@ declare(strict_types=1);
 namespace  App\Service;
 
 use App\Controller\ErrorController;
-use App\Service\ConfigProperties;
+use App\Model\Manager\CommentManager;
+use App\Model\Manager\MailManager;
+use App\Model\Manager\UserManager;
+use App\Model\Repository\CommentRepository;
+use App\Model\Repository\UserRepository;
 use App\Service\Database;
+use App\Service\Http\Request;
+use App\Service\Http\Session;
+use App\Service\Security\Token;
 use App\View\View;
 
 final class Router
 {
-    private ?string $action;
-    private ErrorController $errorAction;
-    private ?int $id;
-    private string $page;
-    private string $pageMaj;
-    private ?array $pageFront;
-    private ?array $pageBack;
     private ConfigProperties $configProperties;
     private Database $database;
+    private Request $request;
+    private Token $token;
+    private Session $session;
     private View $view;
-
-
+    private ErrorController $error;
     public function __construct()
     {
-        // dépendance
-        $this->errorAction = new ErrorController();
+        $this->request = new Request();
+        $this->token = new Token();
         $this->configProperties = new ConfigProperties();
-        $this->view = new View();
         $this->database = new Database($this->configProperties);
-        // En attendent de mettre en place la class App\Service\Http\Request --> gestion super global
-        $idUrl = $_GET['id'] ?? null;
-        $this->id = intval($idUrl);
-        $this->action = $_GET['action'] ?? null;
-        $this->page = $_GET['page'] ?? $this->error();
-        $this->pageMaj = ucfirst($this->page);
-        $this->pageFront = ['Home','Post'];
-        $this->pageBack = [];
+        $this->session = new Session();
+        $this->view = new View($this->session);
+        $this->error = new ErrorController($this->view);
     }
-
-/************************************Controller************************************************* */
-    /**
-     * 1) Renvoie le bon controller en fonction de la page qui est passé dans l'url
-     *
-     * @return string
-     */
-    public function controller(): string
+    public function run(): void
     {
-        if(in_array($this->pageMaj, $this->pageFront) || empty($this->pageMaj) || !in_array($this->pageMaj, $this->pageBack))
-        {
-            return 'App\Controller\Frontoffice\\'.$this->pageMaj.'Controller';
-        }
-        else if(in_array($this->pageMaj, $this->pageBack))
-        {
-            return 'App\Controller\Backoffice\\'.$this->pageMaj.'Controller';
-        }
-        return $this->error();
-    }
-/************************************End Controller************************************************* */
-/************************************Manager Class************************************************* */
-public function managerClass(): string
-{  
-    if(in_array($this->pageMaj, $this->pageFront) || !in_array($this->pageMaj, $this->pageBack))
-    {
-        return 'App\Model\Manager\\'.$this->pageMaj.'Manager';
-    }
-    else if(in_array($this->pageMaj, $this->pageBack))
-    {
-        return 'App\Model\Manager\\'.$this->pageMaj.'Manager';
-    }
-    return $this->error();
-}
-/************************************End Manager Class************************************************* */
-/************************************Manager Class************************************************* */
-public function repositoryClass(): string
-{  
-    if(in_array($this->pageMaj, $this->pageFront) || !in_array($this->pageMaj, $this->pageBack))
-    {
-        return 'App\Model\Repository\\'.$this->pageMaj.'Repository';
-    }
-    else if(in_array($this->pageMaj, $this->pageBack))
-    {
-        return 'App\Model\Repository\\'.$this->pageMaj.'Repository';
-    }
-    return $this->error();
-}
-/************************************End Manager Class************************************************* */
-/************************************Call Method With Controller************************************************* */
-    /**
-     * 1) Appel du controller 
-     * 2) Instance de ce dernier 
-     * 3) Appel de la methode avec le nom de la page suivi du mot Action
-     * 4) Retourne sous-forme d'array l'objet et la méthode utilisée.
-     *  
-     * @return array
-     */
-    public function call(array $datas): ?array
-    {
-        $controllerClass = $this->controller();
-        $managerClass = $this->managerClass();
-        $repoClass = $this->repositoryClass();
-        $replacePath = str_replace("App","src",$repoClass);
-        $pathVerif = ROOT.$replacePath.'.php';
-        if(file_exists($pathVerif)){
-            $repo = new $repoClass($this->database);
-            $manager = new $managerClass($repo);
-        }elseif(!file_exists($pathVerif)){
-            $manager = new $managerClass();
-        }
-        $view = $this->view ;
-        $controllerObject = new $controllerClass($manager,$view);
-        $methode = $this->pageMaj.'Action';
-        return $controllerObject->$methode($datas);
-    }
-/************************************End Call Methode With Controller************************************************* */
-/************************************Start Router************************************************* */
-    /**
-     * 1)Vérification des paramètres dans l'url
-     * 2)insertion des superglobales dans les futurs méthodes utilisées
-     * si les mots action et id sont present ou pas  ou seulment action sans id ou encore aucun des deux.
-     * 3)insertion des superglobales dans les futurs méthodes utilisées
-     *si le mot action est absent et le mot id est present alors insertions des superglobale mais sans le file.active
-     * 4)Une fois cette étape faite si rien n'est trouvé alors on affiche une erreur 404.
-     */
-    public function start(): void
-    {
-        if(in_array($this->pageMaj, $this->pageFront) || in_array($this->pageMaj, $this->pageBack))
-        {
-            if(($this->action === null && $this->id === null) || ($this->action !== null && $this->id !== null) || ($this->action !== null && $this->id === null))
-            {
-                $this->call(['get'=>$_GET, 'post'=>$_POST, 'files'=>$_FILES, 'session'=>$_SESSION]);
+        $page = $this->request->getGet()->get('page') ?? 'home';
+        $pageMin = lcfirst($page);
+        $pageFront = [
+        'home' => 'UserController',
+        'post' => 'PostController',
+        'posts' => 'PostController',
+        'connexion' => 'UserController',
+        'inscription' => 'UserController',
+        ];
+        $pageBack = [
+        'dashboard' => 'UserController',
+        'allPost' => 'PostController',
+        'allComments' => 'CommentController',
+        'addPost' => 'PostController',
+        'updatePost' => 'PostController',
+        'password' => 'UserController'
+        ];
+        if (array_key_exists($pageMin, $pageFront)) {
+            $repositoryName = str_replace('Controller', 'Repository', $pageFront[$pageMin]);
+            $managerName = str_replace('Controller', 'Manager', $pageFront[$pageMin]);
+            $repository = 'App\Model\Repository\\' .$repositoryName;
+            $manager = 'App\Model\Manager\\' .$managerName;
+            switch ($pageFront[$pageMin]) {
+                case 'UserController':
+                    $userRepo = new $repository($this->database);
+                    $userManager = new $manager($userRepo);
+                    $controller = 'App\Controller\Frontoffice\\' .$pageFront[$pageMin];
+                    $control = new $controller($userManager, $this->view, $this->token, $this->session, $this->request);
+                    if ($pageMin === 'home') {
+                        $mailManager = new MailManager();
+                        $control->homeAction($mailManager);
+                    } elseif ($pageMin !== 'home') {
+                        $methode = $pageMin.'Action';
+                        $control->$methode();
+                    }
+                break;
+                case 'PostController':
+                    $postRepo = new $repository($this->database);
+                    $postManager = new $manager($postRepo);
+                    $controller = 'App\Controller\Frontoffice\\' .$pageFront[$pageMin];
+                    $control = new $controller($postManager, $this->view, $this->request, $this->token, $this->session);
+                    $methode = $pageMin.'Action';
+                    if ($pageMin === 'post') {
+                        $commentRepo = new CommentRepository($this->database);
+                        $commentManager = new CommentManager($commentRepo);
+                        $userRepo = new UserRepository($this->database);
+                        $userManager = new UserManager($userRepo);
+                        $control->postAction($commentManager, $userManager);
+                    } elseif ($pageMin !== 'post') {
+                        $control->$methode();
+                    }
+                break;
             }
-            else if($this->action === null && $this->id !== null)
-            {
-                $this->call(['get'=>$_GET, 'post'=>$_POST, 'session'=>$_SESSION]);
+        } elseif (array_key_exists($pageMin, $pageBack)) {
+            $repositoryName = str_replace('Controller', 'Repository', $pageBack[$pageMin]);
+            $managerName = str_replace('Controller', 'Manager', $pageBack[$pageMin]);
+            $repository = 'App\Model\Repository\\' .$repositoryName;
+            $manager = 'App\Model\Manager\\' .$managerName;
+            switch ($pageBack[$pageMin]) {
+                case 'UserController':
+                    $userRepo = new $repository($this->database);
+                    $userManager = new $manager($userRepo);
+                    $controller = 'App\Controller\Backoffice\\' .$pageBack[$pageMin];
+                    $control = new $controller($userManager, $this->view, $this->token, $this->session, $this->request);
+                    $methode = $pageMin.'Action';
+                    $control->$methode();
+                break;
+                case 'PostController':
+                    $postRepo = new $repository($this->database);
+                    $postManager = new $manager($postRepo);
+                    $controller = 'App\Controller\Backoffice\\' .$pageBack[$pageMin];
+                    $control = new $controller($postManager, $this->view, $this->token, $this->session, $this->request);
+                    $methode = $pageMin.'Action';
+                    $control->$methode();
+                break;
+                case 'CommentController':
+                    $commentRepo = new $repository($this->database);
+                    $commentManager = new $manager($commentRepo);
+                    $controller = 'App\Controller\Backoffice\\' .$pageBack[$pageMin];
+                    $control = new $controller($commentManager, $this->view, $this->session, $this->request);
+                    $methode = $pageMin.'Action';
+                    $control->$methode();
+                break;
             }
-        }
-        else if(!in_array($this->pageMaj, $this->pageFront) || !in_array($this->pageMaj, $this->pageBack))
-        {
-            $this->error();
+        } elseif (!array_key_exists($pageMin, $pageFront) || !array_key_exists($pageMin, $pageBack)) {
+            $this->error->notFound();
         }
     }
-/************************************End Start Routeur************************************************* */
-/************************************Return Error Action************************************************* */
-    /**
-     * Renvoie la page 404 si rien n'est trouvée !
-     *
-     * @return void
-     */
-    public function error(): void
-    {
-        $this->errorAction->ErrorAction();
-        exit();
-    }
-/************************************End Return Error Action************************************************ */
 }

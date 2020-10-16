@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace App\Model\Entity;
 
-final class Post
+final class Comment
 {
     private int $idComment;
     private string $content;
-    private string $dateCreation;
     private int $disabled;
+    private int $signalComment;
+    private string $userComment;
     private int $UserId;
     private int $PostId;
+    private string $dateCreation;
 
 
     /**
@@ -55,26 +57,6 @@ final class Post
     }
 
     /**
-     * Get the value of dateCreation
-     */
-    public function getDateCreation(): string
-    {
-        return $this->dateCreation;
-    }
-
-    /**
-     * Set the value of dateCreation
-     *
-     * @return  self
-     */
-    public function setDateCreation($dateCreation): self
-    {
-        $this->dateCreation = $dateCreation;
-
-        return $this;
-    }
-
-    /**
      * Get the value of disabled
      */
     public function getDisabled(): int
@@ -90,6 +72,46 @@ final class Post
     public function setDisabled($disabled): self
     {
         $this->disabled = $disabled;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of signalComment
+     */
+    public function getSignalComment(): int
+    {
+        return $this->signalComment;
+    }
+
+    /**
+     * Set the value of signalComment
+     *
+     * @return  self
+     */
+    public function setSignalComment($signalComment): self
+    {
+        $this->signalComment = $signalComment;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of UserComment
+     */
+    public function getUserComment(): string
+    {
+        return $this->userComment;
+    }
+
+    /**
+     * Set the value of UserComment
+     *
+     * @return  self
+     */
+    public function setUserComment($userComment): self
+    {
+        $this->userComment = $userComment;
 
         return $this;
     }
@@ -130,6 +152,26 @@ final class Post
     public function setPostId($PostId): self
     {
         $this->PostId = $PostId;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of dateCreation
+     */
+    public function getDateCreation(): string
+    {
+        return $this->dateCreation;
+    }
+
+    /**
+     * Set the value of dateCreation
+     *
+     * @return  self
+     */
+    public function setDateCreation($dateCreation): self
+    {
+        $this->dateCreation = $dateCreation;
 
         return $this;
     }

@@ -6,23 +6,28 @@ namespace App\Service;
 
 use \PDO;
 use App\Service\ConfigProperties;
+use Exception;
 
 final class Database
 {
-    private PDO $database;
-    private array $dsn;
     private ConfigProperties $configProperties;
+    private array $dsn;
+    private $database;
 
     public function __construct(ConfigProperties $configProperties)
     {
         $this->configProperties = $configProperties;
         $this->dsn = $this->configProperties->connect();
-        $this->database = new PDO($this->dsn['dsn'], $this->dsn['user'], $this->dsn['pass']);
-        
+        try {
+            $this->database = new PDO($this->dsn['dsn'], $this->dsn['user'], $this->dsn['pass']);
+        } catch (Exception $e) {
+            $e->getMessage();
+        }
     }
+
 
     public function getPdo(): PDO
     {
-        return $this->database ;
+        return $this->database;
     }
 }

@@ -1,32 +1,95 @@
 <?php
-
 declare(strict_types=1);
-
 namespace App\Model\Manager;
 
 use App\Model\Entity\Post;
-use App\Model\Repository\Interfaces\PostRepositoryInterface;
+use App\Model\Repository\PostRepository;
+use App\Service\Http\Request;
+use App\Service\Http\Session;
+use App\Service\Security\Token;
 
 final class PostManager
 {
-    private PostRepositoryInterface $postRepo;
-
-    public function __construct(PostRepositoryInterface $postRepository)
+    private PostRepository $postRepository;
+    private $errors = null;
+    private $succes = null;
+    public function __construct(PostRepository $postRepository)
     {
-        $this->postRepo = $postRepository;
+        $this->postRepository = $postRepository;
     }
-
-    public function showOne(?string $dataId): ?Post
+    public function findByIdPost(int $id): ?Post
     {
-        $id = intval($dataId);
-
-        if ($id > 600) {
-            return null;
+        return $this->postRepository->findById($id);
+    }
+    public function findAllPost(int $page, int $minPost): ?array
+    {
+        return $this->postRepository->findAll($page, $minPost);
+    }
+    public function paginationPost(int $perpage = null): array
+    {
+        $minPost = 6;
+        $page = null;
+        $nbPage = null;
+        if (isset($perpage)) {
+            $total = $this->postRepository->count();
+            $nbPage = ceil($total/$minPost);
+            if (empty($perpage) || ctype_digit($perpage) === true || $perpage <= 0) {
+                $perpage = 1;
+            } elseif ($perpage > $nbPage) {
+                $perpage = $nbPage;
+            }
+            $page = intval($perpage-1) * $minPost;
         }
-        else if($id === null || empty($id))
-        {
-            return null;
+        $post = $this->findAllPost($page, $minPost);
+        return $tabPost = [
+            'current' => $perpage,
+            'nbPage' => $nbPage,
+            'post' => $post
+        ];
+    }
+    public function checkFormAddPost(Session $session, Token $token, Request $request): ?array
+    {
+        $post = $request->getPost() ?? null;
+        $file = $request->getFile()['imagePost'] ?? null;
+        if ($post->get('submit')) {
+            $title = $post->get('title') ?? null;
+            $chapo = $post->get('chapo') ?? null;
+            $description = $post->get('description') ?? null;
+            $tmpName = $file['tmp_name'] ?? null;
+            $size = $file['size'] ?? null;
+            $file = (empty($file['name'])) ? 'default.png' : $file['name'];
+            $extention = mb_strtolower(mb_substr(mb_strrchr($file, '.'), 1)) ?? null;
+            $extentions = ['jpg', 'png', 'gif', 'jpeg'];
+            $tailleMax = 2097152;
+            if (empty($title) && empty($chapo) && empty($description) && empty($tmpName)) {
+                $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
+            } elseif (empty($title)) {
+                $this->errors['error']["titleEmpty"] = 'Veuillez renseigner un titre';
+            } elseif (empty($tmpName) || in_array($extention, $extentions, true) || $size > $tailleMax) {
+                $this->errors['error']["imgWrong"] = 'Image n\'est pas valide, doit être en dessous de 2MO';
+            } elseif (empty($chapo)|| mb_strlen($chapo) <= 15) {
+                $this->errors['error']["chapoEmpty"] = "Chapô obligatoire, doit être inférieur ou égal à 15 caractères minimum";
+            } elseif (mb_strlen($description) <= 15) {
+                $this->errors['error']["descShort"] = "Description trop petite, doit être inférieur ou égal à 15 caractères";
+            }
+            if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
+                $this->errors['error']['formRgister'] = "Formulaire incorrect";
+            }
+            $dataForm = [
+                'title' => $title,
+                'tmpName' => $tmpName,
+                'extention' => $extention,
+                'chapo' => $chapo,
+                'description' => $description,
+                'idUser' => $session->getSessionName('idUser'),
+            ];
+            if (empty($this->errors)) {
+                $this->postRepository->create($dataForm);
+                $this->succes['sendPost'] = "Article bien enregistré";
+                return $this->succes;
+            }
+            return $this->errors;
         }
-        return $this->postRepo->findById($id);
+        return null;
     }
 }

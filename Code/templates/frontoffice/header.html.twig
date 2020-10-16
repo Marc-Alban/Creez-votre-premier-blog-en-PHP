@@ -1,51 +1,26 @@
 {# ------------------------------------------------Header--------------------------------------------- #}
-<!-- Navbar -->
-	<nav class="navbar navbar-expand-lg bg-primary fixed-top navbar-transparent " color-on-scroll="400"> <div class="container">
-		<div class="dropdown button-dropdown">
-			<a href="#" class="dropdown-toggle" id="navbarDropdown" data-toggle="dropdown">
-				<span class="button-bar"></span>
-				<span class="button-bar"></span>
-				<span class="button-bar"></span>
-			</a>
-			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-				<a class="dropdown-item">Acceuil</a>
-				<a class="dropdown-item" href="#">Blog</a>
-				<div class="dropdown-divider"></div>
-				<a class="dropdown-item" href="#">S'inscrire</a>
-				<div class="dropdown-divider"></div>
-				<a class="dropdown-item" href="#">Se connecter</a>
-			</div>
-		</div>
-		<div class="navbar-translate">
-			<button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-bar top-bar"></span>
-				<span class="navbar-toggler-bar middle-bar"></span>
-				<span class="navbar-toggler-bar bottom-bar"></span>
-			</button>
-		</div>
-		<div class="collapse navbar-collapse justify-content-end" id="navigation">
-			<ul class="navbar-nav">
-				<li class="nav-item">
-					<a class="nav-link" href="#;">Se connecter</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="#">S'inscrire</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" rel="tooltip" title="Follow us on Twitter" data-placement="bottom" href="https://twitter.com/MarcAlbanMillet" target="_blank">
-						<i class="fab fa-twitter"></i>
-						<p class="d-lg-none d-xl-none">Twitter</p>
-					</a>
-                </li>
-				<li class="nav-item">
-					<a class="nav-link" rel="tooltip" title="Follow us on Linkedin" data-placement="bottom" href="https://www.linkedin.com/in/marc-alban-millet-b2071a12a/" target="_blank">
-						<i class="fab fa-linkedin"></i>
-						<p class="d-lg-none d-xl-none">Linkedin</p>
-					</a>
-                </li>
-			</ul>
-		</div>
-	</div>
-</nav>
+	<!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand js-scroll-trigger" href="/?page=home">DevDark</a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/?page=home">Accueil</a></li>
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/?page=posts&perpage=1">Blog</a></li>
+                        {% if session.user %}
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/?page=dashboard"><button class="btn btn-primary p-2">Dashbord</button></a></li>
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/?page=home&action=logout"><button class="btn btn-primary p-2">Se déconnecter</button></a></li>
+                        {% else %}
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/?page=connexion">Se connecter</a></li>
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/?page=inscription">S'enregistrer</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
 <!-- End Navbar -->
 {# -------------------------------------------------End-Header-------------------------------------------- #}

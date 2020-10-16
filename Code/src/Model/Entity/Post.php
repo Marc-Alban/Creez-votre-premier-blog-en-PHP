@@ -9,12 +9,10 @@ final class Post
     private int $idPost;
     private string $title;
     private string $description;
-    private string $label;
+    private string $chapo;
     private string $imagePost;
-    private string $categorie;
-    private string $dateCreation;
-    private string $dateUpdate;
-    private string $statuPost;
+    private string $datePost;
+    private int $statuPost;
     private int $UserId;
 
     /**
@@ -78,25 +76,24 @@ final class Post
     }
 
     /**
-     * Get the value of label
-     */
-    public function getLabel(): ?string
+    * Get the value of chapo
+    */
+    public function getChapo(): string
     {
-        return $this->label;
+        return $this->chapo;
     }
 
     /**
-     * Set the value of label
+     * Set the value of chapo
      *
      * @return  self
      */
-    public function setLabel($label): self
+    public function setChapo($chapo): self
     {
-        $this->label = $label;
+        $this->chapo = $chapo;
 
         return $this;
     }
-
     /**
      * Get the value of imagePost
      */
@@ -118,61 +115,21 @@ final class Post
     }
 
     /**
-     * Get the value of categorie
+     * Get the value of datePost
      */
-    public function getCategorie(): string
+    public function getDatePost(): string
     {
-        return $this->categorie;
+        return $this->datePost;
     }
 
     /**
-     * Set the value of categorie
+     * Set the value of datePost
      *
      * @return  self
      */
-    public function setCategorie($categorie): self
+    public function setDatePost($datePost): self
     {
-        $this->categorie = $categorie;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of dateCreation
-     */
-    public function getDateCreation(): string
-    {
-        return $this->dateCreation;
-    }
-
-    /**
-     * Set the value of dateCreation
-     *
-     * @return  self
-     */
-    public function setDateCreation($dateCreation): self
-    {
-        $this->dateCreation = $dateCreation;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of dateUpdate
-     */
-    public function getDateUpdate(): ?string
-    {
-        return $this->dateUpdate;
-    }
-
-    /**
-     * Set the value of dateUpdate
-     *
-     * @return  self
-     */
-    public function setDateUpdate($dateUpdate): self
-    {
-        $this->dateUpdate = $dateUpdate;
+        $this->datePost = $datePost;
 
         return $this;
     }
@@ -180,7 +137,7 @@ final class Post
     /**
      * Get the value of statuPost
      */
-    public function getStatuPost(): string
+    public function getStatuPost(): int
     {
         return $this->statuPost;
     }
@@ -196,7 +153,6 @@ final class Post
 
         return $this;
     }
-
 
     /**
      * Get the value of UserId

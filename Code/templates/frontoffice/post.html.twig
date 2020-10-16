@@ -1,13 +1,116 @@
 {% extends "frontoffice/layout.html.twig" %}
-
-{% block title %}
-	{% for post in data %}
-		{{ post.title }}
-	{% endfor %}
-{% endblock %}
-
 {% block content %}
-	{% for post in data %}
-		{{ post.description }}
-	{% endfor %}
+	<div class="container postPage">
+		<div
+			class="raw">
+			{#--------------------------SECTION-HEADING----------------------------#}
+			<h1 class="text-left h1 pt-4 mb-3">
+				<strong>{{data.post.title }}</strong>
+			</h1>
+			{#-------------------------END-SECTION-HEADING----------------------------#}
+			{#--------------------------GRILLE-COLONNE----------------------------#}
+			<div
+				class="col-md-12">
+				{#--------------------------CARD----------------------------#}
+				<div
+					class="pb-5 mx-md-3">
+					{#--------------------------IMAGE----------------------------#}
+					<img
+					class="image-responsive" src="images/post/{{ data.post.imagePost }}" alt="">
+					{#--------------------------END-IMAGE----------------------------#}
+					<div class="container">
+						<div class="row">
+							<div class="col-md-12 col-xl-12 d-flex justify-content-left">
+								<p class="font-small grey-text mb-0">
+									{{ data.user }}
+								</p>
+								<pre>|</pre>
+								<p class="font-small grey-text mb-0">
+									{{ data.post.datePost|date('d/m/Y') }}
+								</p>
+							</div>
+						</div>
+						{#--------------------------GRILLE-COLONNE----------------------------#}
+						<p class="text-justify">
+							<pre>chapo du post:</pre>
+							{{ data.post.chapo|raw }}
+						</p>
+						<p class="text-justify">
+							<pre>Description du post:</pre>
+							{{ data.post.description|raw }}
+						</p>
+					</div>
+				</div>
+				{% if session.user %}
+					<div class="container">
+						<div class="raw formComment">
+					{% if data.bugComment.succes %}
+						{% for success in data.bugComment.succes %}
+							<div class="alert alert-primary" id="ancre" role="alert">
+								{{success}}
+							</div>
+						{% endfor %}
+					{% endif %}
+					{% if data.bugComment.errors %}
+						{% for errorss in data.bugComment.errors %}
+							<div class="alert alert-danger" role="alert">
+								{{errorss}}
+							</div>
+						{% endfor %}
+					{% endif %}
+							<h3 class="commentTitle mt-4">Laisser un commentaires:</i>
+								</span>
+							</h3>
+							<form id="myForm" class="col-md-8 col-12 dp-" method="POST" action="/?page=post&id={{data.post.idPost}}&action=sendComment&#ancre">
+								<textarea id="message " name="comment" placeholder="Laissez un commentaire" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" require></textarea>
+								<input type="hidden" name="token" id="token" value="{{session.token}}">
+								<button type="submit" name="submit" class="btn btn-primary mx-auto">Envoyer</button>
+							</form>
+						</div>
+					</div>
+				{% else %}
+					<div class="container">
+						<div class="raw">
+							<p>Connectez-vous pour mettre un commentaire:
+							</p>
+							<div class="btnConnexion">
+								<a href="/?page=connexion">
+									<button class="btn btn-primary mx-auto">Se connecter</button>
+								</a>
+							</div>
+						</div>
+					</div>
+				{% endif %}
+				<div class="container">
+					<div class="raw">
+						<section class="comments">
+						{% if data.comment %}
+						{% for com in data.comment %}
+							<article class="comment border border-white p-3">
+								<div class="comment-body">	
+									<div class="text text-white p-0 border-0">
+										<p class="bg-black">{{com.content}}</p>
+									</div>
+									<div class="d-flex bd-highlight mb-3">
+									<p class="attribution mr-auto p-2 bd-highlight" id="signalComment">de
+										{{com.userComment}}
+										à {{com.dateCreation}}</p>
+										{% if com.signalComment == 1 %}
+											<p class="text-white p-2 bd-highlight">Signalé</p>
+										{% else %}
+											<a href="/?page=post&id={{data.post.idPost}}&action=signal&idComment={{com.idComment}}&#signalComment" class="p-2 bd-highlight">Signaler</a>
+										{% endif %}
+									</div>
+								</div>
+							</article>
+							{% endfor %}
+						{% endif %}
+						</section>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{#--------------------------Form Comments----------------------------#}
 {% endblock %}
+

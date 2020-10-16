@@ -1,0 +1,84 @@
+{% extends "backoffice/layout.html.twig" %}
+
+{% block title %}Tous les articles
+{% endblock %}
+
+{% block content %}
+	<div class="container">
+		<div class="mainbox mx-auto col-md-12  mt-5">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="panel-title text-center">Tous les articles</div>
+				</div>
+				<div class="panel-body mt-5">
+					<a href="/?page=addPosts"><button class="btn btn-primary mx-auto mdpBtn">Créer un article</button></a>
+					<table class="table table-bordered table-hover table-responsive-sm">
+						<thead class="thead-dark">
+							<tr>
+								<th scope="col">Articles N°</th>
+								<th scope="col">Chapô</th>
+								<th scope="col">Modification</th>
+								<th scope="col">Suppression</th>
+							</tr>
+						</thead>
+						<tbody>
+						{% if data.allPosts %}
+						{% for posts in data.allPosts.post  %}
+							<tr>
+								<td>{{posts.idPost}}</td>
+								<td>{{posts.chapo}}</td>
+								<td><a href="/?page=updatePost" >Modifier</a></td>
+								<td><a href="/?page=allPost&action=del&id={{post.idPost}}" >Supprimer</a></td>
+							</tr>
+						{% endfor %} 
+						{% endif %} 
+						</tbody>
+					</table>
+				</div>
+					{% if data.allPosts %}
+						{#--------------------------allPostPagination-----------------------------#}
+						<nav aria-label="Page navigation mr-auto">
+							<ul class="paginationPost pg-blue">
+								<li class="page-item
+										{% if data.allPosts.current == 1
+										or data.allPosts.current <1 %}
+										disabled
+										{% endif %}">
+									<a class="page-link" aria-label="Previous" href="{% if data.allPosts.current != 1 %} ?page=allPost&pp={{data.allPosts.current - 1 }} {% else %} ?page=allPost&pp={{data.allPosts.current }} {% endif %}">
+										<span aria-hidden="true">&laquo;</span>
+										<span class="sr-only">Previous</span>
+									</a>
+								</li>
+								{% for i in 1..data.allPosts.nbPage %}
+									{% if i == data.allPosts.current %}
+										<li class="page-item active">
+											<a class="page-link" href="?page=allPost&pp={{ i }}">{{ i }}</a>
+										</li>
+									{% else %}
+										<li class="page-item
+												{% if data.allPosts.current <1 %}
+												disabled
+												{% endif %}">
+											<a class="page-link" href="?page=allPost&pp={{ i }}">{{ i }}</a>
+										</li>
+									{% endif %}
+								{% endfor %}
+
+								<li class="page-item
+										{% if data.allPosts.current ==
+										data.allPosts.nbPage %}
+										disabled
+										{% endif %}">
+									<a class="page-link" aria-label="Next" href="{% if data.allPosts.current != data.allPosts.nbPage %} ?page=allPost&pp={{data.allPosts.current + 1 }} {% else %} ?page=allPost&pp={{data.allPosts.current }} {% endif %}">
+										<span aria-hidden="true">&raquo;</span>
+										<span class="sr-only">Next</span>
+									</a>
+								</li>
+							</ul>
+						</nav>
+					{% endif %}
+					{#-------------------------END-PAGINATION-----------------------------#}
+			</div>
+		</div>
+	</div>
+{% endblock %}

@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-session_start();
 use App\Service\Router;
 
 define('ROOT', str_replace('public\index.php', '', $_SERVER['SCRIPT_FILENAME']));
@@ -11,4 +10,4 @@ $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
 $whoops->register();
 
 $router = new Router();
-$router->start();
+$router->run();

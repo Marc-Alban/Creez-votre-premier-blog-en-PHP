@@ -1,10 +1,16 @@
 {% extends "frontoffice/layout.html.twig" %}
 
-{% block title %}Error: 404{% endblock %}
-
-{% block content %}
-    <div class="p-2" style="background-color:red; color:white;">
-    <h2 class="d-flex align-items-end">La page demandé n'existe pas ..</h2>
-    </div>
+{% block title %}Error: Server
 {% endblock %}
 
+{% block content %}
+	<div id="errorBox">
+			<div class="container">
+		<div class="raw">
+			<div class="p-2 error">
+				<h2 class="d-flex align-items-end">Server Error ..</h2>
+			</div>
+		</div>
+	</div>
+	</div> 
+{% endblock %}

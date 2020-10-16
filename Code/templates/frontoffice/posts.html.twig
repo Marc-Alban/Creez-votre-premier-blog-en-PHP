@@ -1,0 +1,78 @@
+{% extends "frontoffice/layout.html.twig" %}
+{% block content %}
+	<section class="postBlogHome">
+		<div class="container">
+			<div class="raw">
+				<h2>Bl<b>og</b>
+				</h2>
+				<div class="row-page row">
+					{% for otherPost in  data.paginationPost.post %}
+						{# Other post #}
+						<div class="col-page col-sm-4 col-md-6">
+							<a href="?page=post&id={{ otherPost.idPost }}" class="postPublicationHome">
+								<div class="imgPostPublication">
+									<img class="img-responsive" src="images/post/{{ otherPost.imagePost }}">
+								</div>
+								<div class="contentPostHome">
+									<h3>{{ otherPost.title }}</h3>
+									<p class="descPost">{{ otherPost.chapo }}</p>
+									<p class="datePost">{{ otherPost.datePost|date('d/m/Y') }}</p>
+								</div>
+								<div class="readMoreBlogHome">
+									<span>Lire plus...
+									</span>
+								</div>
+							</a>
+						</div>
+						{# End post #}
+					{% endfor %}
+				</div>
+					{#--------------------------END-lastPost-----------------------------#}
+          	{% if data.paginationPost %}
+						{#--------------------------paginationPost-----------------------------#}
+						<nav aria-label="Page navigation mr-auto">
+							<ul class="paginationPost pg-blue">
+								<li class="page-item
+										{% if data.paginationPost.current == 1
+										or data.paginationPost.current <1 %}
+										disabled
+										{% endif %}">
+									<a class="page-link" aria-label="Previous" href="{% if data.paginationPost.current != 1 %} ?page=posts&perpage={{data.paginationPost.current - 1 }} {% else %} ?page=blog&perpage={{data.paginationPost.current }} {% endif %}">
+										<span aria-hidden="true">&laquo;</span>
+										<span class="sr-only">Previous</span>
+									</a>
+								</li>
+								{% for i in 1..data.paginationPost.nbPage %}
+									{% if i == data.paginationPost.current %}
+										<li class="page-item active">
+											<a class="page-link" href="?page=posts&perpage={{ i }}">{{ i }}</a>
+										</li>
+									{% else %}
+										<li class="page-item
+												{% if data.paginationPost.current <1 %}
+												disabled
+												{% endif %}">
+											<a class="page-link" href="?page=posts&perpage={{ i }}">{{ i }}</a>
+										</li>
+									{% endif %}
+								{% endfor %}
+
+								<li class="page-item
+										{% if data.paginationPost.current ==
+										data.paginationPost.nbPage %}
+										disabled
+										{% endif %}">
+									<a class="page-link" aria-label="Next" href="{% if data.paginationPost.current != data.paginationPost.nbPage %} ?page=posts&perpage={{data.paginationPost.current + 1 }} {% else %} ?page=blog&pp={{data.paginationPost.current }} {% endif %}">
+										<span aria-hidden="true">&raquo;</span>
+										<span class="sr-only">Next</span>
+									</a>
+								</li>
+							</ul>
+						</nav>
+					{% endif %}
+					{#-------------------------END-PAGINATION-----------------------------#}
+			</div>
+		</div>
+	</section>
+
+{% endblock %}
