@@ -24,6 +24,12 @@ final class View
     public function render(string $path, string $view, ?array $data): void
     {
         $this->twig->addGlobal('session', $this->session->getSession());
-        echo $this->twig->render($path.'/'.$view.'.html.twig', ['data' =>$data]);
+        echo $this->twig->render($path.'/'.$view.'.html.twig', ['data' => $data]);
     }
+
+    public function renderMail(?array $data): string
+    {
+        return $this->twig->render('frontoffice/mail.html.twig', ['data' => $data]);
+    }
+
 }

@@ -34,15 +34,15 @@ final class UserController
         if ($this->action === 'sendMessage') {
             $this->session->setSession('token', $this->token->createSessionToken());
             $mail = $mailManager->checkMail($this->session, $this->token, $this->request, $this->action);
-            if ($mail === ['succes']) {
-                $mailManager->sendMail($this->request);
+            if (array_key_exists('succes', $mail)) {
+                $mailManager->sendMail($this->request,$this->view);
             }
         } elseif ($this->action === "logout") {
             $this->session->sessionDestroy();
             header('Location: /?p=home');
             exit();
         }
-        $this->view->render('Frontoffice', 'home', ['mail' => $mail]);
+        $this->view->render('Frontoffice', 'home', ['mail'=>$mail]);
     }
     public function inscriptionAction(): void
     {
@@ -52,10 +52,10 @@ final class UserController
             exit();
         }
         $register = null;
-        if ($this->action === 'inscription') {
+        if (isset($this->action) && $this->action === 'inscription') {
             $this->session->setSession('token', $this->token->createSessionToken());
-            $register = $this->userManager->userSignIn($this->session, $this->token, $this->request, $this->action);
-        } elseif ($this->action !== 'inscription' && empty($this->action)) {
+            $register = $this->userManager->userSignIn($this->session, $this->token, $this->request);
+        } elseif (isset($this->action) && $this->action === null) {
             header('Location: /?page=home');
             exit();
         }
@@ -69,10 +69,10 @@ final class UserController
             exit();
         }
         $logIn = null;
-        if ($this->action === 'connexion') {
+        if (isset($this->action) && $this->action === 'connexion') {
             $this->session->setSession('token', $this->token->createSessionToken());
             $logIn = $this->userManager->checkUser($this->session, $this->token, $this->request, $this->action);
-        } elseif ($this->action !== 'connexion' && empty($this->action)) {
+        } elseif (isset($this->action) && $this->action === null) {
             header('Location: /?page=home');
             exit();
         }

@@ -5,24 +5,23 @@ namespace App\Model\Manager;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
 use App\Service\Security\Token;
+use App\View\View;
 
 final class MailManager
 {
     private $errors = null;
     private $succes = null;
-    public function sendMail(Request $request): void
+    public function sendMail(Request $request, View $view): void
     {
-        $message = $request->getPost()->get('message');
         $entete  = 'MIME-Version: 1.0' . "\r\n";
         $entete .= 'Content-type: text/html; charset=utf-8' . "\r\n";
         $entete .= 'From: ' . $request->getPost()->get('mail') . "\r\n";
-        $message = require_once ROOT . 'templates\frontoffice\mail.html.twig';
-        mail('millet.marcalban@gmail.com', 'Envoi depuis page home', $message, $entete);
+        $message = $view->renderMail(['name'=>$request->getPost()->get('name'),'lastName'=>$request->getPost()->get('lastName'),'mail'=>$request->getPost()->get('mail'),'message'=>$request->getPost()->get('message')]);
+        //mail('millet.marcalban@gmail.com', 'E-mail envoyé du site DevDark',$message, $entete);
     }
-    public function checkMail(Session $session, Token $token, Request $request, string $action = null): ?array
+    public function checkMail(Session $session, Token $token, Request $request): ?array
     {
         $post = $request->getPost() ?? null;
-        if ($action === "send") {
             $mail = $post->get('mail') ?? null;
             $name = $post->get('name') ?? null;
             $lastName = $post->get('lastName') ?? null;
@@ -46,7 +45,5 @@ final class MailManager
                 return $this->succes;
             }
             return $this->errors;
-        }
-        return null;
     }
 }

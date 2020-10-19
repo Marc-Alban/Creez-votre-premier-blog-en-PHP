@@ -55,14 +55,12 @@ final class PostController
     {
         $perpage = intval($this->request->getGet()->get('perpage')) ?? null;
         $page = $this->request->getGet()->get('page') ?? null;
-        $paginationPost =  $this->postManager->paginationPost($perpage);
-        if ($page === 'posts') {
+        $paginationPost =  $this->postManager->paginationPost($perpage) ?? null;
+        
+        if (empty($perpage) || $perpage === 0) {
             header('Location: /?page=posts&perpage=1');
             exit();
-        } elseif (empty($perpage) || $perpage === 0) {
-            header('Location: /?page=posts&perpage=1');
-            exit();
-        } elseif ($paginationPost['post'] === null) {
+        } elseif ($paginationPost['post'] == null) {
             header('Location: /?page=posts&perpage=1');
             exit();
         }
