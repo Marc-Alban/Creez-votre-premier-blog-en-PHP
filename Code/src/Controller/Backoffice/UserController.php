@@ -31,14 +31,14 @@ final class UserController
         $user = $this->userManager->findAllUser();
         $verifUser = null;
         if (!isset($userSession) && $userSession === null) {
-            header('Location: /?page=connexion');
+            header('Location: /connexion');
             exit();
         }
         if (isset($this->action) && $this->action === 'sendDatasUser') {
             $this->session->setSession('token', $this->token->createSessionToken());
-            $verifUser = $this->userManager->checkForm($this->session, $this->request, $this->token, $this->action);
+            $verifUser = $this->userManager->checkForm($this->session, $this->request, $this->token);
         } elseif (isset($this->action) && $this->action !== 'sendDatasUser' && empty($this->action)) {
-            header('Location: /?page=home');
+            header('Location: /home');
             exit();
         }
         $this->view->render('backoffice', 'dashboard', ['user' => $user, 'verif' => $verifUser]);
@@ -48,14 +48,14 @@ final class UserController
         $userSession =  $this->session->getSessionName('user') ?? null;
         $verifPassBdd = null;
         if (!isset($userSession) && $userSession === null) {
-            header('Location: /?page=connexion');
+            header('Location: /connexion');
             exit();
         }
         if (isset($this->action) && $this->action === 'modifPass') {
             $this->session->setSession('token', $this->token->createSessionToken());
-            $verifPassBdd = $this->userManager->checkPassword($this->session, $this->request, $this->token, $this->action, $userSession);
+            $verifPassBdd = $this->userManager->checkPassword($this->session, $this->request, $this->token, $userSession);
         } elseif (isset($this->action) && $this->action !== 'modifPass' && empty($this->action)) {
-            header('Location: /?page=home');
+            header('Location: /home');
             exit();
         }
         $this->view->render('backoffice', 'password', ['verif' => $verifPassBdd]);
@@ -64,7 +64,7 @@ final class UserController
     {
         $userSession =  $this->session->getSessionName('user') ?? null;
         if (!isset($userSession) && $userSession === null) {
-            header('Location: /?page=connexion');
+            header('Location: /connexion');
             exit();
         }
         $this->view->render('backoffice', 'modifPost', []);

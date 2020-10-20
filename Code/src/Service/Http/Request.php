@@ -9,11 +9,13 @@ class Request
     private $get;
     private $post;
     private $file;
+    public $server;
     public function __construct()
     {
         $this->get = new Parameter($_GET);
         $this->post = new Parameter($_POST);
         $this->file = $_FILES;
+        $this->server = $_SERVER['REQUEST_URI'];
     }
     public function getGet(): Parameter
     {
@@ -26,5 +28,9 @@ class Request
     public function getFile(): array
     {
         return $this->file;
+    }
+    public function getServer()
+    {
+        return $this->server;
     }
 }

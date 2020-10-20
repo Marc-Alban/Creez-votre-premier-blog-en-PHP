@@ -30,19 +30,19 @@ final class CommentController
         $val = null;
         $del = null;
         if (!isset($userSession) && $userSession === null) {
-            header('Location: /?page=connexion');
+            header('Location: /connexion');
             exit();
         }
         $comments = $this->commentManager->findAllComments();
         if ($action === 'valide') {
             $val = $this->commentManager->validComment((int) $idComment, 0);
-            header("Refresh: 1;/?page=allComments");
+            header("Refresh: 1;/allComments");
         } elseif ($action === 'valideSignal') {
             $val = $this->commentManager->validComment((int) $idComment, 1);
-            header("Refresh: 1;/?page=allComments");
+            header("Refresh: 1;/allComments");
         } elseif ($action === 'deleted' || $action === 'deletedSignal') {
             $del = $this->commentManager->deleteComment((int) $idComment);
-            header("Refresh: 1;/?page=allComments");
+            header("Refresh: 1;/allComments");
         }
         $this->view->render('backoffice', 'allComments', ["comments" => $comments, 'val' => $val, 'del' => $del]);
     }

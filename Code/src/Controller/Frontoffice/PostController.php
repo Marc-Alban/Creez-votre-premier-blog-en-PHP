@@ -37,7 +37,7 @@ final class PostController
         if ($action === 'signal') {
             $idComment = intval($this->request->getGet()->get('idComment')) ?? null;
             $commentManager->signalComment($idComment);
-            header('Location: /?page=post&id='.$id);
+            header('Location: /post/id='.$id);
             exit();
         } elseif ($action === 'sendComment') {
             $this->session->setSession('token', $this->token->createSessionToken());
@@ -46,7 +46,7 @@ final class PostController
         if ($post instanceof Post) {
             $user = $userManager->findByIdUser($post->getUserId());
         } elseif ($post === null) {
-            header('Location: /?page=post&id=1');
+            header('Location: /post/id=1');
             exit();
         }
         $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, "bugComment" => $bugComment, 'comment' => $comments]);
@@ -58,10 +58,10 @@ final class PostController
         $paginationPost =  $this->postManager->paginationPost($perpage) ?? null;
         
         if (empty($perpage) || $perpage === 0) {
-            header('Location: /?page=posts&perpage=1');
+            header('Location: /posts/perpage=1');
             exit();
-        } elseif ($paginationPost['post'] == null) {
-            header('Location: /?page=posts&perpage=1');
+        } elseif ($paginationPost['post'] === null) {
+            header('Location: /posts/perpage=1');
             exit();
         }
         $this->view->render('Frontoffice', 'posts', ['paginationPost' => $paginationPost]);

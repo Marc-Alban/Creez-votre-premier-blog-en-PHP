@@ -61,7 +61,7 @@
 							<h3 class="commentTitle mt-4">Laisser un commentaires:</i>
 								</span>
 							</h3>
-							<form id="myForm" class="col-md-8 col-12 dp-" method="POST" action="/?page=post&id={{data.post.idPost}}&action=sendComment&#ancre">
+							<form id="myForm" class="col-md-8 col-12 dp-" method="POST" action="/post/id={{data.post.idPost}}/sendComment">
 								<textarea id="message " name="comment" placeholder="Laissez un commentaire" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" require></textarea>
 								<input type="hidden" name="token" id="token" value="{{session.token}}">
 								<button type="submit" name="submit" class="btn btn-primary mx-auto">Envoyer</button>
@@ -74,7 +74,7 @@
 							<p>Connectez-vous pour mettre un commentaire:
 							</p>
 							<div class="btnConnexion">
-								<a href="/?page=connexion">
+								<a href="/connexion">
 									<button class="btn btn-primary mx-auto">Se connecter</button>
 								</a>
 							</div>
@@ -98,7 +98,7 @@
 										{% if com.signalComment == 1 %}
 											<p class="text-white p-2 bd-highlight">Signalé</p>
 										{% else %}
-											<a href="/?page=post&id={{data.post.idPost}}&action=signal&idComment={{com.idComment}}&#signalComment" class="p-2 bd-highlight">Signaler</a>
+											<a href="/post/id={{data.post.idPost}}/signal/idComment={{com.idComment}}" class="p-2 bd-highlight">Signaler</a>
 										{% endif %}
 									</div>
 								</div>

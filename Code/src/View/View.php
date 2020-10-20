@@ -31,5 +31,4 @@ final class View
     {
         return $this->twig->render('frontoffice/mail.html.twig', ['data' => $data]);
     }
-
 }
