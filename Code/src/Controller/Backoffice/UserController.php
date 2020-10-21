@@ -38,7 +38,7 @@ final class UserController
             $this->session->setSession('token', $this->token->createSessionToken());
             $verifUser = $this->userManager->checkForm($this->session, $this->request, $this->token);
         } elseif (isset($this->action) && $this->action !== 'sendDatasUser' && empty($this->action)) {
-            header('Location: /home');
+            header('Location: /?page=home');
             exit();
         }
         $this->view->render('backoffice', 'dashboard', ['user' => $user, 'verif' => $verifUser]);
@@ -55,7 +55,7 @@ final class UserController
             $this->session->setSession('token', $this->token->createSessionToken());
             $verifPassBdd = $this->userManager->checkPassword($this->session, $this->request, $this->token, $userSession);
         } elseif (isset($this->action) && $this->action !== 'modifPass' && empty($this->action)) {
-            header('Location: /home');
+            header('Location: /?page=home');
             exit();
         }
         $this->view->render('backoffice', 'password', ['verif' => $verifPassBdd]);

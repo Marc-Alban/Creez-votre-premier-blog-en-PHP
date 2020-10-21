@@ -29,41 +29,36 @@ final class PostController
     public function postAction(CommentManager $commentManager, UserManager $userManager): void
     {
         $id = intval($this->request->getGet()->get('id')) ?? null;
-        $action = $this->request->getGet()->get('action') ?? null;
         $post = $this->postManager->findByIdPost($id);
         $comments = $commentManager->findByIdComment($post->getIdPost());
-        $user = null;
-        $bugComment = null;
-        if ($action === 'signal') {
-            $idComment = intval($this->request->getGet()->get('idComment')) ?? null;
-            $commentManager->signalComment($idComment);
-            header('Location: /post/id='.$id);
-            exit();
-        } elseif ($action === 'sendComment') {
-            $this->session->setSession('token', $this->token->createSessionToken());
-            $bugComment = $commentManager->checkComment($id, $this->request, $this->session, $this->token);
-        }
-        if ($post instanceof Post) {
-            $user = $userManager->findByIdUser($post->getUserId());
-        } elseif ($post === null) {
-            header('Location: /post/id=1');
-            exit();
-        }
-        $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, "bugComment" => $bugComment, 'comment' => $comments]);
+        $user = $userManager->findNameByIdUser($post->getUserId());
+        $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, 'comment' => $comments]);
     }
     public function postsAction(): void
     {
         $perpage = intval($this->request->getGet()->get('perpage')) ?? null;
-        $page = $this->request->getGet()->get('page') ?? null;
         $paginationPost =  $this->postManager->paginationPost($perpage) ?? null;
-        
         if (empty($perpage) || $perpage === 0) {
-            header('Location: /posts/perpage=1');
+            header('Location: /?page=posts&perpage=1');
             exit();
         } elseif ($paginationPost['post'] === null) {
-            header('Location: /posts/perpage=1');
+            header('Location: /?page=posts&perpage=1');
             exit();
         }
         $this->view->render('Frontoffice', 'posts', ['paginationPost' => $paginationPost]);
+    }
+    public function signalAction(CommentManager $commentManager): void
+    {
+        $id = intval($this->request->getGet()->get('id')) ?? null;
+        $idComment = intval($this->request->getGet()->get('idComment')) ?? null;
+        $commentManager->signalComment($idComment);
+        header('Location: /?page=post&id='.$id);
+        exit();
+    }
+    public function sendAction(CommentManager $commentManager): void
+    {
+        $id = intval($this->request->getGet()->get('id')) ?? null;
+        $this->session->setSession('token', $this->token->createSessionToken());
+        $commentManager->checkComment($id, $this->request, $this->session, $this->token);
     }
 }

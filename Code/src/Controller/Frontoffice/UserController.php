@@ -7,6 +7,7 @@ namespace App\Controller\Frontoffice;
 use App\Model\Manager\UserManager;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
+use App\Service\Mail;
 use App\Service\Security\Token;
 use App\View\View;
 
@@ -17,7 +18,6 @@ final class UserController
     private Session $session;
     private Request $request;
     private Token $token;
-    private $action;
     public function __construct(UserManager $userManager, View $view, Token $token, Session $session, Request $request)
     {
         $this->userManager = $userManager;
@@ -25,25 +25,32 @@ final class UserController
         $this->token = $token;
         $this->session = $session;
         $this->request = $request;
-        $this->action = $request->getGet()->get('action') ?? null;
     }
     public function homeAction(): void
     {
-        $mail = null;
-        if ($this->action === 'sendMessage') {
-            $this->session->setSession('token', $this->token->createSessionToken());
-        } elseif ($this->action === "logout") {
-            $this->session->sessionDestroy();
-            header('Location: /?p=home');
-            exit();
+        $this->view->render('Frontoffice', 'home', []);
+    }
+    public function sendMailAction(Mail $mailClass): void
+    {
+        $mail = [];
+        $this->session->setSession('token', $this->token->createSessionToken());
+        $mail = $mailClass->checkMail($this->session, $this->token, $this->request);
+        if (array_key_exists("send", $mail)) {
+            $mailClass->sendMail();
         }
         $this->view->render('Frontoffice', 'home', ['mail'=>$mail]);
+    }
+    public function logOutAction(): void
+    {
+        $this->session->sessionDestroy();
+        header('Location: /?p=home');
+        exit();
     }
     public function inscriptionAction(): void
     {
         $user = $this->session->getSessionName('user') ?? null;
         if (isset($user) && $user !== null) {
-            header('Location: /home');
+            header('Location: /?page=home');
             exit();
         }
         $register = null;
@@ -51,7 +58,7 @@ final class UserController
             $this->session->setSession('token', $this->token->createSessionToken());
             $register = $this->userManager->userSignIn($this->session, $this->token, $this->request);
         } elseif (isset($this->action) && $this->action === null) {
-            header('Location: /home');
+            header('Location: /?page=home');
             exit();
         }
         $this->view->render('Frontoffice', 'inscription', ["register" => $register]);
@@ -60,7 +67,7 @@ final class UserController
     {
         $user = $this->session->getSessionName('user') ?? null;
         if (isset($user) && $user !== null) {
-            header('Location: /home');
+            header('Location: /?page=home');
             exit();
         }
         $logIn = null;
@@ -68,7 +75,7 @@ final class UserController
             $this->session->setSession('token', $this->token->createSessionToken());
             $logIn = $this->userManager->userLogIn($this->session, $this->token, $this->request);
         } elseif (isset($this->action) && $this->action === null) {
-            header('Location: /home');
+            header('Location: /?page=home');
             exit();
         }
         $this->view->render('Frontoffice', 'Connexion', ["logIn" => $logIn]);

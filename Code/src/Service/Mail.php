@@ -10,16 +10,12 @@ use App\View\View;
 final class Mail
 {
     private $errors = null;
-    private $succes = null;
-    private Session $session;
+    private $success = null;
     private Request $request;
-    private Token $token;
     private View $view;
-    public function __construct(Request $request, View $view, Token $token, Session $session)
+    public function __construct(Request $request, View $view)
     {
-        $this->session = $session;
         $this->request = $request;
-        $this->token = $token;
         $this->view = $view;
     }
     public function sendMail(): void
@@ -27,8 +23,8 @@ final class Mail
         $entete  = 'MIME-Version: 1.0' . "\r\n";
         $entete .= 'Content-type: text/html; charset=utf-8' . "\r\n";
         $entete .= 'From: ' . $this->request->getPost()->get('mail') . "\r\n";
-        $message = '';
-        //mail('millet.marcalban@gmail.com', 'E-mail envoyé du site DevDark',$message, $entete); --> pas de render controller
+        $message = $this->view->renderMail(['name'=>$this->request->getPost()->get('name'),'lastName'=>$this->request->getPost()->get('lastName'),'mail'=>$this->request->getPost()->get('mail'),'message'=>$this->request->getPost()->get('message')]);
+        mail('millet.marcalban@gmail.com', 'E-mail envoyé du site DevDark', $message, $entete);
     }
     public function checkMail(Session $session, Token $token, Request $request): ?array
     {
@@ -52,8 +48,8 @@ final class Mail
             $this->errors['error']['tokenEmpty'] = 'Formulaire incorrect';
         }
         if (empty($this->errors)) {
-            $this->succes['succes']['send'] = 'Votre message a bien été envoyé.';
-            return $this->succes;
+            $this->success['send'] = 'Votre message a bien été envoyé.';
+            return $this->success;
         }
         return $this->errors;
     }

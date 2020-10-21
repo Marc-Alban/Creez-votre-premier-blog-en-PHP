@@ -2,7 +2,6 @@
 {% block title %}DevDark
 {% endblock %}
 {% block content %}
-	<!-- Masthead-->
 	<header class="masthead">
 		<div class="container d-flex h-100 align-items-center">
 			<div class="mx-auto text-center">
@@ -14,44 +13,33 @@
 		</div>
 	</header>
 	<main>	
-	<!-- Signup-->
 	<section class="signup-section" id="signup">
 		<div class="container">
 			<div class="row" id="mail">
 				<div class="col-md-10 col-lg-8 mx-auto text-center">
 					<i class="far fa-paper-plane fa-2x mb-2 text-white"></i>
 					<h2 class="text-white mb-5">Contactez-moi !</h2>
-									<!-- Contact-->
-				{#--------------------------CONDITION-DATA----------------------------#}
-					{% if data.mail %}
-					{#--------------------------SUCCES-MESSAGE----------------------------#}
-						{% for success in data.mail.succes %}
-							<div class="alert alert-primary" role="alert"> {{success}}
-						</div>
-					{% endfor %}
-					{#-------------------------END-CONDITION-DATA----------------------------#}
-					{#-------------------------END-SUCCES-MESSAGE----------------------------#}
+				{% if data.mail.send %}
+					<div class="alert alert-primary" role="alert">
+						{{data.mail.send}}
+					</div>
 				{% endif %}
-				{#--------------------------CONDITION-DATA----------------------------#}
-				{% if data.mail %}
-					{#--------------------------ERROR-MESSAGE----------------------------#}
+				{% if data.mail.error %}
 					{% for errors in data.mail.error %}
 						<div class="alert alert-danger" role="alert">
 							{{errors}}
 						</div>
 					{% endfor %}
-					{#--------------------------ERROR-MESSAGE----------------------------#}
 				{% endif %}
-				{#--------------------------END-CONDITION-DATA----------------------------#}
-						<form method="post" action="/home/sendMessage" class="form-inline d-flex">
-								<input class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre nom" type="text" name="name"><br>
-								<input class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre prénom" type="text" name="lastName"><br>
-								<input class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="email" name="mail"><br>
-								<textarea class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" placeholder="Entrer votre Message" name="message"></textarea><br>
-							</div>
-							<input type="hidden" name="token" id="token" value="{{session.token}}">
-							<button type="submit" name="submit" class="btn btn-primary mx-auto">Envoyer</button>
-						</form>
+				<form method="post" action="/?page=home&action=sendMessage&#mail" class="form-inline d-flex">
+						<input class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre nom" type="text" name="name"><br>
+						<input class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre prénom" type="text" name="lastName"><br>
+						<input class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="email" name="mail"><br>
+						<textarea class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" placeholder="Entrer votre Message" name="message"></textarea><br>
+					</div>
+					<input type="hidden" name="token" id="token" value="{{session.token}}">
+					<button type="submit" name="submit" class="btn btn-primary mx-auto">Envoyer</button>
+				</form>
 				</div>
 			</div>
 		</div>

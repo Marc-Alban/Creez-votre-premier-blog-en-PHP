@@ -4,7 +4,6 @@ namespace App\Model\Manager;
 
 use App\Model\Entity\User;
 use App\Model\Repository\UserRepository;
-use App\Service\Http\Parameter;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
 use App\Service\Security\Token;
@@ -18,7 +17,7 @@ final class UserManager
     {
         $this->userRepository = $userRepository;
     }
-    public function findNameByIdUser(int $idUser): string
+    public function findNameByIdUser(int $idUser): User
     {
         return $this->userRepository->findById($idUser);
     }
