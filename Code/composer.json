@@ -6,7 +6,8 @@
     }],
     "require": {
         "filp/whoops": "^2.7",
-        "twig/twig": "^3.0"
+        "twig/twig": "^3.0",
+        "symfony/var-dumper": "^5.1"
     },
     "autoload": {
         "psr-4": {
@@ -15,6 +16,6 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
-        "phpstan/phpstan": "^0.12.49"
+        "phpstan/phpstan": "^0.12.50"
     }
 }

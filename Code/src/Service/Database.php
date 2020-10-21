@@ -13,15 +13,17 @@ final class Database
     private ConfigProperties $configProperties;
     private array $dsn;
     private $database;
+    private $pdoOptions;
 
     public function __construct(ConfigProperties $configProperties)
     {
         $this->configProperties = $configProperties;
         $this->dsn = $this->configProperties->connect();
         try {
-            $this->database = new PDO($this->dsn['dsn'], $this->dsn['user'], $this->dsn['pass']);
+            $this->pdoOptions[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES utf8";
+            $this->database = new PDO($this->dsn['dsn'], $this->dsn['user'], $this->dsn['pass'], $this->pdoOptions);
         } catch (Exception $e) {
-            $e->getMessage();
+            throw new Exception("Probleme avec la bdd");
         }
     }
 

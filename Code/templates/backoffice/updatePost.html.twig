@@ -11,7 +11,7 @@
 					<div class="panel-title text-center">Modifier un article</div>
 				</div>
 				<div class="panel-body mt-5">
-					<form method="POST" action="/?page=modifPost&action=modifPostBdd" enctype="multipart/form-data">
+					<form method="POST" action="/modifPost/modifPostBdd" enctype="multipart/form-data">
 						<input id="title" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre titre" type="text" name="title" value="{{post.title}}"><br>
 						<input id="image" class="flex-fill col-sm-2 col-md-12 mr-0 mr-sm-2 mb-3 mb-sm-2"  type="file" name="imagePost" value="{{post.imagePost}}"><br>
 						<textarea class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" placeholder="Entrer le chapo" name="chapo" value="{{post.chapo}}"></textarea><br>

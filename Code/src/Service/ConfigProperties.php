@@ -14,9 +14,9 @@ class ConfigProperties
     public function __construct()
     {
         try {
-            $this->ini = parse_ini_file(ROOT.'config.ini', false);
+            $this->ini = parse_ini_file('../config.ini', false);
         } catch (Exception $e) {
-            die('Erreur : Problème avec le fichier de config ');
+            throw new Exception("Erreur : Problème avec le fichier de configuration");
         }
         $this->DbHost  = $this->ini['DbHost'];
         $this->DbName  = $this->ini['DbName'];

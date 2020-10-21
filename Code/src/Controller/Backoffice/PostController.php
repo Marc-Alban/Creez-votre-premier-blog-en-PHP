@@ -29,7 +29,7 @@ final class PostController
         $action = $this->request->getGet()->get('action') ?? null;
         $valdel = null;
         if ($userSession === null) {
-            header('Location: /?page=connexion');
+            header('Location: /connexion');
             exit();
         }
         if ($action === 'addPost') {
@@ -43,10 +43,10 @@ final class PostController
         $userSession = $this->session->getSessionName('user') ?? null;
         $perpage = intval($this->request->getGet()->get('perpage')) ?? null;
         if ($userSession === null) {
-            header('Location: /?page=connexion');
+            header('Location: /connexion');
             exit();
         } elseif (!is_int($perpage) || empty($perpage)) {
-            header('Location: /?page=allPost&perpage=1');
+            header('Location: /allPost&perpage=1');
             exit();
         }
         $post = $this->postManager->paginationPost($perpage);

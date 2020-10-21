@@ -9,6 +9,7 @@ class Request
     private $get;
     private $post;
     private $file;
+    public $server;
     public function __construct()
     {
         $this->get = new Parameter($_GET);

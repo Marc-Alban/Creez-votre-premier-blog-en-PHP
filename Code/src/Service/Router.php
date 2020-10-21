@@ -4,13 +4,13 @@ namespace  App\Service;
 
 use App\Controller\ErrorController;
 use App\Model\Manager\CommentManager;
-use App\Model\Manager\MailManager;
 use App\Model\Manager\UserManager;
 use App\Model\Repository\CommentRepository;
 use App\Model\Repository\UserRepository;
 use App\Service\Database;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
+use App\Service\Mail;
 use App\Service\Security\Token;
 use App\View\View;
 
@@ -23,6 +23,11 @@ final class Router
     private Session $session;
     private View $view;
     private ErrorController $error;
+    private Mail $mail;
+    private $url;
+    private $page;
+    private $id;
+    private $action;
     public function __construct()
     {
         $this->request = new Request();
@@ -32,94 +37,81 @@ final class Router
         $this->session = new Session();
         $this->view = new View($this->session);
         $this->error = new ErrorController($this->view);
+        $this->mail = new Mail($this->request, $this->view);
     }
-    public function run(): void
+    public function run()
     {
-        $page = $this->request->getGet()->get('page') ?? 'home';
-        $pageMin = lcfirst($page);
-        $pageFront = [
-        'home' => 'UserController',
-        'post' => 'PostController',
-        'posts' => 'PostController',
-        'connexion' => 'UserController',
-        'inscription' => 'UserController',
-        ];
-        $pageBack = [
-        'dashboard' => 'UserController',
-        'allPost' => 'PostController',
-        'allComments' => 'CommentController',
-        'addPost' => 'PostController',
-        'updatePost' => 'PostController',
-        'password' => 'UserController'
-        ];
-        if (array_key_exists($pageMin, $pageFront)) {
-            $repositoryName = str_replace('Controller', 'Repository', $pageFront[$pageMin]);
-            $managerName = str_replace('Controller', 'Manager', $pageFront[$pageMin]);
-            $repository = 'App\Model\Repository\\' .$repositoryName;
-            $manager = 'App\Model\Manager\\' .$managerName;
-            switch ($pageFront[$pageMin]) {
-                case 'UserController':
-                    $userRepo = new $repository($this->database);
-                    $userManager = new $manager($userRepo);
-                    $controller = 'App\Controller\Frontoffice\\' .$pageFront[$pageMin];
-                    $control = new $controller($userManager, $this->view, $this->token, $this->session, $this->request);
-                    if ($pageMin === 'home') {
-                        $mailManager = new MailManager();
-                        $control->homeAction($mailManager);
-                    } elseif ($pageMin !== 'home') {
-                        $methode = $pageMin.'Action';
-                        $control->$methode();
-                    }
-                break;
-                case 'PostController':
-                    $postRepo = new $repository($this->database);
-                    $postManager = new $manager($postRepo);
-                    $controller = 'App\Controller\Frontoffice\\' .$pageFront[$pageMin];
-                    $control = new $controller($postManager, $this->view, $this->request, $this->token, $this->session);
-                    $methode = $pageMin.'Action';
-                    if ($pageMin === 'post') {
-                        $commentRepo = new CommentRepository($this->database);
-                        $commentManager = new CommentManager($commentRepo);
-                        $userRepo = new UserRepository($this->database);
-                        $userManager = new UserManager($userRepo);
-                        $control->postAction($commentManager, $userManager);
-                    } elseif ($pageMin !== 'post') {
-                        $control->$methode();
-                    }
-                break;
+        $this->url = $this->request->getGet()->get('page') ?? 'home';
+        $this->page = lcfirst($this->url);
+
+        $this->id = $this->request->getGet()->get('id') ?? null;
+        $this->action = $this->request->getGet()->get('action') ?? null;
+
+        $userFrontPage = ['home','connexion','inscription'];
+        $postFrontPage = ['post','posts'];
+        $userBackPage = ['dashboard','password'];
+        $postBackPage = ['allPost','addPost','updatePost'];
+        $commentBackPage = ['allComments'];
+
+        if (in_array($this->page, $userFrontPage, true)) {
+            $pathController = 'App\Controller\Frontoffice\UserController';
+            $pathUserRepository = 'App\Model\Repository\UserRepository';
+            $pathUserManager = 'App\Model\Manager\UserManager';
+            $userRepository = new $pathUserRepository($this->database);
+            $userManager = new $pathUserManager($userRepository);
+            $instanceController = new $pathController($userManager, $this->view, $this->token, $this->session, $this->request);
+            if ($this->page === 'home' && $this->action === null) {
+                $methode = $this->page .'Action';
+                return $instanceController->$methode();
+            } elseif ($this->page === 'home' && $this->action === 'sendMessage') {
+                return $instanceController->sendMailAction($this->mail);
             }
-        } elseif (array_key_exists($pageMin, $pageBack)) {
-            $repositoryName = str_replace('Controller', 'Repository', $pageBack[$pageMin]);
-            $managerName = str_replace('Controller', 'Manager', $pageBack[$pageMin]);
-            $repository = 'App\Model\Repository\\' .$repositoryName;
-            $manager = 'App\Model\Manager\\' .$managerName;
-            switch ($pageBack[$pageMin]) {
-                case 'UserController':
-                    $userRepo = new $repository($this->database);
-                    $userManager = new $manager($userRepo);
-                    $controller = 'App\Controller\Backoffice\\' .$pageBack[$pageMin];
-                    $control = new $controller($userManager, $this->view, $this->token, $this->session, $this->request);
-                    $methode = $pageMin.'Action';
-                    $control->$methode();
-                break;
-                case 'PostController':
-                    $postRepo = new $repository($this->database);
-                    $postManager = new $manager($postRepo);
-                    $controller = 'App\Controller\Backoffice\\' .$pageBack[$pageMin];
-                    $control = new $controller($postManager, $this->view, $this->token, $this->session, $this->request);
-                    $methode = $pageMin.'Action';
-                    $control->$methode();
-                break;
-                case 'CommentController':
-                    $commentRepo = new $repository($this->database);
-                    $commentManager = new $manager($commentRepo);
-                    $controller = 'App\Controller\Backoffice\\' .$pageBack[$pageMin];
-                    $control = new $controller($commentManager, $this->view, $this->session, $this->request);
-                    $methode = $pageMin.'Action';
-                    $control->$methode();
-                break;
+        } elseif (in_array($this->page, $postFrontPage, true)) {
+            $pathPostRepository = 'App\Model\Repository\PostRepository';
+            $pathPostManager = 'App\Model\Manager\PostManager';
+            $postRepository = new $pathPostRepository($this->database);
+            $postManager = new $pathPostManager($postRepository);
+            $pathController = 'App\Controller\Frontoffice\PostController';
+            $instanceController = new $pathController($postManager, $this->view, $this->request, $this->token, $this->session);
+            if ($this->page  === 'post' && $this->id) {
+                $commentRepo = new CommentRepository($this->database);
+                $commentManager = new CommentManager($commentRepo);
+                $userRepo = new UserRepository($this->database);
+                $userManager = new UserManager($userRepo);
+                return $instanceController->postAction($commentManager, $userManager);
+            } elseif ($this->page !== 'post') {
+                $methode = $this->page .'Action';
+                return $instanceController->$methode();
             }
-        } elseif (!array_key_exists($pageMin, $pageFront) || !array_key_exists($pageMin, $pageBack)) {
+            $this->error->notFound();
+        } elseif (in_array($this->page, $userBackPage, true)) {
+            $pathUserRepository = 'App\Model\Repository\UserRepository';
+            $pathUserManager = 'App\Model\Manager\UserManager';
+            $userRepository = new $pathUserRepository($this->database);
+            $userManager = new $pathUserManager($userRepository);
+            $pathController = 'App\Controller\Backoffice\UserController';
+            $instanceController = new $pathController($userManager, $this->view, $this->token, $this->session, $this->request);
+            $methode = $this->page .'Action';
+            return $instanceController->$methode();
+        } elseif (in_array($this->page, $postBackPage, true)) {
+            $pathPostRepository = 'App\Model\Repository\PostRepository';
+            $pathPostManager = 'App\Model\Manager\PostManager';
+            $postRepository = new $pathPostRepository($this->database);
+            $postManager = new $pathPostManager($postRepository);
+            $pathController = 'App\Controller\Backoffice\PostController';
+            $instanceController = new $pathController($postManager, $this->view, $this->token, $this->session, $this->request);
+            $methode = $this->page .'Action';
+            return $instanceController->$methode();
+        } elseif (in_array($this->page, $commentBackPage, true)) {
+            $pathCommentRepository = 'App\Model\Repository\CommentRepository';
+            $pathCommentManager = 'App\Model\Manager\CommentManager';
+            $commentRepository = new $pathCommentRepository($this->database);
+            $commentManager = new $pathCommentManager($commentRepository);
+            $pathController = 'App\Controller\Backoffice\CommentController';
+            $instanceController = new $pathController($commentManager, $this->view, $this->session, $this->request);
+            $methode = $this->page .'Action';
+            return $instanceController->$methode();
+        } elseif (!in_array($this->page, $userFrontPage, true) || !in_array($this->page, $postFrontPage, true) || !in_array($this->page, $userBackPage, true) || !in_array($this->page, $postBackPage, true) || !in_array($this->page, $commentBackPage, true)) {
             $this->error->notFound();
         }
     }

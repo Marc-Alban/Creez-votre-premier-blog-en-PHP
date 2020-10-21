@@ -642,7 +642,7 @@ main {
     }
     .masthead {
         height: 100vh;
-        padding: 0;
+        padding: 30em 0;
     }
     .masthead h1 {
         font-size: 6.5rem;

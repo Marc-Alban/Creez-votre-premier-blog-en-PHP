@@ -39,73 +39,35 @@ final class UserRepository
             ':passwordUser' => $pass,
             ':idUser' => $idUser,
         ];
-        $req = $this->db->prepare("UPDATE `user` SET `passwordUser`=:passwordUser WHERE idUser = :idUser");
+        $req = $this->db->prepare("UPDATE `user` SET `passwordUser`=:passwordUser WHERE id = :id");
         $req->execute($commentArray);
     }
-    public function findId(): ?int
-    {
-        $pdo = $this->db->query("SELECT idUser FROM user");
-        $executeIsOk = $pdo->execute();
-        if ($executeIsOk === true) {
-            $idUserBdd = $pdo->fetchObject(User::class);
-            if ($idUserBdd) {
-                $id = $idUserBdd->getIdUser();
-                return $id;
-            } elseif ($idUserBdd === false) {
-                return null;
-            }
-            return null;
-        } elseif ($executeIsOk === false) {
-            return null;
-        }
-        return null;
-    }
-    public function findById(int $idUser = null): ?string
+    public function findById(int $idUser): ?User
     {
         $executeIsOk = null;
         $pdo = null;
-        if ($idUser !== null) {
-            $req = [
+        $req = [
                 ':idUser' => $idUser
             ];
-            $pdo = $this->db->prepare("SELECT userName FROM user WHERE idUser = :idUser");
-            $executeIsOk = $pdo->execute($req);
-        } elseif ($idUser === null) {
-            $pdo = $this->db->query("SELECT userName FROM user");
-            $executeIsOk = $pdo->execute();
-        }
+        $pdo = $this->db->prepare("SELECT * FROM user WHERE idUser = :idUser");
+        $executeIsOk = $pdo->execute($req);
         if ($executeIsOk === true) {
             $userBdd = $pdo->fetchObject(User::class);
-            if ($userBdd) {
-                $idUser = $userBdd->getUserName();
-                return $idUser;
-            } elseif ($userBdd === false) {
-                return null;
-            }
             return $userBdd;
-        } elseif ($executeIsOk === false) {
-            return null;
         }
+
         return null;
     }
-    public function findByEmail(string $email): ?string
+    public function findByEmail(string $email): ?User
     {
         $tabEmail = [
             ':email' => $email
         ];
-        $pdo = $this->db->prepare("SELECT email FROM user WHERE email = :email");
+        $pdo = $this->db->prepare("SELECT * FROM user WHERE email = :email");
         $executeIsOk = $pdo->execute($tabEmail);
         if ($executeIsOk === true) {
             $mailBdd = $pdo->fetchObject(User::class);
-            if ($mailBdd) {
-                $mail = $mailBdd->getEmail();
-                return $mail;
-            } elseif ($mailBdd === false) {
-                return null;
-            }
-            return null;
-        } elseif ($executeIsOk === false) {
-            return null;
+            return $mailBdd;
         }
         return null;
     }

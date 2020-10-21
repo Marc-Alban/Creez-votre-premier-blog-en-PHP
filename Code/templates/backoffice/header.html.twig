@@ -23,13 +23,13 @@
 						{{ session.user }}
 					</a>
 					<div class="dropdown-menu sm-menu">
-						<a class="dropdown-item" href="/?page=dashboard">Gestion de compte</a>
-						<a class="dropdown-item" href="/?page=home&action=logout">Se déconnecter</a>
+						<a class="dropdown-item" href="/dashboard">Gestion de compte</a>
+						<a class="dropdown-item" href="/?page=home&logout">Se déconnecter</a>
 					</div>
 				</li>
 				{% if session.userAdmin == 1 %}
 					<li class="nav-item">
-						<a class="nav-link" href="/?page=allComments">Commentaires
+						<a class="nav-link" href="/allComments">Commentaires
 							<span class="sr-only">(current)</span>
 						</a>
 					</li>
@@ -38,9 +38,9 @@
 							Articles
 						</a>
 						<div class="dropdown-menu sm-menu">
-							<a class="dropdown-item" href="/?page=addPost">Ajouter</a>
-							<a class="dropdown-item" href="/?page=updatePost">Modifier</a>
-							<a class="dropdown-item" href="/?page=allPost&pp=1">Tous les articles</a>
+							<a class="dropdown-item" href="/addPost">Ajouter</a>
+							<a class="dropdown-item" href="/updatePost">Modifier</a>
+							<a class="dropdown-item" href="/allPost&pp=1">Tous les articles</a>
 						</div>
 					</li>
 				{% endif %}
