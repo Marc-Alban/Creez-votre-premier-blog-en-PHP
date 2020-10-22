@@ -13,15 +13,15 @@ final class UserRepository
     {
         $this->db = $db->getPdo();
     }
-    public function create(Parameter $dataPost): void
+    public function create(string $email, string $pseudo, string $password): void
     {
-        // $tabUser = [
-        //     ':userName' => $data['post']['userName'],
-        //     ':email' => $data['post']['email'],
-        //     ':passwordUser' => password_hash($data['post']['password'], PASSWORD_BCRYPT),
-        // ];
-        // $req = $this->db->prepare("INSERT INTO user (userName, email, passwordUser) VALUES (:userName, :email, :passwordUser)");
-        // $req->execute($tabUser);
+        $tabUser = [
+            ':userName' => $pseudo,
+            ':email' => $email,
+            ':passwordUser' => password_hash($password, PASSWORD_BCRYPT),
+        ];
+        $req = $this->db->prepare("INSERT INTO user (userName, email, passwordUser) VALUES (:userName, :email, :passwordUser)");
+        $req->execute($tabUser);
     }
     public function update(int $idUser, string $email, string $userName): void
     {
@@ -44,8 +44,6 @@ final class UserRepository
     }
     public function findById(int $idUser): ?User
     {
-        $executeIsOk = null;
-        $pdo = null;
         $req = [
                 ':idUser' => $idUser
             ];
@@ -55,7 +53,19 @@ final class UserRepository
             $userBdd = $pdo->fetchObject(User::class);
             return $userBdd;
         }
-
+        return null;
+    }
+    public function findByName(string $pseudo): ?User
+    {
+        $tabUser = [
+            ':userName' => $pseudo
+        ];
+        $pdo = $this->db->prepare("SELECT * FROM user WHERE userName = :userName");
+        $executeIsOk = $pdo->execute($tabUser);
+        $userBdd = $pdo->fetchObject(User::class);
+        if ($executeIsOk === true && $userBdd !== false) {
+            return $userBdd;
+        }
         return null;
     }
     public function findByEmail(string $email): ?User
@@ -65,8 +75,8 @@ final class UserRepository
         ];
         $pdo = $this->db->prepare("SELECT * FROM user WHERE email = :email");
         $executeIsOk = $pdo->execute($tabEmail);
-        if ($executeIsOk === true) {
-            $mailBdd = $pdo->fetchObject(User::class);
+        $mailBdd = $pdo->fetchObject(User::class);
+        if ($executeIsOk === true && $mailBdd !== false) {
             return $mailBdd;
         }
         return null;

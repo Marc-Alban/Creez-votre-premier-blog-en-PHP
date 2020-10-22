@@ -22,28 +22,32 @@ final class CommentController
         $this->session = $session;
         $this->request = $request;
     }
-    public function commentAction(): void
+    public function allCommentsAction(): void
     {
         $userSession = $this->session->getSessionName('user') ?? null;
-        $action = $this->request->getGet()->get('action') ?? null;
-        $idComment = $this->request->getGet()->get('id') ?? null;
-        $val = null;
-        $del = null;
         if (!isset($userSession) && $userSession === null) {
-            header('Location: /connexion');
+            header('Location: /?page=login');
             exit();
         }
         $comments = $this->commentManager->findAllComments();
-        if ($action === 'valide') {
-            $val = $this->commentManager->validComment((int) $idComment, 0);
-            header("Refresh: 1;/allComments");
-        } elseif ($action === 'valideSignal') {
-            $val = $this->commentManager->validComment((int) $idComment, 1);
-            header("Refresh: 1;/allComments");
-        } elseif ($action === 'deleted' || $action === 'deletedSignal') {
-            $del = $this->commentManager->deleteComment((int) $idComment);
-            header("Refresh: 1;/allComments");
-        }
-        $this->view->render('backoffice', 'allComments', ["comments" => $comments, 'val' => $val, 'del' => $del]);
+        $this->view->render('backoffice', 'allComments', ["comments" => $comments]);
+    }
+    public function validCommentAction(): void
+    {
+        $val = null;
+        $idComment = $this->request->getGet()->get('id') ?? null;
+        $comments = $this->commentManager->findAllComments();
+        $val = $this->commentManager->validComment((int) $idComment, 0);
+        header("Location: /?page=allComments");
+        $this->view->render('backoffice', 'allComments', ["comments" => $comments, 'val' => $val]);
+    }
+    public function deleteCommentAction(): void
+    {
+        $del = null;
+        $idComment = $this->request->getGet()->get('id') ?? null;
+        $comments = $this->commentManager->findAllComments();
+        $del = $this->commentManager->deleteComment((int) $idComment);
+        header("Location: /?page=allComments");
+        $this->view->render('backoffice', 'allComments', ["comments" => $comments, 'del' => $del]);
     }
 }

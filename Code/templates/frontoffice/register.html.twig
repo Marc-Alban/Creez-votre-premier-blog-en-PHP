@@ -11,28 +11,19 @@
 				</div>
 				<div
 					class="panel-body">
-					{#--------------------------CONDITION-DATA----------------------------#}
-					{% if data.register %}
-						{#--------------------------SUCCES-MESSAGE----------------------------#}
-						{% for success in data.register.succes %}
-							<div class="alert alert-primary" role="alert"> {{success}}
+					{% if data.checkRegister.success %}
+							<div class="alert alert-primary" role="alert"> {{data.checkRegister.success}}
 						</div>
-					{% endfor %}
-						{#-------------------------END-CONDITION-DATA----------------------------#}
-						{#-------------------------END-SUCCES-MESSAGE----------------------------#}
 					{% endif %}
-					{#--------------------------CONDITION-DATA----------------------------#}
-					{% if data.register %}
-						{#--------------------------ERROR-MESSAGE----------------------------#}
-						{% for errors in data.register.error %}
+					{% if data.checkRegister.error %}
+						{% for errors in data.checkRegister.error %}
 							<div class="alert alert-danger" role="alert">
 								{{errors}}
 							</div>
 						{% endfor %}
-						{#--------------------------ERROR-MESSAGE----------------------------#}
 					{% endif %}
-					{#--------------------------END-CONDITION-DATA----------------------------#}
-					<form method="POST" action="/inscription/signin">
+				
+					<form method="POST" action="/?page=register&action=registration">
 						<input id="userName" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre Pseudo" type="text" name="userName"><br>
 						<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email"><br>
 						<input id="password" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre mot de passe" type="password" name="password"><br>
