@@ -25,6 +25,7 @@ final class PostController
     }
     public function addPostAction(): void
     {
+        $this->session->setSession('token', $this->token->createSessionToken());
         $userSession = $this->session->getSessionName('user') ?? null;
         if ($userSession === null) {
             header('Location: /?page=login');
@@ -40,7 +41,6 @@ final class PostController
             header('Location: /?page=login');
             exit();
         }
-        $this->session->setSession('token', $this->token->createSessionToken());
         $valdel = $this->postManager->checkFormAddPost($this->session, $this->token, $this->request);
         $this->view->render('backoffice', 'addPost', ["valdel" => $valdel]);
     }

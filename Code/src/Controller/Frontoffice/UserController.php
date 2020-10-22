@@ -28,12 +28,12 @@ final class UserController
     }
     public function homeAction(): void
     {
+        $this->session->setSession('token', $this->token->createSessionToken());
         $this->view->render('Frontoffice', 'home', []);
     }
     public function sendMailAction(Mail $mailClass): void
     {
         $mail = [];
-        $this->session->setSession('token', $this->token->createSessionToken());
         $mail = $mailClass->checkMail($this->session, $this->token, $this->request);
         if (array_key_exists("send", $mail)) {
             $mailClass->sendMail();
@@ -49,6 +49,7 @@ final class UserController
     public function registerAction(): void
     {
         $user = $this->session->getSessionName('user') ?? null;
+        $this->session->setSession('token', $this->token->createSessionToken());
         if (isset($user) && $user !== null) {
             header('Location: /?page=home');
             exit();
@@ -63,13 +64,13 @@ final class UserController
             exit();
         }
         $checkRegister = null;
-        $this->session->setSession('token', $this->token->createSessionToken());
         $checkRegister = $this->userManager->userRegister($this->session, $this->token, $this->request);
         $this->view->render('Frontoffice', 'register', ["checkRegister" => $checkRegister]);
     }
     public function loginAction(): void
     {
         $user = $this->session->getSessionName('user') ?? null;
+        $this->session->setSession('token', $this->token->createSessionToken());
         if (isset($user) && $user !== null) {
             header('Location: /?page=home');
             exit();
@@ -84,7 +85,6 @@ final class UserController
             exit();
         }
         $logIn = null;
-        $this->session->setSession('token', $this->token->createSessionToken());
         $logIn = $this->userManager->userLogIn($this->session, $this->token, $this->request);
         $this->view->render('Frontoffice', 'login', ["logIn" => $logIn]);
     }

@@ -25,6 +25,7 @@ final class UserController
     }
     public function dashboardAction(): void
     {
+        $this->session->setSession('token', $this->token->createSessionToken());
         $userSession =  $this->session->getSessionName('user') ?? null;
         $user = $this->userManager->findAllUser();
         if (!isset($userSession) && $userSession === null) {
@@ -40,7 +41,6 @@ final class UserController
             header('Location: /?page=login');
             exit();
         }
-        $this->session->setSession('token', $this->token->createSessionToken());
         $verifUser = $this->userManager->checkForm($this->session, $this->request, $this->token);
         $user = $this->userManager->findAllUser();
         $verifUser = null;
@@ -48,6 +48,7 @@ final class UserController
     }
     public function passwordAction(): void
     {
+        $this->session->setSession('token', $this->token->createSessionToken());
         $userSession =  $this->session->getSessionName('user') ?? null;
         if (!isset($userSession) && $userSession === null) {
             header('Location: /?page=login');
@@ -63,7 +64,6 @@ final class UserController
             header('Location: /?page=login');
             exit();
         }
-        $this->session->setSession('token', $this->token->createSessionToken());
         $verifPassBdd = $this->userManager->checkPassword($this->session, $this->request, $this->token, $userSession);
         $this->view->render('backoffice', 'password', ['verif' => $verifPassBdd]);
     }
