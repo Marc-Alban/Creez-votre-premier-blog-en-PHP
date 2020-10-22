@@ -17,7 +17,7 @@ final class UserManager
     {
         $this->userRepository = $userRepository;
     }
-    public function findNameByIdUser(int $idUser): User
+    public function findNameByIdUser(int $idUser): ?User
     {
         return $this->userRepository->findById($idUser);
     }
@@ -39,9 +39,9 @@ final class UserManager
         } elseif (empty($password) || !password_verify($password, $passwordBdd)) {
             $this->errors['error']["passwordEmpty"] = 'Mot de passe incorrect';
         }
-        // if ($token->compareTokens($session->getSessionName('token'), $dataPost->get('token')) !== false) {
-        //     $this->errors['error']['formRgister'] = "Formulaire incorrect";
-        // }
+        if ($token->compareTokens($session->getSessionName('token'), $dataPost->get('token')) !== false) {
+            $this->errors['error']['formRgister'] = "Formulaire incorrect";
+        }
         if (empty($this->errors)) {
             $session->setSession('user', $email);
             $this->success['success'] = 'Utilisateur est bien connecté';

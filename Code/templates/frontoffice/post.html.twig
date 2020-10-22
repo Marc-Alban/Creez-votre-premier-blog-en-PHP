@@ -3,26 +3,20 @@
 	<div class="container postPage">
 		<div
 			class="raw">
-			{#--------------------------SECTION-HEADING----------------------------#}
 			<h1 class="text-left h1 pt-4 mb-3">
 				<strong>{{data.post.title }}</strong>
 			</h1>
-			{#-------------------------END-SECTION-HEADING----------------------------#}
-			{#--------------------------GRILLE-COLONNE----------------------------#}
 			<div
 				class="col-md-12">
-				{#--------------------------CARD----------------------------#}
 				<div
 					class="pb-5 mx-md-3">
-					{#--------------------------IMAGE----------------------------#}
 					<img
 					class="image-responsive" src="images/post/{{ data.post.imagePost }}" alt="">
-					{#--------------------------END-IMAGE----------------------------#}
 					<div class="container">
 						<div class="row">
 							<div class="col-md-12 col-xl-12 d-flex justify-content-left">
 								<p class="font-small grey-text mb-0">
-									{{ data.user }}
+									{{ data.user.userName }}
 								</p>
 								<pre>|</pre>
 								<p class="font-small grey-text mb-0">
@@ -30,7 +24,6 @@
 								</p>
 							</div>
 						</div>
-						{#--------------------------GRILLE-COLONNE----------------------------#}
 						<p class="text-justify">
 							<pre>chapo du post:</pre>
 							{{ data.post.chapo|raw }}
@@ -111,6 +104,5 @@
 			</div>
 		</div>
 	</div>
-	{#--------------------------Form Comments----------------------------#}
 {% endblock %}
 

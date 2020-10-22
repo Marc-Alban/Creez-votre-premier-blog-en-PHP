@@ -44,8 +44,6 @@ final class UserRepository
     }
     public function findById(int $idUser): ?User
     {
-        $executeIsOk = null;
-        $pdo = null;
         $req = [
                 ':idUser' => $idUser
             ];
@@ -55,7 +53,6 @@ final class UserRepository
             $userBdd = $pdo->fetchObject(User::class);
             return $userBdd;
         }
-
         return null;
     }
     public function findByName(string $pseudo): ?User

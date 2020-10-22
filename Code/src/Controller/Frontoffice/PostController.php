@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace App\Controller\Frontoffice;
 
-use App\Model\Entity\Post;
 use App\Model\Manager\CommentManager;
 use App\Model\Manager\PostManager;
 use App\Model\Manager\UserManager;
