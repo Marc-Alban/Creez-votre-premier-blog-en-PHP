@@ -28,13 +28,13 @@ final class Router
     private $page;
     private $id;
     private $action;
-    public function __construct()
+    public function __construct(Session $session)
     {
+        $this->session = $session;
         $this->request = new Request();
         $this->token = new Token();
         $this->configProperties = new ConfigProperties();
         $this->database = new Database($this->configProperties);
-        $this->session = new Session();
         $this->view = new View($this->session);
         $this->error = new ErrorController($this->view);
         $this->mail = new Mail($this->request, $this->view);
@@ -47,7 +47,7 @@ final class Router
         $this->id = $this->request->getGet()->get('id') ?? null;
         $this->action = $this->request->getGet()->get('action') ?? null;
 
-        $userFrontPage = ['home','connexion','inscription'];
+        $userFrontPage = ['home','login','register'];
         $postFrontPage = ['post','posts'];
         $userBackPage = ['dashboard','password'];
         $postBackPage = ['allPost','addPost','updatePost'];
@@ -60,11 +60,17 @@ final class Router
             $userRepository = new $pathUserRepository($this->database);
             $userManager = new $pathUserManager($userRepository);
             $instanceController = new $pathController($userManager, $this->view, $this->token, $this->session, $this->request);
-            if ($this->page === 'home' && $this->action === null) {
+            if ($this->page === 'home' && $this->action === 'sendMessage') {
+                return $instanceController->sendMailAction($this->mail);
+            } elseif ($this->page === 'home' && $this->action === 'logout') {
+                return $instanceController->logoutAction();
+            } elseif ($this->page === 'register' && $this->action === 'registration') {
+                return $instanceController->registrationAction();
+            } elseif ($this->page === 'login' && $this->action === 'connection') {
+                return $instanceController->connectionAction();
+            } elseif ($this->action === null) {
                 $methode = $this->page .'Action';
                 return $instanceController->$methode();
-            } elseif ($this->page === 'home' && $this->action === 'sendMessage') {
-                return $instanceController->sendMailAction($this->mail);
             }
         } elseif (in_array($this->page, $postFrontPage, true)) {
             $pathPostRepository = 'App\Model\Repository\PostRepository';
@@ -79,11 +85,9 @@ final class Router
                 $userRepo = new UserRepository($this->database);
                 $userManager = new UserManager($userRepo);
                 return $instanceController->postAction($commentManager, $userManager);
-            } elseif ($this->page !== 'post') {
-                $methode = $this->page .'Action';
-                return $instanceController->$methode();
             }
-            $this->error->notFound();
+            $methode = $this->page .'Action';
+            return $instanceController->$methode();
         } elseif (in_array($this->page, $userBackPage, true)) {
             $pathUserRepository = 'App\Model\Repository\UserRepository';
             $pathUserManager = 'App\Model\Manager\UserManager';
@@ -91,6 +95,11 @@ final class Router
             $userManager = new $pathUserManager($userRepository);
             $pathController = 'App\Controller\Backoffice\UserController';
             $instanceController = new $pathController($userManager, $this->view, $this->token, $this->session, $this->request);
+            if ($this->page === 'dashboard' && $this->action === 'sendDatasUser') {
+                return $instanceController->updateUserAction();
+            } elseif ($this->page === 'password' && $this->action === 'modifPass') {
+                return $instanceController->updatePasswordAction();
+            }
             $methode = $this->page .'Action';
             return $instanceController->$methode();
         } elseif (in_array($this->page, $postBackPage, true)) {
@@ -100,6 +109,9 @@ final class Router
             $postManager = new $pathPostManager($postRepository);
             $pathController = 'App\Controller\Backoffice\PostController';
             $instanceController = new $pathController($postManager, $this->view, $this->token, $this->session, $this->request);
+            if ($this->page === 'addPost' && $this->action === 'addPostAction') {
+                return $instanceController->addPostDashboardAction();
+            }
             $methode = $this->page .'Action';
             return $instanceController->$methode();
         } elseif (in_array($this->page, $commentBackPage, true)) {
@@ -109,6 +121,11 @@ final class Router
             $commentManager = new $pathCommentManager($commentRepository);
             $pathController = 'App\Controller\Backoffice\CommentController';
             $instanceController = new $pathController($commentManager, $this->view, $this->session, $this->request);
+            if ($this->page === 'allComments' && $this->action === 'valid') {
+                return $instanceController->validCommentAction();
+            } elseif ($this->page === 'allComments' && $this->action === 'deleted') {
+                return $instanceController->deleteCommentAction();
+            }
             $methode = $this->page .'Action';
             return $instanceController->$methode();
         } elseif (!in_array($this->page, $userFrontPage, true) || !in_array($this->page, $postFrontPage, true) || !in_array($this->page, $userBackPage, true) || !in_array($this->page, $postBackPage, true) || !in_array($this->page, $commentBackPage, true)) {

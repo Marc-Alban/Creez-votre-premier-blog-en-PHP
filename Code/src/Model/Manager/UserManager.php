@@ -12,7 +12,7 @@ final class UserManager
 {
     private UserRepository $userRepository;
     private $errors = null;
-    private $succes = null;
+    private $success = null;
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
@@ -27,40 +27,42 @@ final class UserManager
     }
     public function userLogIn(Session $session, Token $token, Request $request): array
     {
-        $post = $request->getPost() ?? null;
-        $email = $post->get('email') ?? null;
-        $emailBdd = $this->userRepository->findByEmail($email) ?? null;
-        $password = $post->get('password') ?? null;
+        $dataPost = $request->getPost() ?? null;
+        $email = $dataPost->get('email') ?? null;
+        $emailBdd = $this->userRepository->findByEmail($email);
+        $password = $dataPost->get('password') ?? null;
         $passwordBdd = $this->userRepository->findPasswordByUserOrEmail(null, $email);
         if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-        } elseif (empty($email) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email) || $email !== $emailBdd->getEmail()) {
+        } elseif ($email === null || $emailBdd === null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
             $this->errors['error']["emailEmpty"] = 'E-mail invalid ou inexistant ';
         } elseif (empty($password) || !password_verify($password, $passwordBdd)) {
             $this->errors['error']["passwordEmpty"] = 'Mot de passe incorrect';
         }
-        if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
-            $this->errors['error']['formRgister'] = "Formulaire incorrect";
-        }
+        // if ($token->compareTokens($session->getSessionName('token'), $dataPost->get('token')) !== false) {
+        //     $this->errors['error']['formRgister'] = "Formulaire incorrect";
+        // }
         if (empty($this->errors)) {
-            $session->setSession('user', $emailBdd->getEmail());
-            return $this->succes;
+            $session->setSession('user', $email);
+            $this->success['success'] = 'Utilisateur est bien connecté';
+            return $this->success;
         }
         return $this->errors;
     }
-    public function userSignIn(Session $session, Token $token, Request $request): array
+    public function userRegister(Session $session, Token $token, Request $request): array
     {
         $dataPost = $request->getPost() ?? null;
         $pseudo = $dataPost->get('userName') ?? null;
+        $pseudoBdd = $this->userRepository->findByName($pseudo);
         $email = $dataPost->get('email') ?? null;
-        $emailBdd = $this->userRepository->findByEmail(mb_strtolower($email));
+        $emailBdd = $this->userRepository->findByEmail($email);
         $password =  $dataPost->get('password') ?? null;
         $passwordConfirmation = $dataPost->get('passwordConfirmation') ?? null;
         if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-        } elseif (empty($pseudo)) {
-            $this->errors['error']["pseudoEmpty"] = 'Veuillez mettre un pseudo ';
-        } elseif (empty($email) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email) || $email === $emailBdd) {
+        } elseif ($pseudo === null || $pseudoBdd !== null) {
+            $this->errors['error']["pseudoEmpty"] = 'Pseudo manquant ou déjà pris';
+        } elseif ($email === null || $emailBdd !== null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
             $this->errors['error']["emailEmpty"] = 'Mail invalide ou est déjà présente en bdd';
         } elseif (empty($password) || mb_strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password) || $password !== $passwordConfirmation) {
             $this->errors['error']["passwordEmpty"] = 'Mot de passe invalid, doit avoir minuscule-majuscule-chiffres-caractères ';
@@ -69,10 +71,10 @@ final class UserManager
             $this->errors['error']['formRgister'] = "Formulaire incorrect";
         }
         if (empty($this->errors)) {
-            $session->setSession('user', $pseudo);
-            $this->userRepository->create($dataPost);
-            $this->succes['succes']['send'] = 'Utilisateur est bien inscrit';
-            return $this->succes;
+            $session->setSession('user', $email);
+            $this->userRepository->create($email, $pseudo, $password);
+            $this->success['success'] = 'Utilisateur est bien inscrit';
+            return $this->success;
         }
         return $this->errors;
     }
@@ -96,10 +98,10 @@ final class UserManager
             $this->errors['error']['tokenEmpty'] = 'Formulaire incorrect';
         }
         if (empty($this->errors)) {
-            $this->succes['succes']['send'] = 'Mot de passe  bien mis à jour:';
+            $this->success['success']['send'] = 'Mot de passe  bien mis à jour:';
             $passhash = password_hash($password, PASSWORD_BCRYPT);
             $this->userRepository->updatePassword($passhash, $idUser);
-            return $this->succes;
+            return $this->success;
         }
         return $this->errors;
     }
@@ -120,12 +122,12 @@ final class UserManager
             $this->errors['error']['tokenEmpty'] = 'Formulaire incorrect';
         }
         if (empty($this->errors)) {
-            $this->succes['succes']['send'] = 'Utilisateur bien mis à jour:';
+            $this->success['success']['send'] = 'Utilisateur bien mis à jour:';
             $this->userRepository->update($idUser, $email, $userName);
             $session->setSession('user', $userBdd);
             $session->setSession('userAdmin', $this->findAllUser()->getActivated());
             $session->setSession('idUser', $this->findAllUser()->getIdUser());
-            return $this->succes;
+            return $this->success;
         }
         return $this->errors;
     }

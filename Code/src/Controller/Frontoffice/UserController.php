@@ -40,30 +40,43 @@ final class UserController
         }
         $this->view->render('Frontoffice', 'home', ['mail'=>$mail]);
     }
-    public function logOutAction(): void
+    public function logoutAction(): void
     {
         $this->session->sessionDestroy();
         header('Location: /?p=home');
         exit();
     }
-    public function inscriptionAction(): void
+    public function registerAction(): void
     {
         $user = $this->session->getSessionName('user') ?? null;
         if (isset($user) && $user !== null) {
             header('Location: /?page=home');
             exit();
         }
-        $register = null;
-        if (isset($this->action) && $this->action === 'inscription') {
-            $this->session->setSession('token', $this->token->createSessionToken());
-            $register = $this->userManager->userSignIn($this->session, $this->token, $this->request);
-        } elseif (isset($this->action) && $this->action === null) {
+        $this->view->render('Frontoffice', 'register', []);
+    }
+    public function registrationAction(): void
+    {
+        $user = $this->session->getSessionName('user') ?? null;
+        if (isset($user) && $user !== null) {
             header('Location: /?page=home');
             exit();
         }
-        $this->view->render('Frontoffice', 'inscription', ["register" => $register]);
+        $checkRegister = null;
+        $this->session->setSession('token', $this->token->createSessionToken());
+        $checkRegister = $this->userManager->userRegister($this->session, $this->token, $this->request);
+        $this->view->render('Frontoffice', 'register', ["checkRegister" => $checkRegister]);
     }
-    public function connexionAction(): void
+    public function loginAction(): void
+    {
+        $user = $this->session->getSessionName('user') ?? null;
+        if (isset($user) && $user !== null) {
+            header('Location: /?page=home');
+            exit();
+        }
+        $this->view->render('Frontoffice', 'login', []);
+    }
+    public function connectionAction(): void
     {
         $user = $this->session->getSessionName('user') ?? null;
         if (isset($user) && $user !== null) {
@@ -71,13 +84,8 @@ final class UserController
             exit();
         }
         $logIn = null;
-        if (isset($this->action) && $this->action === 'connexion') {
-            $this->session->setSession('token', $this->token->createSessionToken());
-            $logIn = $this->userManager->userLogIn($this->session, $this->token, $this->request);
-        } elseif (isset($this->action) && $this->action === null) {
-            header('Location: /?page=home');
-            exit();
-        }
-        $this->view->render('Frontoffice', 'Connexion', ["logIn" => $logIn]);
+        $this->session->setSession('token', $this->token->createSessionToken());
+        $logIn = $this->userManager->userLogIn($this->session, $this->token, $this->request);
+        $this->view->render('Frontoffice', 'login', ["logIn" => $logIn]);
     }
 }

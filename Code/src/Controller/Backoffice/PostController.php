@@ -26,16 +26,22 @@ final class PostController
     public function addPostAction(): void
     {
         $userSession = $this->session->getSessionName('user') ?? null;
-        $action = $this->request->getGet()->get('action') ?? null;
-        $valdel = null;
         if ($userSession === null) {
-            header('Location: /connexion');
+            header('Location: /?page=login');
             exit();
         }
-        if ($action === 'addPost') {
-            $this->session->setSession('token', $this->token->createSessionToken());
-            $valdel = $this->postManager->checkFormAddPost($this->session, $this->token, $this->request);
+        $this->view->render('backoffice', 'addPost', []);
+    }
+    public function addPostDashboardAction(): void
+    {
+        $userSession = $this->session->getSessionName('user') ?? null;
+        $valdel = null;
+        if ($userSession === null) {
+            header('Location: /?page=login');
+            exit();
         }
+        $this->session->setSession('token', $this->token->createSessionToken());
+        $valdel = $this->postManager->checkFormAddPost($this->session, $this->token, $this->request);
         $this->view->render('backoffice', 'addPost', ["valdel" => $valdel]);
     }
     public function allPostAction(): void
@@ -43,10 +49,10 @@ final class PostController
         $userSession = $this->session->getSessionName('user') ?? null;
         $perpage = intval($this->request->getGet()->get('perpage')) ?? null;
         if ($userSession === null) {
-            header('Location: /connexion');
+            header('Location: /?page=login');
             exit();
         } elseif (!is_int($perpage) || empty($perpage)) {
-            header('Location: /allPost&perpage=1');
+            header('Location: /?page=allPost&perpage=1');
             exit();
         }
         $post = $this->postManager->paginationPost($perpage);
