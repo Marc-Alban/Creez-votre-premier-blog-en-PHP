@@ -28,8 +28,6 @@ final class Mail
     }
     public function checkMail(Session $session, Token $token, Request $request): ?array
     {
-        var_dump($session);
-        die();
         $post = $request->getPost() ?? null;
         $mail = $post->get('mail') ?? null;
         $name = $post->get('name') ?? null;

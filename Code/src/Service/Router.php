@@ -28,9 +28,9 @@ final class Router
     private $page;
     private $id;
     private $action;
-    public function __construct(Session $session)
+    public function __construct()
     {
-        $this->session = $session;
+        $this->session = new Session();
         $this->request = new Request();
         $this->token = new Token();
         $this->configProperties = new ConfigProperties();

@@ -5,13 +5,13 @@ namespace App\Service\Http;
 
 class Session
 {
-    private $session;
+    private array $session;
     public function __construct()
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        $this->session = $_SESSION;
+        $this->session = &$_SESSION;
     }
     public function getSession():array
     {
