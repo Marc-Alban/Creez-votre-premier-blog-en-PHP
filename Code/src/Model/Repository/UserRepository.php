@@ -84,13 +84,13 @@ final class UserRepository
     {
         $executeIsOk = null;
         $pdo = null;
-        if ($user !== null && $email === null) {
+        if ($user !== null && is_null($email)) {
             $tabPass = [
                 ':userName' => $user
             ];
             $pdo = $this->db->prepare("SELECT passwordUser FROM `user` WHERE userName = :userName");
             $executeIsOk = $pdo->execute($tabPass);
-        } elseif ($user === null && $email !== null) {
+        } elseif (is_null($user) && $email !== null) {
             $tabPass = [
                 ':email' => $email
             ];

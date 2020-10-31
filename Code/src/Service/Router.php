@@ -68,7 +68,7 @@ final class Router
                 return $instanceController->registrationAction();
             } elseif ($this->page === 'login' && $this->action === 'connection') {
                 return $instanceController->connectionAction();
-            } elseif ($this->action === null) {
+            } elseif (is_null($this->action)) {
                 $methode = $this->page .'Action';
                 return $instanceController->$methode();
             }

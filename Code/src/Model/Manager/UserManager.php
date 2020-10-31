@@ -29,13 +29,13 @@ final class UserManager
     {
         $dataPost = $request->getPost() ?? null;
         $email = $dataPost->get('email') ?? null;
-        $emailObject = $this->userRepository->findByEmail($email);
+        $emailObject = $this->userRepository->findByEmail($email) ?? null;
         $emailBdd = $emailObject->getEmail();
         $password = $dataPost->get('password') ?? null;
         $passwordBdd = $this->userRepository->findPasswordByUserOrEmail(null, $email);
         if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-        } elseif ($email === null || $emailBdd === null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
+        } elseif (is_null($email) || is_null($emailObject) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
             $this->errors['error']["emailEmpty"] = 'Identifiants incorrect ';
         } elseif (empty($password) || !password_verify($password, $passwordBdd)) {
             $this->errors['error']["passwordEmpty"] = 'Identifiants incorrect';
@@ -61,13 +61,13 @@ final class UserManager
         $passwordConfirmation = $dataPost->get('passwordConfirmation') ?? null;
         if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-        } elseif ($pseudo === null || $pseudoBdd !== null) {
+        } elseif (is_null($pseudo) || $pseudoBdd !== null) {
             $this->errors['error']["pseudoEmpty"] = 'Pseudo manquant ou déjà pris';
-        } elseif ($email === null || $emailBdd !== null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
+        } elseif (is_null($email) || $emailBdd !== null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
             $this->errors['error']["emailEmpty"] = 'Champs email vide ou est déjà présente en bdd';
         } elseif (mb_strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password)) {
             $this->errors['error']["passwordEmpty"] = 'Le mot de passe doit avoir des minuscule-majuscule-chiffres-caractères et être inférieur à 8 caractères';
-        }elseif($password !== $passwordConfirmation || empty($password)){
+        } elseif ($password !== $passwordConfirmation || empty($password)) {
             $this->errors['error']["passwordEmpty"] = 'Les champs mot de passe et mot de passe de confirmation sont vide ou ne correspond pas';
         }
         if ($token->compareTokens($session->getSessionName('token'), $dataPost->get('token')) !== false) {

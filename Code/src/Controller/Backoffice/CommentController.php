@@ -25,7 +25,7 @@ final class CommentController
     public function allCommentsAction(): void
     {
         $userSession = $this->session->getSessionName('user') ?? null;
-        if (!isset($userSession) && $userSession === null) {
+        if (!isset($userSession) && is_null($userSession)) {
             header('Location: /?page=login');
         }
         $comments = $this->commentManager->findAllComments();

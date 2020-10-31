@@ -50,7 +50,7 @@ final class PostRepository
         $req->bindValue(":perPage", $perPage, PDO::PARAM_INT);
         $req->execute();
         $pdoStatement = $req->fetchAll(PDO::FETCH_CLASS);
-        if (empty($pdoStatement)){
+        if (empty($pdoStatement)) {
             return null;
         }
         return $pdoStatement;

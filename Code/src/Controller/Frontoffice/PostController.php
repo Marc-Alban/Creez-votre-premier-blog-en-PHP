@@ -40,7 +40,7 @@ final class PostController
         if (empty($perpage) || $perpage === 0) {
             header('Location: /?page=posts&perpage=1');
             exit();
-        } elseif ($paginationPost['post'] === null) {
+        } elseif (is_null($paginationPost['post'])) {
             header('Location: /?page=posts&perpage=1');
             exit();
         }
