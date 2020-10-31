@@ -23,14 +23,13 @@ final class UserRepository
         $req = $this->db->prepare("INSERT INTO user (userName, email, passwordUser) VALUES (:userName, :email, :passwordUser)");
         $req->execute($tabUser);
     }
-    public function update(int $idUser, string $email, string $userName): void
+    public function update(string $email, string $userName): void
     {
         $commentArray = [
-            ':idUser' => $idUser,
             ':email' => $email,
             ':userName' => $userName,
         ];
-        $req = $this->db->prepare("UPDATE `user` SET `userName`=:userName,`email`=:email WHERE idUser = :idUser");
+        $req = $this->db->prepare("UPDATE `user` SET `userName`=:userName,`email`=:email WHERE userName = :userName");
         $req->execute($commentArray);
     }
     public function updatePassword(string $pass, int $idUser): void
@@ -76,7 +75,7 @@ final class UserRepository
         $pdo = $this->db->prepare("SELECT * FROM user WHERE email = :email");
         $executeIsOk = $pdo->execute($tabEmail);
         $mailBdd = $pdo->fetchObject(User::class);
-        if ($executeIsOk === true && $mailBdd !== false) {
+        if ($mailBdd !== false) {
             return $mailBdd;
         }
         return null;
@@ -109,14 +108,5 @@ final class UserRepository
             return null;
         }
         return null;
-    }
-    public function findAll(): ?User
-    {
-        $pdo = $this->db->query("SELECT * FROM user");
-        $executeIsOk = $pdo->execute();
-        if ($executeIsOk === false) {
-            return null;
-        }
-        return $pdo->fetchObject(User::class);
     }
 }

@@ -47,7 +47,7 @@ final class PostController
     public function allPostAction(): void
     {
         $userSession = $this->session->getSessionName('user') ?? null;
-        $perpage = intval($this->request->getGet()->get('perpage')) ?? null;
+        $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
         if ($userSession === null) {
             header('Location: /?page=login');
             exit();

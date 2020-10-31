@@ -27,7 +27,7 @@ final class PostController
     }
     public function postAction(CommentManager $commentManager, UserManager $userManager): void
     {
-        $id = intval($this->request->getGet()->get('id')) ?? null;
+        $id = (int) $this->request->getGet()->get('id') ?? null;
         $post = $this->postManager->findByIdPost($id);
         $comments = $commentManager->findByIdComment($post->getIdPost());
         $user = $userManager->findNameByIdUser($post->getUserId());
@@ -35,7 +35,7 @@ final class PostController
     }
     public function postsAction(): void
     {
-        $perpage = intval($this->request->getGet()->get('perpage')) ?? null;
+        $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
         $paginationPost =  $this->postManager->paginationPost($perpage) ?? null;
         if (empty($perpage) || $perpage === 0) {
             header('Location: /?page=posts&perpage=1');
@@ -48,15 +48,15 @@ final class PostController
     }
     public function signalAction(CommentManager $commentManager): void
     {
-        $id = intval($this->request->getGet()->get('id')) ?? null;
-        $idComment = intval($this->request->getGet()->get('idComment')) ?? null;
+        $id = (int) $this->request->getGet()->get('id') ?? null;
+        $idComment = (int) $this->request->getGet()->get('idComment') ?? null;
         $commentManager->signalComment($idComment);
         header('Location: /?page=post&id='.$id);
         exit();
     }
     public function sendAction(CommentManager $commentManager): void
     {
-        $id = intval($this->request->getGet()->get('id')) ?? null;
+        $id = (int) $this->request->getGet()->get('id') ?? null;
         $this->session->setSession('token', $this->token->createSessionToken());
         $commentManager->checkComment($id, $this->request, $this->session, $this->token);
     }

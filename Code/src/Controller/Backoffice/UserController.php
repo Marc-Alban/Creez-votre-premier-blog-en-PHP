@@ -27,7 +27,7 @@ final class UserController
     {
         $this->session->setSession('token', $this->token->createSessionToken());
         $userSession =  $this->session->getSessionName('user') ?? null;
-        $user = $this->userManager->findAllUser();
+        $user = $this->userManager->findByUserEmail($userSession);
         if (!isset($userSession) && $userSession === null) {
             header('Location: /?page=login');
             exit();
@@ -42,7 +42,7 @@ final class UserController
             exit();
         }
         $verifUser = $this->userManager->checkForm($this->session, $this->request, $this->token);
-        $user = $this->userManager->findAllUser();
+        $user = $this->userManager->findByUserEmail($userSession);
         $verifUser = null;
         $this->view->render('backoffice', 'dashboard', ['user' => $user, 'verif' => $verifUser]);
     }
