@@ -25,11 +25,9 @@
 							</div>
 						</div>
 						<p class="text-justify">
-							<pre>chapo du post:</pre>
 							{{ data.post.chapo|raw }}
 						</p>
 						<p class="text-justify">
-							<pre>Description du post:</pre>
 							{{ data.post.description|raw }}
 						</p>
 					</div>
@@ -44,7 +42,7 @@
 							</div>
 						{% endfor %}
 					{% endif %}
-					{% if data.bugComment.errors %}
+					{% if data.bugComment.errors %}<
 						{% for errorss in data.bugComment.errors %}
 							<div class="alert alert-danger" role="alert">
 								{{errorss}}
