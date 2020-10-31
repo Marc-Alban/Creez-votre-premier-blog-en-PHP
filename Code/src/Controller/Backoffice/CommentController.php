@@ -27,7 +27,6 @@ final class CommentController
         $userSession = $this->session->getSessionName('user') ?? null;
         if (!isset($userSession) && $userSession === null) {
             header('Location: /?page=login');
-            exit();
         }
         $comments = $this->commentManager->findAllComments();
         $this->view->render('backoffice', 'allComments', ["comments" => $comments]);

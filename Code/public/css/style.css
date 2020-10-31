@@ -5,7 +5,7 @@
 
 body {
     letter-spacing: 0.0625em;
-    background: #000000;
+    background: #000;
 }
 
 .footer {
@@ -21,8 +21,8 @@ a {
 
 
 /* a:hover {
-    color: #fff !important;
-    text-decoration: underline;
+color: #fff ;
+text-decoration: underline;
 } */
 
 pre {
@@ -32,10 +32,10 @@ pre {
 }
 
 .alert-primary {
-    color: #ffffff !important;
-    background-color: #e95e38 !important;
-    border: none !important;
-    margin-left: 30px !important;
+    color: #ffffff;
+    background-color: #e95e38;
+    border: none;
+    margin-left: 30px;
 }
 
 
@@ -58,7 +58,7 @@ pre {
 }
 
 #mainNav .navbar-brand {
-    color: #000000;
+    color: #000;
     font-weight: 700;
     padding: 0.9rem 0;
 }
@@ -79,7 +79,7 @@ pre {
 /* Btn */
 
 .btn {
-    box-shadow: 0 0.1875rem 0.1875rem 0 rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 0.1875rem 0.1875rem 0 rgba(0, 0, 0, 0.1);
     padding: 1.25rem 2rem;
     font-family: "Varela Round", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-size: 80%;
@@ -108,7 +108,7 @@ pre {
     height: auto;
     min-height: 35rem;
     padding: 15rem 0 10rem 0;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.7) 75%, #000000 100%), url("../images/background/bg-masthead.jpg");
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.7) 75%, #000 100%), url("../images/background/bg-masthead.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: scroll;
@@ -137,7 +137,7 @@ main {
 
 .signup-section {
     padding: 10rem 0;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.5) 75%, #000000 100%), url("../images/background/bg-signup.jpg");
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.5) 75%, #000 100%), url("../images/background/bg-signup.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: scroll;
@@ -145,7 +145,7 @@ main {
 }
 
 .signup-section .form-inline input {
-    box-shadow: 0 0.1875rem 0.1875rem 0 rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 0.1875rem 0.1875rem 0 rgba(0, 0, 0, 0.1);
     margin: 1.5em 0 1.5em 0;
     height: auto;
     font-family: "Varela Round", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -161,10 +161,10 @@ main {
 
 .textAreaForm {
     height: 4em;
-    display: block !important;
-    width: 100% !important;
+    display: block;
+    width: 100%;
     margin-top: 2em;
-    margin-bottom: 2em !important;
+    margin-bottom: 2em;
 }
 
 
@@ -395,7 +395,7 @@ main {
 
 .formComment .alert-primary {
     display: inline;
-    font-size: 0.7em !important;
+    font-size: 0.7em;
 }
 
 
@@ -459,7 +459,7 @@ main {
 }
 
 #registerbox .alert-primary {
-    margin-left: 0px !important;
+    margin-left: 0px;
 }
 
 
@@ -499,8 +499,8 @@ main {
     .formComment .alert-primary {
         display: block;
         width: 80%;
-        margin: 0 !important;
-        font-size: 0.7em !important;
+        margin: 0;
+        font-size: 0.7em;
     }
 }
 
@@ -604,7 +604,7 @@ main {
         font-weight: bold;
     }
     #mainNav .navbar-brand:hover {
-        color: #e95e38 !important;
+        color: #e95e38;
     }
     #mainNav .nav-link {
         transition: none;
@@ -622,15 +622,15 @@ main {
         background-color: #fff;
     }
     #mainNav.navbar-shrink .navbar-brand {
-        color: #000000;
+        color: #000;
     }
     #mainNav.navbar-shrink .nav-link {
-        color: #000000;
+        color: #000;
         padding: 1.5rem 1.5rem 1.25rem;
         border-bottom: 0.25rem solid transparent;
     }
     #mainNav.navbar-shrink .nav-link:hover {
-        color: #e95e38 !important;
+        color: #e95e38;
     }
     #mainNav.navbar-shrink .nav-link:active {
         color: #467370;
