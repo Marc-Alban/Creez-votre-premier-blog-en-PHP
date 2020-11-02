@@ -27,7 +27,7 @@ final class PostController
     {
         $this->session->setSession('token', $this->token->createSessionToken());
         $userSession = $this->session->getSessionName('user') ?? null;
-        if (is_null($userSession)) {
+        if ($userSession === null) {
             header('Location: /?page=login');
             exit();
         }
@@ -37,7 +37,7 @@ final class PostController
     {
         $userSession = $this->session->getSessionName('user') ?? null;
         $valdel = null;
-        if (is_null($userSession)) {
+        if ($userSession === null) {
             header('Location: /?page=login');
             exit();
         }
@@ -48,7 +48,7 @@ final class PostController
     {
         $userSession = $this->session->getSessionName('user') ?? null;
         $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
-        if (is_null($userSession)) {
+        if ($userSession === null) {
             header('Location: /?page=login');
             exit();
         } elseif (!is_int($perpage) || empty($perpage)) {

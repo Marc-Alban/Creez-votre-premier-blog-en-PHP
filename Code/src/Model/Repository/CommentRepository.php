@@ -6,11 +6,11 @@ use App\Service\Database;
 
 final class CommentRepository
 {
-    private $db;
+    private $database;
 
-    public function __construct(Database $db)
+    public function __construct(Database $database)
     {
-        $this->db = $db->getPdo();
+        $this->database = $database->getPdo();
     }
     public function create(string $comment, string $UserComment, int $idUser, int $idPost): void
     {
@@ -26,7 +26,7 @@ final class CommentRepository
             ':UserId' => $idUser,
             ':PostId' => $idPost,
         ];
-        $req = $this->db->prepare($sql);
+        $req = $this->database->prepare($sql);
         $req->execute($commentArray);
     }
     public function findById(int $postId): ?array
@@ -34,7 +34,7 @@ final class CommentRepository
         $req = [
                 ':idPost' => $postId
             ];
-        $pdo = $this->db->prepare("SELECT * FROM comment WHERE disabled = 0  AND PostId = :idPost");
+        $pdo = $this->database->prepare("SELECT * FROM comment WHERE disabled = 0  AND PostId = :idPost");
         $executeIsOk = $pdo->execute($req);
         if ($executeIsOk === true) {
             $commentBdd = $pdo->fetchAll();
@@ -47,7 +47,7 @@ final class CommentRepository
     }
     public function findAll(): ?array
     {
-        $pdo = $this->db->query("SELECT * FROM comment");
+        $pdo = $this->database->query("SELECT * FROM comment");
         $executeIsOk = $pdo->execute();
         if ($executeIsOk === true) {
             $commentBdd = $pdo->fetchAll();
@@ -65,14 +65,14 @@ final class CommentRepository
                 ':disabled' => 0,
                 ':idComment' => $idComment
             ];
-            $pdo = $this->db->prepare("UPDATE comment SET disabled = :disabled WHERE idComment = :idComment");
+            $pdo = $this->database->prepare("UPDATE comment SET disabled = :disabled WHERE idComment = :idComment");
             return $pdo->execute($tab);
         }
         $tab = [
             ':signalComment' => 0,
             ':idComment' => $idComment
         ];
-        $pdo = $this->db->prepare("UPDATE comment SET signalComment = :signalComment WHERE idComment = :idComment");
+        $pdo = $this->database->prepare("UPDATE comment SET signalComment = :signalComment WHERE idComment = :idComment");
         return $pdo->execute($tab);
     }
     public function delete(int $idComment): bool
@@ -80,7 +80,7 @@ final class CommentRepository
         $tab = [
             ':idComment' => $idComment,
         ];
-        $pdo = $this->db->prepare("DELETE FROM comment WHERE idComment = :idComment ");
+        $pdo = $this->database->prepare("DELETE FROM comment WHERE idComment = :idComment ");
         return $pdo->execute($tab);
     }
     public function signal(int $idComment): bool
@@ -89,7 +89,7 @@ final class CommentRepository
             ':signalComment' => 1,
             ':idComment' => $idComment,
         ];
-        $req = $this->db->prepare("UPDATE `comment` SET `signalComment`=:signalComment  WHERE  idComment = :idComment");
+        $req = $this->database->prepare("UPDATE `comment` SET `signalComment`=:signalComment  WHERE  idComment = :idComment");
         return $req->execute($commentArray);
     }
 }

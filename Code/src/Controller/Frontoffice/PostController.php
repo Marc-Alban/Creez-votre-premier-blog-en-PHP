@@ -27,8 +27,8 @@ final class PostController
     }
     public function postAction(CommentManager $commentManager, UserManager $userManager): void
     {
-        $id = (int) $this->request->getGet()->get('id') ?? null;
-        $post = $this->postManager->findByIdPost($id);
+        $idPost = (int) $this->request->getGet()->get('id') ?? null;
+        $post = $this->postManager->findByIdPost($idPost);
         $comments = $commentManager->findByIdComment($post->getIdPost());
         $user = $userManager->findNameByIdUser($post->getUserId());
         $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, 'comment' => $comments]);
@@ -40,7 +40,7 @@ final class PostController
         if (empty($perpage) || $perpage === 0) {
             header('Location: /?page=posts&perpage=1');
             exit();
-        } elseif (is_null($paginationPost['post'])) {
+        } elseif ($paginationPost['post'] === null) {
             header('Location: /?page=posts&perpage=1');
             exit();
         }
@@ -48,16 +48,16 @@ final class PostController
     }
     public function signalAction(CommentManager $commentManager): void
     {
-        $id = (int) $this->request->getGet()->get('id') ?? null;
+        $idPost = (int) $this->request->getGet()->get('id') ?? null;
         $idComment = (int) $this->request->getGet()->get('idComment') ?? null;
         $commentManager->signalComment($idComment);
-        header('Location: /?page=post&id='.$id);
+        header('Location: /?page=post&id='.$idPost);
         exit();
     }
     public function sendAction(CommentManager $commentManager): void
     {
-        $id = (int) $this->request->getGet()->get('id') ?? null;
+        $idPost = (int) $this->request->getGet()->get('id') ?? null;
         $this->session->setSession('token', $this->token->createSessionToken());
-        $commentManager->checkComment($id, $this->request, $this->session, $this->token);
+        $commentManager->checkComment($idPost, $this->request, $this->session, $this->token);
     }
 }

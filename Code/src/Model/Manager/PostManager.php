@@ -17,9 +17,9 @@ final class PostManager
     {
         $this->postRepository = $postRepository;
     }
-    public function findByIdPost(int $id): ?Post
+    public function findByIdPost(int $idPost): ?Post
     {
-        return $this->postRepository->findById($id);
+        return $this->postRepository->findById($idPost);
     }
     public function paginationPost(int $perpage = 1): array
     {
@@ -33,7 +33,7 @@ final class PostManager
         }
         $page =  ($perpage-1) * $minPost;
         $post = $this->postRepository->findAll($page, $minPost);
-        return $tabPost = [
+        return [
             'current' => $perpage,
             'nbPage' => $nbPage,
             'post' => $post

@@ -26,7 +26,7 @@ final class Router
     private Mail $mail;
     private $url;
     private $page;
-    private $id;
+    private $idGlobal;
     private $action;
     public function __construct()
     {
@@ -44,7 +44,7 @@ final class Router
         $this->url = $this->request->getGet()->get('page') ?? 'home';
         $this->page = lcfirst($this->url);
 
-        $this->id = $this->request->getGet()->get('id') ?? null;
+        $this->idGlobal = $this->request->getGet()->get('id') ?? null;
         $this->action = $this->request->getGet()->get('action') ?? null;
 
         $userFrontPage = ['home','login','register'];
@@ -68,7 +68,7 @@ final class Router
                 return $instanceController->registrationAction();
             } elseif ($this->page === 'login' && $this->action === 'connection') {
                 return $instanceController->connectionAction();
-            } elseif (is_null($this->action)) {
+            } elseif ($this->action === null) {
                 $methode = $this->page .'Action';
                 return $instanceController->$methode();
             }
@@ -79,7 +79,7 @@ final class Router
             $postManager = new $pathPostManager($postRepository);
             $pathController = 'App\Controller\Frontoffice\PostController';
             $instanceController = new $pathController($postManager, $this->view, $this->request, $this->token, $this->session);
-            if ($this->page  === 'post' && $this->id) {
+            if ($this->page  === 'post' && $this->idGlobal) {
                 $commentRepo = new CommentRepository($this->database);
                 $commentManager = new CommentManager($commentRepo);
                 $userRepo = new UserRepository($this->database);
@@ -115,9 +115,9 @@ final class Router
             $methode = $this->page .'Action';
             return $instanceController->$methode();
         } elseif (in_array($this->page, $commentBackPage, true)) {
-            $pathCommentRepository = 'App\Model\Repository\CommentRepository';
+            $pathCommentRepo = 'App\Model\Repository\CommentRepository';
             $pathCommentManager = 'App\Model\Manager\CommentManager';
-            $commentRepository = new $pathCommentRepository($this->database);
+            $commentRepository = new $pathCommentRepo($this->database);
             $commentManager = new $pathCommentManager($commentRepository);
             $pathController = 'App\Controller\Backoffice\CommentController';
             $instanceController = new $pathController($commentManager, $this->view, $this->session, $this->request);

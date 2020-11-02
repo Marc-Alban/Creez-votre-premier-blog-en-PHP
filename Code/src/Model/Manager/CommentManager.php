@@ -48,7 +48,7 @@ final class CommentManager
     {
         $this->commentRepository->signal($idComment);
     }
-    public function checkComment(int $id, Request $request, Session $session, Token $token): ?array
+    public function checkComment(int $idComment, Request $request, Session $session, Token $token): ?array
     {
         $post = $request->getPost() ?? null;
         $get = $request->getGet() ?? null;
@@ -62,7 +62,7 @@ final class CommentManager
             }
             if (empty($this->errors)) {
                 $this->succes["succes"]['send'] = 'Votre commentaire est en attente de validation';
-                $this->commentRepository->create($comment, $session->getSessionName('user'), $session->getSession()['idUser'], $id);
+                $this->commentRepository->create($comment, $session->getSessionName('user'), $session->getSession()['idUser'], $idComment);
                 return $this->succes;
             }
             return $this->errors;

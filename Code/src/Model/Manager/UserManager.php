@@ -33,9 +33,9 @@ final class UserManager
         $emailBdd = $emailObject->getEmail();
         $password = $dataPost->get('password') ?? null;
         $passwordBdd = $this->userRepository->findPasswordByUserOrEmail(null, $email);
-        if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
+        if (empty($email) && empty($password) && empty($passwordConfirmation)) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-        } elseif (is_null($email) || is_null($emailObject) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
+        } elseif ($email === null || $emailBdd === null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
             $this->errors['error']["emailEmpty"] = 'Identifiants incorrect ';
         } elseif (empty($password) || !password_verify($password, $passwordBdd)) {
             $this->errors['error']["passwordEmpty"] = 'Identifiants incorrect';
@@ -61,9 +61,9 @@ final class UserManager
         $passwordConfirmation = $dataPost->get('passwordConfirmation') ?? null;
         if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-        } elseif (is_null($pseudo) || $pseudoBdd !== null) {
+        } elseif ($pseudo === null || $pseudoBdd !== null) {
             $this->errors['error']["pseudoEmpty"] = 'Pseudo manquant ou déjà pris';
-        } elseif (is_null($email) || $emailBdd !== null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
+        } elseif ($email === null || $emailBdd !== null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
             $this->errors['error']["emailEmpty"] = 'Champs email vide ou est déjà présente en bdd';
         } elseif (mb_strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password)) {
             $this->errors['error']["passwordEmpty"] = 'Le mot de passe doit avoir des minuscule-majuscule-chiffres-caractères et être inférieur à 8 caractères';
@@ -114,7 +114,6 @@ final class UserManager
         $post = $request->getPost() ?? null;
         $email = $post->get('email') ?? null;
         $userName = $post->get('userName') ?? null;
-        $userBdd = $this->findByUserEmail($session->getSessionName('user'));
         if (empty($email) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
             $this->errors['error']["emailEmpty"] = 'L\'adresse e-mail est invalide" ';
         } elseif (empty($userName)) {

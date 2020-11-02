@@ -28,7 +28,7 @@ final class UserController
         $this->session->setSession('token', $this->token->createSessionToken());
         $userSession =  $this->session->getSessionName('user') ?? null;
         $user = $this->userManager->findByUserEmail($userSession);
-        if (!isset($userSession) && is_null($userSession)) {
+        if (!isset($userSession) && $userSession === null) {
             header('Location: /?page=login');
             exit();
         }
@@ -37,7 +37,7 @@ final class UserController
     public function updateUserAction(): void
     {
         $userSession =  $this->session->getSessionName('user') ?? null;
-        if (!isset($userSession) && is_null($userSession)) {
+        if (!isset($userSession) && $userSession === null) {
             header('Location: /?page=login');
             exit();
         }
@@ -50,7 +50,7 @@ final class UserController
     {
         $this->session->setSession('token', $this->token->createSessionToken());
         $userSession =  $this->session->getSessionName('user') ?? null;
-        if (!isset($userSession) && is_null($userSession)) {
+        if (!isset($userSession) && $userSession === null) {
             header('Location: /?page=login');
             exit();
         }
@@ -60,7 +60,7 @@ final class UserController
     {
         $userSession =  $this->session->getSessionName('user') ?? null;
         $verifPassBdd = null;
-        if (!isset($userSession) && is_null($userSession)) {
+        if (!isset($userSession) && $userSession === null) {
             header('Location: /?page=login');
             exit();
         }
@@ -70,7 +70,7 @@ final class UserController
     public function updatePostAction(): void
     {
         $userSession =  $this->session->getSessionName('user') ?? null;
-        if (!isset($userSession) && is_null($userSession)) {
+        if (!isset($userSession) && $userSession === null) {
             header('Location: /?page=login');
             exit();
         }

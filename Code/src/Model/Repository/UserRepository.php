@@ -8,10 +8,10 @@ use App\Service\Http\Parameter;
 
 final class UserRepository
 {
-    private $db;
-    public function __construct(Database $db)
+    private $database;
+    public function __construct(Database $database)
     {
-        $this->db = $db->getPdo();
+        $this->database = $database->getPdo();
     }
     public function create(string $email, string $pseudo, string $password): void
     {
@@ -20,7 +20,7 @@ final class UserRepository
             ':email' => $email,
             ':passwordUser' => password_hash($password, PASSWORD_BCRYPT),
         ];
-        $req = $this->db->prepare("INSERT INTO user (userName, email, passwordUser) VALUES (:userName, :email, :passwordUser)");
+        $req = $this->database->prepare("INSERT INTO user (userName, email, passwordUser) VALUES (:userName, :email, :passwordUser)");
         $req->execute($tabUser);
     }
     public function update(string $email, string $userName): void
@@ -29,7 +29,7 @@ final class UserRepository
             ':email' => $email,
             ':userName' => $userName,
         ];
-        $req = $this->db->prepare("UPDATE `user` SET `userName`=:userName,`email`=:email WHERE userName = :userName");
+        $req = $this->database->prepare("UPDATE `user` SET `userName`=:userName,`email`=:email WHERE userName = :userName");
         $req->execute($commentArray);
     }
     public function updatePassword(string $pass, int $idUser): void
@@ -38,7 +38,7 @@ final class UserRepository
             ':passwordUser' => $pass,
             ':idUser' => $idUser,
         ];
-        $req = $this->db->prepare("UPDATE `user` SET `passwordUser`=:passwordUser WHERE id = :id");
+        $req = $this->database->prepare("UPDATE `user` SET `passwordUser`=:passwordUser WHERE id = :id");
         $req->execute($commentArray);
     }
     public function findById(int $idUser): ?User
@@ -46,7 +46,7 @@ final class UserRepository
         $req = [
                 ':idUser' => $idUser
             ];
-        $pdo = $this->db->prepare("SELECT * FROM user WHERE idUser = :idUser");
+        $pdo = $this->database->prepare("SELECT * FROM user WHERE idUser = :idUser");
         $executeIsOk = $pdo->execute($req);
         if ($executeIsOk === true) {
             $userBdd = $pdo->fetchObject(User::class);
@@ -59,7 +59,7 @@ final class UserRepository
         $tabUser = [
             ':userName' => $pseudo
         ];
-        $pdo = $this->db->prepare("SELECT * FROM user WHERE userName = :userName");
+        $pdo = $this->database->prepare("SELECT * FROM user WHERE userName = :userName");
         $executeIsOk = $pdo->execute($tabUser);
         $userBdd = $pdo->fetchObject(User::class);
         if ($executeIsOk === true && $userBdd !== false) {
@@ -72,8 +72,8 @@ final class UserRepository
         $tabEmail = [
             ':email' => $email
         ];
-        $pdo = $this->db->prepare("SELECT * FROM user WHERE email = :email");
-        $executeIsOk = $pdo->execute($tabEmail);
+        $pdo = $this->database->prepare("SELECT * FROM user WHERE email = :email");
+        $pdo->execute($tabEmail);
         $mailBdd = $pdo->fetchObject(User::class);
         if ($mailBdd !== false) {
             return $mailBdd;
@@ -84,17 +84,17 @@ final class UserRepository
     {
         $executeIsOk = null;
         $pdo = null;
-        if ($user !== null && is_null($email)) {
+        if ($user !== null && $email === null) {
             $tabPass = [
                 ':userName' => $user
             ];
-            $pdo = $this->db->prepare("SELECT passwordUser FROM `user` WHERE userName = :userName");
+            $pdo = $this->database->prepare("SELECT passwordUser FROM `user` WHERE userName = :userName");
             $executeIsOk = $pdo->execute($tabPass);
-        } elseif (is_null($user) && $email !== null) {
+        } elseif ($user === null && $email !== null) {
             $tabPass = [
                 ':email' => $email
             ];
-            $pdo = $this->db->prepare("SELECT passwordUser FROM user WHERE email = :email");
+            $pdo = $this->database->prepare("SELECT passwordUser FROM user WHERE email = :email");
             $executeIsOk = $pdo->execute($tabPass);
         }
         if ($executeIsOk === true) {
