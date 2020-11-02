@@ -54,6 +54,5 @@ la date de dernière mise à jour ;
 le formulaire permettant d’ajouter un commentaire (soumis pour validation) ;
 les listes des commentaires validés et publiés.
 Sur la page permettant de modifier un blog post, l’utilisateur a la possibilité de modifier les champs titre, chapô, auteur et contenu.
-
 Dans le footer menu, il doit figurer un lien pour accéder à l’administration du blog.
 
