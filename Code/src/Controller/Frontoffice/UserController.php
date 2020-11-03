@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Frontoffice;
 
 use App\Model\Manager\UserManager;
+use App\Service\Http\Parameter;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
 use App\Service\Mail;
@@ -18,6 +19,9 @@ final class UserController
     private Session $session;
     private Request $request;
     private Token $token;
+    private ?string $userSession;
+    private string $pseudo;
+    private string $email;
     public function __construct(UserManager $userManager, View $view, Token $token, Session $session, Request $request)
     {
         $this->userManager = $userManager;
@@ -25,6 +29,7 @@ final class UserController
         $this->token = $token;
         $this->session = $session;
         $this->request = $request;
+        $this->userSession =  $this->session->getSessionName('user');
     }
     public function homeAction(): void
     {
@@ -48,30 +53,29 @@ final class UserController
     }
     public function registerAction(): void
     {
-        $user = $this->session->getSessionName('user') ?? null;
         $this->session->setSession('token', $this->token->createSessionToken());
-        if (isset($user) && $user !== null) {
+        if ($this->userSession !== null) {
             header('Location: /?page=home');
             exit();
         }
+        
         $this->view->render('Frontoffice', 'register', []);
     }
     public function registrationAction(): void
     {
-        $user = $this->session->getSessionName('user') ?? null;
-        if (isset($user) && $user !== null) {
-            header('Location: /?page=home');
-            exit();
-        }
-        $checkRegister = null;
-        $checkRegister = $this->userManager->userRegister($this->session, $this->token, $this->request);
-        $this->view->render('Frontoffice', 'register', ["checkRegister" => $checkRegister]);
+        // if ($this->userSession !== null) {
+        //     header('Location: /?page=home');
+        //     exit();
+        // }
+        // //$checkRegister = $this->userManager->userRegister($this->session, $this->token, $this->request);
+        // $this->pseudo = $this->request->getPost()->get('userName');
+        // $this->email = $this->request->getPost()->get('email');
+        // $this->view->render('Frontoffice', 'register', ["checkRegister" => $checkRegister,'email' => $this->email,'pseudo'=>$this->pseudo]);
     }
     public function loginAction(): void
     {
-        $user = $this->session->getSessionName('user') ?? null;
         $this->session->setSession('token', $this->token->createSessionToken());
-        if (isset($user) && $user !== null) {
+        if ($this->userSession !== null) {
             header('Location: /?page=home');
             exit();
         }
@@ -79,13 +83,12 @@ final class UserController
     }
     public function connectionAction(): void
     {
-        $user = $this->session->getSessionName('user') ?? null;
-        if (isset($user) && $user !== null) {
+        if ($this->userSession !== null) {
             header('Location: /?page=home');
             exit();
         }
-        $logIn = null;
-        $logIn = $this->userManager->userLogIn($this->session, $this->token, $this->request);
-        $this->view->render('Frontoffice', 'login', ["logIn" => $logIn]);
+        $checkConnection = $this->userManager->userLogIn($this->session, $this->token, $this->request);
+        $this->email = $this->request->getPost()->get('email');
+        $this->view->render('Frontoffice', 'login', ["checkConnection" => $checkConnection,'email' => $this->email]);
     }
 }

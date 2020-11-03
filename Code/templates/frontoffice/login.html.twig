@@ -11,9 +11,9 @@
 					<div class="panel-title text-center">Connexion</div>
 				</div>
 				<div class="panel-body">
-					{% if data.logIn %}
+					{% if data.checkConnection %}
 						{#--------------------------ERROR-MESSAGE----------------------------#}
-						{% for errors in data.logIn.error %}
+						{% for errors in data.checkConnection.error %}
 							<div class="alert alert-danger" role="alert">
 								{{errors}}
 							</div>
@@ -23,7 +23,7 @@
 					{#--------------------------END-CONDITION-DATA----------------------------#}
 					<form method="POST" action="/?page=login&action=connection">
 						<div class="container mb-5">
-								<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email"><br>
+								<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email" {% if data.email %} value="{{data.email}}" {% endif %}><br>
 								<input id="password" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre mot de passe" type="password" name="password"><br>
 							<input type="hidden" name="token" id="token" value="{{session.token}}"/>
 						</div>

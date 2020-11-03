@@ -60,9 +60,9 @@ final class PostManager
             } elseif (empty($tmpName) || in_array($extention, $extentions, true) || $size > $tailleMax) {
                 $this->errors['error']["imgWrong"] = 'Image n\'est pas valide, doit être en dessous de 2MO';
             } elseif (empty($chapo)|| mb_strlen($chapo) <= 15) {
-                $this->errors['error']["chapoEmpty"] = "Chapô obligatoire, doit être inférieur ou égal à 15 caractères minimum";
+                $this->errors['error']["chapoEmpty"] = "Chapô obligatoire, doit être supérieur ou égal à 15 caractères minimum";
             } elseif (mb_strlen($description) <= 15) {
-                $this->errors['error']["descShort"] = "Description trop petite, doit être inférieur ou égal à 15 caractères";
+                $this->errors['error']["descShort"] = "Description trop petite, doit être supérieur ou égal à 15 caractères";
             }
             if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
                 $this->errors['error']['formRgister'] = "Formulaire incorrect";

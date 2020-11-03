@@ -19,11 +19,16 @@ a {
     background-color: transparent;
 }
 
-
-/* a:hover {
-color: #fff ;
-text-decoration: underline;
-} */
+.profile {
+    overflow: hidden;
+    -webkit-border-radius: 50px;
+    -moz-border-radius: 50px;
+    border-radius: 50px;
+    box-shadow: 10px 10px rgba(0, 0, 0, 0.5);
+    width: 150px;
+    height: 250px;
+    left: -15%;
+}
 
 pre {
     display: block;
@@ -99,6 +104,21 @@ pre {
     margin: 0 auto 2em;
 }
 
+.btnHeader {
+    width: 100%;
+    height: 45px;
+    border: none;
+    background: #e95e38;
+    color: white;
+    border-radius: 5px;
+}
+
+.btnHeader:hover {
+    background: white;
+    color: #e95e38;
+    border: none;
+}
+
 
 /* Home */
 
@@ -146,19 +166,17 @@ main {
 
 .signup-section .form-inline input {
     box-shadow: 0 0.1875rem 0.1875rem 0 rgba(0, 0, 0, 0.1);
-    margin: 1.5em 0 1.5em 0;
-    height: auto;
     font-family: "Varela Round", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-size: 80%;
-    letter-spacing: 0.15rem;
     border: 0;
 }
 
+
+}
 .signup-section .form-inline input[type='email'] {
     display: block;
     width: 50%;
 }
-
 .textAreaForm {
     height: 4em;
     display: block;
@@ -167,14 +185,11 @@ main {
     margin-bottom: 2em;
 }
 
-
 /* Blog */
-
 .postBlogHome {
     padding-bottom: 50px;
     background-size: 100% auto;
 }
-
 .postBlogHome h2 {
     text-align: center;
     font-weight: 300;
@@ -183,11 +198,9 @@ main {
     margin-top: 70px;
     color: #fff;
 }
-
 .postBlogHome h2 b {
     color: #e95e38;
 }
-
 .postBlogHome .postPublicationHome {
     background: #ffffff;
     border-radius: 3px;
@@ -199,34 +212,28 @@ main {
     text-decoration: none;
     position: relative;
 }
-
 .contentPostHome {
     padding: 20px;
 }
-
 .contentPostHome h3 {
     font-weight: 900;
     color: rgb(51, 51, 51);
     text-transform: uppercase;
     font-size: 20px;
 }
-
 .contentPostHome .label {
     text-transform: capitalize;
     font-weight: 900;
     color: rgb(51, 51, 51);
 }
-
 .contentPostHome .descPost {
     font-size: 16px;
     font-weight: 300;
 }
-
 .postBlogHome .postPublicationHome:hover h3 {
     color: #e95e38;
     box-shadow: 0px 4px 3px 3px rgba(0, 0, 0, 0.08);
 }
-
 .postBlogHome .postPublicationHome:hover .readMoreBlogHome {
     height: 100%;
     width: 100%;
@@ -239,36 +246,30 @@ main {
     -o-transition: all 0.4s ease-out 0s;
     transition: all 0.4s ease-out 0s;
 }
-
 .postBlogHome .black {
     background: #e95e38;
 }
-
 .postBlogHome .postPublicationHome .imgPostPrincipalHome {
     display: inline-block;
     width: 50%;
     overflow: hidden;
     height: 100%;
 }
-
 .postBlogHome .postPublicationHome .imgPostPrincipalHome img {
     height: 100%;
     width: auto;
 }
-
 .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome {
     display: inline-block;
     vertical-align: top;
     width: 49%;
 }
-
 .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome h3 {
     font-weight: 900;
     color: #fff;
     text-transform: uppercase;
     font-size: 30px;
 }
-
 .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .label {
     position: absolute;
     top: 40px;
@@ -277,38 +278,31 @@ main {
     font-weight: 700;
     color: #fff;
 }
-
 .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .desc {
     color: #ffffff;
     font-size: 16px;
     font-weight: 300;
 }
-
 .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .dateCreation {
     color: rgb(255, 255, 255);
     font-size: 16px;
     font-weight: 300;
 }
-
 .postBlogHome .postPublicationHome .postPublication {
     padding: 0 10px;
 }
-
 .postBlogHome .postPublicationHome .postPublication h3 {
     font-weight: 900;
     font-size: 20px;
     text-transform: uppercase;
 }
-
 .postBlogHome .postPublicationHome .imgPostPublication {
     overflow: hidden;
     max-height: 180px;
 }
-
 .postBlogHome .postPublicationHome .imgPostPublication .img-responsive {
     width: 100%;
 }
-
 .readMoreBlogHome {
     height: 400px;
     width: 0%;
@@ -323,7 +317,6 @@ main {
     text-align: center;
     padding-top: 180px;
 }
-
 .readMoreBlogHome span {
     text-align: center;
     max-height: 400px;
@@ -335,7 +328,6 @@ main {
     font-weight: 900;
     font-size: 16px;
 }
-
 .postBlogHome .todas-las-publicaciones-home {
     background: #e95e38;
     height: 400px;
@@ -345,7 +337,6 @@ main {
     text-decoration: none;
     border-radius: 3px;
 }
-
 .postBlogHome .todas-las-publicaciones-home span {
     color: #fff;
     font-weight: 900;
@@ -353,13 +344,11 @@ main {
     font-size: 25px;
     line-height: 26px;
 }
-
 .paginationPost {
     list-style-type: none;
     display: flex;
     justify-content: center;
 }
-
 .page-item.active .page-link {
     z-index: 3;
     color: #fff;
@@ -367,40 +356,31 @@ main {
     border: 1px solid #fff;
 }
 
-
 /* Post */
-
 .postPage {
     color: #fff;
     text-align: justify;
     margin-top: 3rem;
 }
-
 .postPage img {
     width: 100%;
 }
-
 .commentTitle {
     color: #fff;
 }
-
 .formComment {
     margin-bottom: 2em;
     display: block;
 }
-
 .formComment .commentTitle {
     text-align: left;
 }
-
 .formComment .alert-primary {
     display: inline;
     font-size: 0.7em;
 }
 
-
 /* Comment */
-
 .comment {
     overflow: hidden;
     padding: 0 0 1em;
@@ -408,93 +388,76 @@ main {
     margin: 0 0 1em;
     *zoom: 1;
 }
-
 .comment-body {
     overflow: hidden;
 }
-
 .comment .text {
     padding: 10px;
     border: 1px solid #e5e5e5;
     border-radius: 5px;
     background: #fff;
 }
-
 .comment .text p:last-child {
     margin: 0;
 }
-
 .comment .attribution {
     margin: 0.5em 0 0;
     font-size: 14px;
     color: #666;
 }
 
-
 /* Connexion */
-
 #loginbox {
     margin: 25vh auto 17.4vh;
 }
 
-
 /* inscription*/
-
 #registerbox {
     margin: 25vh auto 9.9vh;
 }
-
 .panel-title {
     color: white;
     font-size: 1.5em;
     font-weight: bold;
     margin-bottom: 50px;
 }
-
 #loginbox button[type='submit'],
 #registerbox button[type='submit'] {
     display: block;
     margin: auto;
     width: 50%;
 }
-
 #registerbox .alert-primary {
     margin-left: 0px;
 }
 
-
 /* Error */
-
 #errorBox {
     margin: 24.9vh auto 42.8vh;
 }
-
 #errorBox h2 {
     color: #fff;
     font-size: 2.5em;
     font-weight: bold;
 }
 
-
 /* Responsive */
-
 @media (min-width: 320px) {
     .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .dateCreation {
         color: rgb(0, 0, 0);
         top: 145px;
     }
+    
     .postBlogHome .postPublicationHome {
         height: 480px;
     }
 }
-
 @media (min-width: 375px) {
     .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .dateCreation {
         color: rgb(0, 0, 0);
         top: 145px;
     }
 }
-
 @media (max-width: 450px) {
     .formComment .alert-primary {
         display: block;
@@ -503,7 +466,6 @@ main {
         font-size: 0.7em;
     }
 }
-
 @media (max-width: 768px) {
     .postBlogHome h2 {
         text-align: center;
@@ -512,6 +474,7 @@ main {
         font-size: 34px;
         margin-top: 100px;
     }
+    
     .postBlogHome .postPublicationHome {
         background: rgb(255, 255, 255);
         border: 1px solid rgb(248, 148, 94);
@@ -525,29 +488,36 @@ main {
         HEIGHT: 520px;
         width: 100%;
     }
+    
     .postBlogHome .postPublicationHome .imgPostPrincipalHome {
         display: inline-block;
         width: 100%;
         overflow: hidden;
         height: auto;
     }
+    
     .postBlogHome .postPublicationHome .imgPostPrincipalHome img {
         height: auto;
         width: 100%;
     }
+    
     .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .label {
         color: rgb(2 2 2);
     }
+    
     .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .desc {
         color: rgb(14 14 14);
     }
+    
     .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome .dateCreation {
         color: rgb(0 0 0);
         top: 275px;
     }
+    
     .postBlogHome .black {
         background: #fff;
     }
+    
     .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome {
         display: inline-block;
         vertical-align: top;
@@ -556,17 +526,20 @@ main {
         margin: 0 0 10px 0;
         height: 310px;
     }
+    
     .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome h3 {
         font-weight: 900;
         color: #333;
         text-transform: uppercase;
         font-size: 20px;
     }
+    
     .postBlogHome .postPublicationHome .contentPublicacionPrincipalHome p {
         color: #333;
         font-size: 14px;
         font-weight: 400;
     }
+    
     .postBlogHome .todas-las-publicaciones-home {
         background: #e95e38;
         height: 100%;
@@ -576,19 +549,18 @@ main {
         text-decoration: none;
         border-radius: 3px;
     }
+    
     #loginbox button[type='submit'],
     #registerbox button[type='submit'] {
         width: 100%;
     }
 }
-
 @media (min-width: 768px) {
     .masthead h1 {
         font-size: 4rem;
         line-height: 4rem;
     }
 }
-
 @media (min-width: 992px) {
     #mainNav {
         padding-top: 0;
@@ -597,62 +569,77 @@ main {
         background-color: transparent;
         transition: background-color 0.3s ease-in-out;
     }
+    
     #mainNav .navbar-brand {
         padding: 0.5rem 0;
         color: rgb(233 94 56);
         text-transform: uppercase;
         font-weight: bold;
     }
+    
     #mainNav .navbar-brand:hover {
         color: #e95e38;
     }
+    
     #mainNav .nav-link {
         transition: none;
         padding: 2rem 0.5rem;
         color: #fff;
         font-weight: bold;
     }
+    
     #mainNav .nav-link:hover {
         color: rgb(233 94 56);
     }
+    
     #mainNav .nav-link:active {
         color: #fff;
     }
+    
     #mainNav.navbar-shrink {
         background-color: #fff;
     }
+    
     #mainNav.navbar-shrink .navbar-brand {
         color: #000;
     }
+    
     #mainNav.navbar-shrink .nav-link {
         color: #000;
         padding: 1.5rem 1.5rem 1.25rem;
         border-bottom: 0.25rem solid transparent;
     }
+    
     #mainNav.navbar-shrink .nav-link:hover {
         color: #e95e38;
     }
+    
     #mainNav.navbar-shrink .nav-link:active {
         color: #467370;
     }
+    
     #mainNav.navbar-shrink .nav-link.active {
         color: #e95e38;
         outline: none;
         border-bottom: 0.25rem solid #e95e38;
     }
+    
     .masthead {
         height: 100vh;
         padding: 30em 0;
     }
+    
     .masthead h1 {
         font-size: 6.5rem;
         line-height: 6.5rem;
         letter-spacing: 0.8rem;
     }
+    
     .masthead h2 {
         max-width: 30rem;
         font-size: 1.25rem;
     }
+    
     .signup-section button[type='submit'] {
         display: block;
         width: 40%;

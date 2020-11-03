@@ -27,6 +27,7 @@ final class CommentController
         $userSession = $this->session->getSessionName('user') ?? null;
         if (!isset($userSession) && $userSession === null) {
             header('Location: /?page=login');
+            exit();
         }
         $comments = $this->commentManager->findAllComments();
         $this->view->render('backoffice', 'allComments', ["comments" => $comments]);
@@ -37,7 +38,8 @@ final class CommentController
         $idComment = $this->request->getGet()->get('id') ?? null;
         $comments = $this->commentManager->findAllComments();
         $val = $this->commentManager->validComment((int) $idComment, 0);
-        header("Location: /?page=allComments");
+        // header("Location: /?page=allComments");
+        // exit();
         $this->view->render('backoffice', 'allComments', ["comments" => $comments, 'val' => $val]);
     }
     public function deleteCommentAction(): void
@@ -46,7 +48,8 @@ final class CommentController
         $idComment = $this->request->getGet()->get('id') ?? null;
         $comments = $this->commentManager->findAllComments();
         $del = $this->commentManager->deleteComment((int) $idComment);
-        header("Location: /?page=allComments");
+        // header("Location: /?page=allComments");
+        // exit();
         $this->view->render('backoffice', 'allComments', ["comments" => $comments, 'del' => $del]);
     }
 }

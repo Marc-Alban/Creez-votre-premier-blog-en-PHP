@@ -23,23 +23,24 @@ final class UserRepository
         $req = $this->database->prepare("INSERT INTO user (userName, email, passwordUser) VALUES (:userName, :email, :passwordUser)");
         $req->execute($tabUser);
     }
-    public function update(string $email, string $userName): void
+    public function update(string $email, string $userName, int $idUser): void
     {
-        $commentArray = [
+        $reqArray = [
             ':email' => $email,
             ':userName' => $userName,
+            ':idUser' => $idUser
         ];
-        $req = $this->database->prepare("UPDATE `user` SET `userName`=:userName,`email`=:email WHERE userName = :userName");
-        $req->execute($commentArray);
+        $req = $this->database->prepare("UPDATE user SET userName=:userName,email=:email WHERE idUser = :idUser");
+        $req->execute($reqArray);
     }
-    public function updatePassword(string $pass, int $idUser): void
+    public function updatePassword(string $password, int $idUser): void
     {
-        $commentArray = [
-            ':passwordUser' => $pass,
+        $reqArray = [
+            ':passwordUser' => $password,
             ':idUser' => $idUser,
         ];
-        $req = $this->database->prepare("UPDATE `user` SET `passwordUser`=:passwordUser WHERE id = :id");
-        $req->execute($commentArray);
+        $req = $this->database->prepare("UPDATE user SET passwordUser=:passwordUser WHERE idUser = :idUser");
+        $req->execute($reqArray);
     }
     public function findById(int $idUser): ?User
     {
@@ -67,7 +68,7 @@ final class UserRepository
         }
         return null;
     }
-    public function findByEmail(string $email): ?User
+    public function findByEmail(string $email = null): ?User
     {
         $tabEmail = [
             ':email' => $email
@@ -77,35 +78,6 @@ final class UserRepository
         $mailBdd = $pdo->fetchObject(User::class);
         if ($mailBdd !== false) {
             return $mailBdd;
-        }
-        return null;
-    }
-    public function findPasswordByUserOrEmail(string $user = null, string $email = null): ?string
-    {
-        $executeIsOk = null;
-        $pdo = null;
-        if ($user !== null && $email === null) {
-            $tabPass = [
-                ':userName' => $user
-            ];
-            $pdo = $this->database->prepare("SELECT passwordUser FROM `user` WHERE userName = :userName");
-            $executeIsOk = $pdo->execute($tabPass);
-        } elseif ($user === null && $email !== null) {
-            $tabPass = [
-                ':email' => $email
-            ];
-            $pdo = $this->database->prepare("SELECT passwordUser FROM user WHERE email = :email");
-            $executeIsOk = $pdo->execute($tabPass);
-        }
-        if ($executeIsOk === true) {
-            $passwordBdd = $pdo->fetchObject(User::class);
-            if ($passwordBdd) {
-                $pass = $passwordBdd->getPasswordUser();
-                return $pass;
-            }
-            return null;
-        } elseif ($executeIsOk === false) {
-            return null;
         }
         return null;
     }
