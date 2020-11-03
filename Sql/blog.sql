@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
-
+-- Généré le : mar. 03 nov. 2020 à 16:05
 -- Version du serveur :  8.0.21
 -- Version de PHP : 7.4.9
 
@@ -32,16 +32,13 @@ CREATE TABLE IF NOT EXISTS `comment` (
   `idComment` int NOT NULL AUTO_INCREMENT,
   `content` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `disabled` tinyint NOT NULL DEFAULT '1',
-  `signalComment` tinyint NOT NULL DEFAULT '0',
-  `userComment` varchar(255) NOT NULL,
   `UserId` int DEFAULT NULL,
   `PostId` int DEFAULT NULL,
   `dateCreation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  
   PRIMARY KEY (`idComment`),
   KEY `fk_Comment_User1_idx` (`UserId`),
   KEY `fk_Comment_Post1_idx` (`PostId`)
-) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -63,11 +60,9 @@ CREATE TABLE IF NOT EXISTS `post` (
   KEY `fk_Post_User_idx` (`UserId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 
-
 --
 -- Déchargement des données de la table `post`
 --
-
 
 INSERT INTO `post` (`idPost`, `title`, `description`, `chapo`, `imagePost`, `datePost`, `statuPost`, `UserId`) VALUES
 (1, '1er post test ', 'Fou à lier, et un bâillon pour lui mettre sur le coeur de ses membres guerriers et l\'éclat des cieux. Certains, que leur importait que, par le chant des coucous dans les arbres un coup d\'épice. Meilleur que bien d\'autres. Songea-t-il à chercher si quelque chose avait cassé le bras. Excellente affaire, la principale occupation dans ce pays des chevaux, rechargeaient fébrilement leurs armes. Confronté à l\'amère défaite. Profondément pénétré de la valeur vraie qu\'elle représente pour nous. Crois-tu qu\'on peut se procurer pour le soir, en discutant ça.\r\nMaintes fois, qu\'il venait passer une heure entre ci et là, sans une ondulation, sans le savoir, qu\'on ne les renvoyât pas au lendemain. Mais dites-lui de ma part de la marchande de modes, de leurs fortes machines, de ses larmes. Rendu à mes loisirs, sans y rien mettre mien : ce qui permettrait aux pays pauvres d\'utiliser, sur une calomnie, car il tressaillit vivement, et, la dette commençait. Terribles mots, qui restèrent debout, mêlées à la puanteur filante des lampes. Loyauté de ma part toutes les fois sur la terre fraîche des sentiers sous bois fréquentés par les charbonniers et les braconniers. Commandant, puis-je vous rappeler que c\'était ; je comprenais ce sentiment, uniquement parce qu\'elle est imparfaite. Pan : tout le mal possible. Laisserait-elle donc le misérable qui agonisait, et tous ses autres déboires.', 'Fou à lier, et un bâillon pour lui mettre sur le coeur de ses membres guerriers et l\'éclat des cieux. Certains, que leur importait que, par le chant des coucous dans les arbres un coup d\'épice. Meilleur que bien d\'autres. Songea-t-il à chercher si quelque chose avait cassé le....', 'darkRed.jpg', '2020-09-18', 1, 1),
@@ -82,7 +77,6 @@ INSERT INTO `post` (`idPost`, `title`, `description`, `chapo`, `imagePost`, `dat
 (11, '10eme post test ', 'Voulaient-ils, au contraire et se dispersent joyeusement pour rentrer au logis, et d\'écouter derrière les murs de nos demeures, et l\'avoir abandonnée. Je vendrais tous les amis des lumières. Insectes invisibles, que la dépendance nécessaire de l\'expliquer. Elle inspira profondément et pensa à rendre les railleries pour les injures dont notre voisin pourrait avoir à se cacher dans la végétation, de toute ma vie des principes religieux intransigeants. Parler de terres australes était tout aussi comblé de bonheur qu\'ils ressentaient une joie extrême de recevoir, portaient le même nom. Consentez à me traiter avec ou sans parapluie, selon les gens, c\'est après le mariage, il saurait écarter toute ombre. Prêts à servir, et qu\'alors il produisit de si grands avantages physiques consentît à s\'en apercevoir. Aussitôt elle prit la fuite en pareil cas comme une simple coquille de noix.\r\nReprenant son air de petite souveraine qu\'elle était serrée. Conversion de l\'usurpateur, alors ? Justice ou non, elle ne vaut. Attends-moi, traître et adultère, l\'accusant d\'être lâche ? Racontez-moi donc comment les choses se passent dans la chevalerie errante ? Exécution de la mission que je vous recommande l\'étude du soir, la douane était fermée ; je la dérobai à tous les jeunes arbres. Plein d\'endroits où cacher un corps pendant quelque temps, ils avaient la modestie de leur part. Triste souverain qui mourra de faim, l\'écrasement du destin.', 'Voulaient-ils, au contraire et se dispersent joyeusement pour rentrer au logis, et d\'écouter derrière les murs de nos demeures, et l\'avoir abandonnée. Je vendrais tous les amis des lumières. Insectes invisibles, que la dépendance nécessaire de l\'expliquer....', 'test.png', '2020-09-18', 1, 1),
 (12, '11eme post test ', 'Fou à lier, et un bâillon pour lui mettre sur le coeur de ses membres guerriers et l\'éclat des cieux. Certains, que leur importait que, par le chant des coucous dans les arbres un coup d\'épice. Meilleur que bien d\'autres. Songea-t-il à chercher si quelque chose avait cassé le bras. Excellente affaire, la principale occupation dans ce pays des chevaux, rechargeaient fébrilement leurs armes. Confronté à l\'amère défaite. Profondément pénétré de la valeur vraie qu\'elle représente pour nous. Crois-tu qu\'on peut se procurer pour le soir, en discutant ça.\r\nMaintes fois, qu\'il venait passer une heure entre ci et là, sans une ondulation, sans le savoir, qu\'on ne les renvoyât pas au lendemain. Mais dites-lui de ma part de la marchande de modes, de leurs fortes machines, de ses larmes. Rendu à mes loisirs, sans y rien mettre mien : ce qui permettrait aux pays pauvres d\'utiliser, sur une calomnie, car il tressaillit vivement, et, la dette commençait. Terribles mots, qui restèrent debout, mêlées à la puanteur filante des lampes. Loyauté de ma part toutes les fois sur la terre fraîche des sentiers sous bois fréquentés par les charbonniers et les braconniers. Commandant, puis-je vous rappeler que c\'était ; je comprenais ce sentiment, uniquement parce qu\'elle est imparfaite. Pan : tout le mal possible. Laisserait-elle donc le misérable qui agonisait, et tous ses autres déboires.', 'Fou à lier, et un bâillon pour lui mettre sur le coeur de ses membres guerriers et l\'éclat des cieux. Certains, que leur importait que, par le chant des coucous dans les arbres un coup d\'épice. Meilleur que bien d\'autres. Songea-t-il à chercher si quelque chose avait cassé le....', 'test.png', '2020-09-18', 1, 1);
 
-
 -- --------------------------------------------------------
 
 --
@@ -92,7 +86,6 @@ INSERT INTO `post` (`idPost`, `title`, `description`, `chapo`, `imagePost`, `dat
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `idUser` int NOT NULL AUTO_INCREMENT,
-
   `userName` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `email` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `passwordUser` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
@@ -101,15 +94,17 @@ CREATE TABLE IF NOT EXISTS `user` (
   `userType` enum('Admin','Abonnee') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Abonnee',
   `dateCreation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idUser`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `user`
 --
 
 INSERT INTO `user` (`idUser`, `userName`, `email`, `passwordUser`, `activated`, `validationKey`, `userType`, `dateCreation`) VALUES
-(1, 'Fatellim', 'millet.marcalban@gmail.com', '$2y$10$nl.xtrLp7V1B.ivlkeVl0u15O43LUxSUBaIDooNCDSdk7AIwjTT2q', 1, 1, 'Admin', '2020-07-13 09:13:07'),
-(5, 'Marc', 'marcalban@live.fr', '$2y$10$KztktlCJ17tgkH2iWN/rNOxS9vpigmTcpMWlJVZzdtBO.a5l5HRAK', 0, 0, 'Abonnee', '2020-10-01 09:31:38');
+(1, 'Fatellim', 'millet.marcalban@gmail.com', '$2y$10$0DqZo7Jo4TIZy0kNvjLwvey0EOGuDHC9TL3dgpNf6S0fzaUfnsQ..', 1, 1, 'Admin', '2020-07-13 09:13:07'),
+(5, 'Marc-Alban', 'marcalban@live.fr', '$2y$10$KztktlCJ17tgkH2iWN/rNOxS9vpigmTcpMWlJVZzdtBO.a5l5HRAK', 0, 0, 'Abonnee', '2020-10-01 09:31:38'),
+(7, 'tesst', 'test@live.fr', '$2y$10$e1RInO10i1LTv..G55RocuPF7o11rjefCg1HL4pjB9qbAhmtWoDzu', 0, 0, 'Abonnee', '2020-11-02 16:19:52'),
+(8, 'Fatellim76', 'test76@gmail.com', '$2y$10$.vw1n/DDdgFEzm/yUm5cQeDiXUuoEMCoZfUZIY0QSPVH/aBcN8Oie', 0, 0, 'Abonnee', '2020-11-03 13:46:43');
 
 --
 -- Contraintes pour les tables déchargées
