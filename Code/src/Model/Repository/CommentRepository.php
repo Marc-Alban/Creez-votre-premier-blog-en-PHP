@@ -12,17 +12,15 @@ final class CommentRepository
     {
         $this->database = $database->getPdo();
     }
-    public function create(string $comment, string $UserComment, int $idUser, int $idPost): void
+    public function create(string $comment, int $idUser, int $idPost): void
     {
         $sql = "
-        INSERT INTO comment(content, disabled, signalComment,UserComment, UserId, PostId, dateCreation)
-        VALUES(:content, :disabled, :signalComment,:UserComment, :UserId, :PostId, CURRENT_TIMESTAMP)
+        INSERT INTO comment(content, disabled, UserId, PostId, dateCreation)
+        VALUES(:content, :disabled, :UserId, :PostId, CURRENT_TIMESTAMP)
         ";
         $commentArray = [
             ':content' => $comment,
             ':disabled' => 1,
-            ':signalComment' => 0,
-            ':UserComment' => $UserComment,
             ':UserId' => $idUser,
             ':PostId' => $idPost,
         ];
@@ -82,14 +80,5 @@ final class CommentRepository
         ];
         $pdo = $this->database->prepare("DELETE FROM comment WHERE idComment = :idComment ");
         return $pdo->execute($tab);
-    }
-    public function signal(int $idComment): bool
-    {
-        $commentArray = [
-            ':signalComment' => 1,
-            ':idComment' => $idComment,
-        ];
-        $req = $this->database->prepare("UPDATE `comment` SET `signalComment`=:signalComment  WHERE  idComment = :idComment");
-        return $req->execute($commentArray);
     }
 }

@@ -40,35 +40,6 @@
 					</table>
 				</div>
 			</div>
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<div class="panel-title text-center">Commentaires Signalés</div>
-				</div>
-				<div class="panel-body mt-5">
-					<table class="table table-bordered table-hover table-responsive-sm ">
-						<thead class="thead-dark">
-							<tr>
-								<th scope="col">Commentaires</th>
-								<th scope="col">Articles</th>
-								<th scope="col">Accepter</th>
-								<th scope="col">Refuser</th>
-							</tr>
-						</thead>
-						<tbody>
-						{% for comment in data.comments %}
-						{% if comment.disabled == 0 and comment.signalComment == 1 %}
-							<tr>
-								<th scope="row">{{comment.content}}</th>
-								<td scope="row" ><a href='/?page=post/id={{comment.PostId}}' class="text-dark">{{comment.PostId - 1}}</a></td>
-								<td><a href="/allComments/valideSignal/id={{comment.idComment}}" class="linkHover">Valider</a></td>
-								<td><a href="/allComments/deletedSignal/id={{comment.idComment}}" class="linkHover">Supprimer</a></td>
-							</tr>
-						{% endif %}
-						{% endfor %}
-						</tbody>
-					</table>
-				</div>
-			</div>
 		</div>
 	</div>
 {% endblock %}

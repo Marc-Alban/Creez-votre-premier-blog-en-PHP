@@ -31,6 +31,18 @@ final class PostRepository
         move_uploaded_file($dataForm['tmpName'], "images/post/" . $idPost . '.' . $dataForm['extention']);
         return null;
     }
+    public function findIdUser(string $email): int
+    {
+        $req = [
+            ':email' => $email
+        ];
+        $pdo = $this->database->prepare("SELECT UserId FROM post WHERE email = :email");
+        $executeIsOk = $pdo->execute($req);
+        if ($executeIsOk === false) {
+            return null;
+        }
+        return $pdo->fetch();
+    }
     public function findById(int $idPost): ?Post
     {
         $req = [

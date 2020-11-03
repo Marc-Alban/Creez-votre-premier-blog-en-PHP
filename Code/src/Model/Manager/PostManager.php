@@ -21,6 +21,10 @@ final class PostManager
     {
         return $this->postRepository->findById($idPost);
     }
+    public function findIdUserByEmail(string $email): int
+    {
+        return $this->postRepository->findIdUser($email);
+    }
     public function paginationPost(int $perpage = 1): array
     {
         $minPost = 6;
@@ -65,7 +69,7 @@ final class PostManager
                 $this->errors['error']["descShort"] = "Description trop petite, doit être supérieur ou égal à 15 caractères";
             }
             if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
-                $this->errors['error']['formRgister'] = "Formulaire incorrect";
+                $this->errors['error']['formRegister'] = "Formulaire incorrect";
             }
             $dataForm = [
                 'title' => $title,

@@ -55,7 +55,7 @@ final class UserRepository
         }
         return null;
     }
-    public function findByName(string $pseudo): ?User
+    public function findByName(string $pseudo = null): ?User
     {
         $tabUser = [
             ':userName' => $pseudo

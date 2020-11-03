@@ -63,14 +63,18 @@ final class UserController
     }
     public function registrationAction(): void
     {
-        // if ($this->userSession !== null) {
-        //     header('Location: /?page=home');
-        //     exit();
-        // }
-        // //$checkRegister = $this->userManager->userRegister($this->session, $this->token, $this->request);
-        // $this->pseudo = $this->request->getPost()->get('userName');
-        // $this->email = $this->request->getPost()->get('email');
-        // $this->view->render('Frontoffice', 'register', ["checkRegister" => $checkRegister,'email' => $this->email,'pseudo'=>$this->pseudo]);
+        if ($this->userSession !== null) {
+            header('Location: /?page=home');
+            exit();
+        }
+        $checkRegister = $this->userManager->userRegister($this->session, $this->token, $this->request);
+        if(array_key_exists('success',$checkRegister) === true){
+            header('Location: /?page=dashboard');
+            exit();
+        }
+        $this->pseudo = $this->request->getPost()->get('userName');
+        $this->email = $this->request->getPost()->get('email');
+        $this->view->render('Frontoffice', 'register', ["checkRegister" => $checkRegister,'email' => $this->email,'pseudo'=>$this->pseudo]);
     }
     public function loginAction(): void
     {
@@ -88,6 +92,10 @@ final class UserController
             exit();
         }
         $checkConnection = $this->userManager->userLogIn($this->session, $this->token, $this->request);
+        if(array_key_exists('success',$checkConnection) === true){
+            header('Location: /?page=dashboard');
+            exit();
+        }
         $this->email = $this->request->getPost()->get('email');
         $this->view->render('Frontoffice', 'login', ["checkConnection" => $checkConnection,'email' => $this->email]);
     }

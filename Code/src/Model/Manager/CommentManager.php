@@ -11,7 +11,7 @@ final class CommentManager
 {
     private CommentRepository $commentRepository;
     private $errors = null;
-    private $succes = null;
+    private $success = null;
     
     public function __construct(CommentRepository $commentRepository)
     {
@@ -22,8 +22,8 @@ final class CommentManager
     {
         $validComment = $this->commentRepository->valid($idComment, $signal);
         if ($validComment === true) {
-            $this->succes['sendValide'] = "Commentaire validé";
-            return $this->succes;
+            $this->success['sendValide'] = "Commentaire validé";
+            return $this->success;
         }
         return null;
     }
@@ -44,29 +44,21 @@ final class CommentManager
     {
         return  $this->commentRepository->findById($postId);
     }
-    public function signalComment(int $idComment): void
-    {
-        $this->commentRepository->signal($idComment);
-    }
-    public function checkComment(int $idComment, Request $request, Session $session, Token $token): ?array
+    public function checkComment(int $idComment, int $idUser, Request $request, Session $session, Token $token): ?array
     {
         $post = $request->getPost() ?? null;
-        $get = $request->getGet() ?? null;
-        if ($get->get('action') === 'sendComment') {
-            $comment = $post->get('comment');
-            if (empty($comment)) {
-                $this->errors["error"]['messageEmpty'] = "Veuillez mettre un commentaire";
-            }
-            if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
-                $this->errors['error']['formRgister'] = "Formulaire incorrect";
-            }
-            if (empty($this->errors)) {
-                $this->succes["succes"]['send'] = 'Votre commentaire est en attente de validation';
-                $this->commentRepository->create($comment, $session->getSessionName('user'), $session->getSession()['idUser'], $idComment);
-                return $this->succes;
-            }
-            return $this->errors;
+        $comment = $post->get('comment');
+        if (empty($comment)) {
+            $this->errors["error"]['messageEmpty'] = "Veuillez mettre un commentaire";
         }
-        return null;
+        if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
+            $this->errors['error']['formRegister'] = "Formulaire incorrect";
+        }
+        if (empty($this->errors)) {
+            $this->success["success"]['send'] = 'Votre commentaire est en attente de validation';
+            $this->commentRepository->create($comment, $idUser, $idComment);
+            return $this->success;
+        }
+        return $this->errors;
     }
 }

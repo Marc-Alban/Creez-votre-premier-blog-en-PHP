@@ -9,8 +9,6 @@ final class Comment
     private int $idComment;
     private string $content;
     private int $disabled;
-    private int $signalComment;
-    private string $userComment;
     private int $UserId;
     private int $PostId;
     private string $dateCreation;
@@ -72,46 +70,6 @@ final class Comment
     public function setDisabled($disabled): self
     {
         $this->disabled = $disabled;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of signalComment
-     */
-    public function getSignalComment(): int
-    {
-        return $this->signalComment;
-    }
-
-    /**
-     * Set the value of signalComment
-     *
-     * @return  self
-     */
-    public function setSignalComment($signalComment): self
-    {
-        $this->signalComment = $signalComment;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of UserComment
-     */
-    public function getUserComment(): string
-    {
-        return $this->userComment;
-    }
-
-    /**
-     * Set the value of UserComment
-     *
-     * @return  self
-     */
-    public function setUserComment($userComment): self
-    {
-        $this->userComment = $userComment;
 
         return $this;
     }
