@@ -19,12 +19,12 @@ final class PostController
         $this->view = $view;
         $this->request = $request;
     }
-    public function postAction(UserManager $userManager, array $comments, ?array $message): void
+    public function postAction(UserManager $userManager, ?string $nameUser, ?array $comments, ?array $message): void
     {
         $idPost = (int) $this->request->getGet()->get('id') ?? null;
         $post = $this->postManager->findByIdPost($idPost);
         $user = $userManager->findNameByIdUser($post->getUserId());
-        $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, 'comment' => $comments, 'message' => $message]);
+        $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, 'nameUser'=>$nameUser,'comment' => $comments, 'message' => $message]);
     }
     public function postsAction(): void
     {

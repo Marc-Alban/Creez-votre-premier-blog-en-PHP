@@ -83,9 +83,12 @@ final class Router
             if ($this->page  === 'post' && $this->idGlobal && $this->action === null) {
                 $commentRepo = new CommentRepository($this->database);
                 $commentManager = new CommentManager($commentRepo);
+                $commentController =  new CommentController($commentManager, $this->request, $this->token, $this->session);
                 $userRepo = new UserRepository($this->database);
                 $userManager = new UserManager($userRepo);
-                return $instanceController->postAction($commentManager, $userManager, null);
+                $comments = $commentController->findAllPostCommentsAction($postManager);
+                $nameUser = $commentController->findUserNameByIdCommentAction();
+                return $instanceController->postAction($userManager, $nameUser, $comments, null);
             }else if ($this->page  === 'post' && $this->idGlobal && $this->action === 'sendComment'){
                 $commentRepo = new CommentRepository($this->database);
                 $commentManager = new CommentManager($commentRepo);
@@ -93,8 +96,9 @@ final class Router
                 $userRepo = new UserRepository($this->database);
                 $userManager = new UserManager($userRepo);
                 $message = $commentController->sendAction($userManager);
-                $comments = $commentController->findAllComments($postManager);
-                return $instanceController->postAction($userManager, $comments, $message);
+                $comments = $commentController->findAllPostCommentsAction($postManager);
+                $nameUser = $commentController->findUserNameByIdCommentAction();
+                return $instanceController->postAction($userManager, $nameUser, $comments, $message);
             }
             $methode = $this->page .'Action';
             return $instanceController->$methode();
@@ -131,8 +135,8 @@ final class Router
             $commentManager = new $pathCommentManager($commentRepository);
             $pathController = 'App\Controller\Backoffice\CommentController';
             $instanceController = new $pathController($commentManager, $this->view, $this->session, $this->request);
-            if ($this->page === 'allComments' && $this->action === 'valid') {
-                return $instanceController->validCommentAction();
+            if ($this->page === 'allComments' && $this->action === 'valide') {
+                return $instanceController->valideCommentAction();
             } elseif ($this->page === 'allComments' && $this->action === 'deleted') {
                 return $instanceController->deleteCommentAction();
             }

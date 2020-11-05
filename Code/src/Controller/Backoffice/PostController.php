@@ -15,6 +15,7 @@ final class PostController
     private Token $token;
     private Session $session;
     private Request $request;
+    private ?string $userSession;
     public function __construct(PostManager $postManager, View $view, Token $token, Session $session, Request $request)
     {
         $this->view = $view;
@@ -22,12 +23,12 @@ final class PostController
         $this->session = $session;
         $this->postManager = $postManager;
         $this->request = $request;
+        $this->userSession = $this->session->getSessionName('user') ?? null;
     }
     public function addPostAction(): void
     {
         $this->session->setSession('token', $this->token->createSessionToken());
-        $userSession = $this->session->getSessionName('user') ?? null;
-        if ($userSession === null) {
+        if ($this->userSession === null) {
             header('Location: /?page=login');
             exit();
         }
@@ -35,9 +36,8 @@ final class PostController
     }
     public function addPostDashboardAction(): void
     {
-        $userSession = $this->session->getSessionName('user') ?? null;
         $valdel = null;
-        if ($userSession === null) {
+        if ($this->userSession === null) {
             header('Location: /?page=login');
             exit();
         }
@@ -46,9 +46,8 @@ final class PostController
     }
     public function allPostAction(): void
     {
-        $userSession = $this->session->getSessionName('user') ?? null;
         $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
-        if ($userSession === null) {
+        if ($this->userSession === null) {
             header('Location: /?page=login');
             exit();
         } elseif (!is_int($perpage) || empty($perpage)) {

@@ -4,6 +4,7 @@ namespace App\Model\Repository;
 
 use App\Service\Database;
 
+
 final class CommentRepository
 {
     private $database;
@@ -43,9 +44,25 @@ final class CommentRepository
         }
         return null;
     }
+    public function findByIdPost(int $idPost)
+    {
+        $tab = [
+            'idPost'=>$idPost
+        ];
+        $pdo = $this->database->prepare("SELECT UserId FROM comment WHERE idPost = :idPost");
+        $executeIsOk = $pdo->execute($tab);
+        if ($executeIsOk === true) {
+            $commentBdd = $pdo->fetchAll();
+            if ($commentBdd) {
+                return $commentBdd;
+            }
+            return null;
+        }
+        return null;
+    }
     public function findAll(): ?array
     {
-        $pdo = $this->database->query("SELECT * FROM comment");
+        $pdo = $this->database->query("SELECT * FROM comment WHERE disabled = 1");
         $executeIsOk = $pdo->execute();
         if ($executeIsOk === true) {
             $commentBdd = $pdo->fetchAll();
@@ -56,21 +73,13 @@ final class CommentRepository
         }
         return null;
     }
-    public function valid(int $idComment, int $signal = 0): bool
+    public function valide(int $idComment): bool
     {
-        if ($signal === 0) {
-            $tab = [
-                ':disabled' => 0,
-                ':idComment' => $idComment
-            ];
-            $pdo = $this->database->prepare("UPDATE comment SET disabled = :disabled WHERE idComment = :idComment");
-            return $pdo->execute($tab);
-        }
         $tab = [
-            ':signalComment' => 0,
+            ':disabled' => 0,
             ':idComment' => $idComment
         ];
-        $pdo = $this->database->prepare("UPDATE comment SET signalComment = :signalComment WHERE idComment = :idComment");
+        $pdo = $this->database->prepare("UPDATE comment SET disabled = :disabled WHERE idComment = :idComment");
         return $pdo->execute($tab);
     }
     public function delete(int $idComment): bool

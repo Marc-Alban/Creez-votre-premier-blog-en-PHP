@@ -31,7 +31,7 @@ final class PostRepository
         move_uploaded_file($dataForm['tmpName'], "images/post/" . $idPost . '.' . $dataForm['extention']);
         return null;
     }
-    public function findIdUser(string $email): int
+    public function findIdUser(string $email): ?int
     {
         $req = [
             ':email' => $email

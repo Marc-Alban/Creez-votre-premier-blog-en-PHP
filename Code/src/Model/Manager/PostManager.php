@@ -21,7 +21,11 @@ final class PostManager
     {
         return $this->postRepository->findById($idPost);
     }
-    public function findIdUserByEmail(string $email): int
+    public function findIdPost(Request $request): int
+    {
+        return (int) $request->getGet()->get('id');
+    }
+    public function findIdUserByEmail(string $email): ?int
     {
         return $this->postRepository->findIdUser($email);
     }

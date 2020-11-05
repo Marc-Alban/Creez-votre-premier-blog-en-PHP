@@ -15,12 +15,14 @@ final class CommentController
     private View $view;
     private Session $session;
     private Request $request;
+    private int $idComment;
     public function __construct(CommentManager $commentManager, View $view, Session $session, Request $request)
     {
         $this->commentManager = $commentManager;
         $this->view = $view;
         $this->session = $session;
         $this->request = $request;
+        $this->idComment = (int) $this->request->getGet()->get('id') ?? null;
     }
     public function allCommentsAction(): void
     {
@@ -32,24 +34,16 @@ final class CommentController
         $comments = $this->commentManager->findAllComments();
         $this->view->render('backoffice', 'allComments', ["comments" => $comments]);
     }
-    public function validCommentAction(): void
+    public function valideCommentAction(): void
     {
-        $val = null;
-        $idComment = $this->request->getGet()->get('id') ?? null;
+        $val = $this->commentManager->valideComment($this->idComment);
         $comments = $this->commentManager->findAllComments();
-        $val = $this->commentManager->validComment((int) $idComment, 0);
-        // header("Location: /?page=allComments");
-        // exit();
         $this->view->render('backoffice', 'allComments', ["comments" => $comments, 'val' => $val]);
     }
     public function deleteCommentAction(): void
     {
-        $del = null;
-        $idComment = $this->request->getGet()->get('id') ?? null;
+        $del = $this->commentManager->deleteComment($this->idComment);
         $comments = $this->commentManager->findAllComments();
-        $del = $this->commentManager->deleteComment((int) $idComment);
-        // header("Location: /?page=allComments");
-        // exit();
         $this->view->render('backoffice', 'allComments', ["comments" => $comments, 'del' => $del]);
     }
 }

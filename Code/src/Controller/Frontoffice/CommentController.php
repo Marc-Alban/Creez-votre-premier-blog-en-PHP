@@ -30,8 +30,13 @@ final class CommentController
         $this->session->setSession('token', $this->token->createSessionToken());
         return $this->commentManager->checkComment($idPost, $idUser, $this->request, $this->session, $this->token);
     }
-    public function findAllComments(PostManager $postManager)
+    public function findAllPostCommentsAction(PostManager $postManager): ?array
     {
-        return $this->commentManager->findByIdComment($postManager->findIdUserByEmail($this->session->getSessionName('user')));
+        return $this->commentManager->findByIdPost($postManager->findIdPost($this->request));
+    }
+    public function findUserNameByIdCommentAction(): string 
+    {
+        $idPost = (int) $this->request->getGet()->get('id');
+        return $userName = $this->commentManager->findUserNameCommentByIdPost($idPost);
     }
 }
