@@ -106,8 +106,6 @@ hr {
 
 /* MediaQuerie */
 
-@media (max-width: 990px) {}
-
 @media (max-width: 768px) {
     .dropdown-menu {
         right: 0;

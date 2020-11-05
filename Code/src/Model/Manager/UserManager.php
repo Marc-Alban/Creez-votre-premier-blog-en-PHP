@@ -17,14 +17,34 @@ final class UserManager
     {
         $this->userRepository = $userRepository;
     }
+    /**
+     * Give the name with the idUSer
+     *
+     * @param integer $idUser
+     * @return User|null
+     */
     public function findNameByIdUser(int $idUser): ?User
     {
-        return $this->userRepository->findById($idUser);
+        return $this->userRepository->findByIdUser($idUser);
     }
+    /**
+     * Undocumented function
+     *
+     * @param string $user
+     * @return User|null
+     */
     public function findByUserEmail(string $user = null): ?User
     {
         return $this->userRepository->findByEmail($user);
     }
+    /**
+     * method to connect users or return an error
+     *
+     * @param Session $session
+     * @param Token $token
+     * @param Request $request
+     * @return array
+     */
     public function userLogIn(Session $session, Token $token, Request $request): array
     {
         $dataPost = $request->getPost();
@@ -54,6 +74,14 @@ final class UserManager
         }
         return $this->errors;
     }
+    /**
+     * method to save users or return an error
+     *
+     * @param Session $session
+     * @param Token $token
+     * @param Request $request
+     * @return array
+     */
     public function userRegister(Session $session, Token $token, Request $request): array
     {
         $dataPost = $request->getPost() ?? null;
@@ -61,7 +89,7 @@ final class UserManager
         $email = $dataPost->get('email') ?? null;
         $password =  $dataPost->get('password') ?? null;
         $passwordConfirmation = $dataPost->get('passwordConfirmation') ?? null;
-        $userName = $this->userRepository->findByName($pseudo);
+        $userName = $this->userRepository->findByPseudo($pseudo);
         $userEmail = $this->findByUserEmail($email);
         if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
@@ -85,7 +113,16 @@ final class UserManager
         }
         return $this->errors;
     }
-    public function checkPassword(Session $session, Request $request, Token $token, string $user)
+    /**
+     * method to verify password form
+     *
+     * @param Session $session
+     * @param Request $request
+     * @param Token $token
+     * @param string $user
+     * @return array
+     */
+    public function checkPassword(Session $session, Request $request, Token $token, string $user): array
     {
         $user = $this->findByUserEmail($user);
         $idUser = $user->getIdUser();
@@ -110,8 +147,15 @@ final class UserManager
         }
         return $this->errors;
     }
-    
-    public function checkForm(Session $session, Request $request, Token $token)
+    /**
+     * method to check user update form or return error
+     *
+     * @param Session $session
+     * @param Request $request
+     * @param Token $token
+     * @return array
+     */
+    public function checkForm(Session $session, Request $request, Token $token): array
     {
         $post = $request->getPost() ?? null;
         $email = $post->get('email') ?? null;

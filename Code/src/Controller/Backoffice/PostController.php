@@ -25,6 +25,11 @@ final class PostController
         $this->request = $request;
         $this->userSession = $this->session->getSessionName('user') ?? null;
     }
+    /**
+     * display addPost Page
+     *
+     * @return void
+     */
     public function addPostAction(): void
     {
         $this->session->setSession('token', $this->token->createSessionToken());
@@ -34,6 +39,11 @@ final class PostController
         }
         $this->view->render('backoffice', 'addPost', []);
     }
+    /**
+     * method to add a post in bdd
+     *
+     * @return void
+     */
     public function addPostDashboardAction(): void
     {
         $valdel = null;
@@ -44,6 +54,11 @@ final class PostController
         $valdel = $this->postManager->checkFormAddPost($this->session, $this->token, $this->request);
         $this->view->render('backoffice', 'addPost', ["valdel" => $valdel]);
     }
+    /**
+     * Display allPostPage
+     *
+     * @return void
+     */
     public function allPostAction(): void
     {
         $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
@@ -56,5 +71,18 @@ final class PostController
         }
         $post = $this->postManager->paginationPost($perpage);
         $this->view->render('backoffice', 'allPost', ['allPosts' => $post]);
+    }
+    /**
+     * Display the updatePost Page
+     *
+     * @return void
+     */
+    public function updatePostAction(): void
+    {
+        if ($this->userSession === null) {
+            header('Location: /?page=login');
+            exit();
+        }
+        $this->view->render('backoffice', 'modifPost', []);
     }
 }

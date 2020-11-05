@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 namespace App\Model\Entity;
 
 final class Comment
@@ -12,8 +10,6 @@ final class Comment
     private int $UserId;
     private int $PostId;
     private string $dateCreation;
-
-
     /**
      * Get the value of idComment
      */
@@ -21,7 +17,6 @@ final class Comment
     {
         return $this->idComment;
     }
-
     /**
      * Set the value of idComment
      *
@@ -30,10 +25,8 @@ final class Comment
     public function setIdComment($idComment): self
     {
         $this->idComment = $idComment;
-
         return $this;
     }
-
     /**
      * Get the value of content
      */
@@ -41,7 +34,6 @@ final class Comment
     {
         return $this->content;
     }
-
     /**
      * Set the value of content
      *
@@ -50,10 +42,8 @@ final class Comment
     public function setContent($content): self
     {
         $this->content = $content;
-
         return $this;
     }
-
     /**
      * Get the value of disabled
      */
@@ -61,7 +51,6 @@ final class Comment
     {
         return $this->disabled;
     }
-
     /**
      * Set the value of disabled
      *
@@ -70,10 +59,8 @@ final class Comment
     public function setDisabled($disabled): self
     {
         $this->disabled = $disabled;
-
         return $this;
     }
-
     /**
      * Get the value of UserId
      */
@@ -81,7 +68,6 @@ final class Comment
     {
         return $this->UserId;
     }
-
     /**
      * Set the value of UserId
      *
@@ -90,10 +76,8 @@ final class Comment
     public function setUserId($UserId): self
     {
         $this->UserId = $UserId;
-
         return $this;
     }
-
     /**
      * Get the value of PostId
      */
@@ -101,7 +85,6 @@ final class Comment
     {
         return $this->PostId;
     }
-
     /**
      * Set the value of PostId
      *
@@ -110,10 +93,8 @@ final class Comment
     public function setPostId($PostId): self
     {
         $this->PostId = $PostId;
-
         return $this;
     }
-
     /**
      * Get the value of dateCreation
      */
@@ -121,7 +102,6 @@ final class Comment
     {
         return $this->dateCreation;
     }
-
     /**
      * Set the value of dateCreation
      *
@@ -130,7 +110,6 @@ final class Comment
     public function setDateCreation($dateCreation): self
     {
         $this->dateCreation = $dateCreation;
-
         return $this;
     }
 }

@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 namespace App\Model\Entity;
 
 final class Post
@@ -14,7 +12,6 @@ final class Post
     private string $datePost;
     private int $statuPost;
     private int $UserId;
-
     /**
      * Get the value of idPost
      */
@@ -22,7 +19,6 @@ final class Post
     {
         return $this->idPost;
     }
-
     /**
      * Set the value of idPost
      *
@@ -31,10 +27,8 @@ final class Post
     public function setIdPost($idPost): self
     {
         $this->idPost = $idPost;
-
         return $this;
     }
-
     /**
      * Get the value of title
      */
@@ -42,7 +36,6 @@ final class Post
     {
         return $this->title;
     }
-
     /**
      * Set the value of title
      *
@@ -51,10 +44,8 @@ final class Post
     public function setTitle($title): self
     {
         $this->title = $title;
-
         return $this;
     }
-
     /**
      * Get the value of description
      */
@@ -62,7 +53,6 @@ final class Post
     {
         return $this->description;
     }
-
     /**
      * Set the value of description
      *
@@ -71,10 +61,8 @@ final class Post
     public function setDescription($description): self
     {
         $this->description = $description;
-
         return $this;
     }
-
     /**
     * Get the value of chapo
     */
@@ -82,7 +70,6 @@ final class Post
     {
         return $this->chapo;
     }
-
     /**
      * Set the value of chapo
      *
@@ -91,7 +78,6 @@ final class Post
     public function setChapo($chapo): self
     {
         $this->chapo = $chapo;
-
         return $this;
     }
     /**
@@ -101,7 +87,6 @@ final class Post
     {
         return $this->imagePost;
     }
-
     /**
      * Set the value of imagePost
      *
@@ -110,10 +95,8 @@ final class Post
     public function setImagePost($imagePost): self
     {
         $this->imagePost = $imagePost;
-
         return $this;
     }
-
     /**
      * Get the value of datePost
      */
@@ -121,7 +104,6 @@ final class Post
     {
         return $this->datePost;
     }
-
     /**
      * Set the value of datePost
      *
@@ -130,10 +112,8 @@ final class Post
     public function setDatePost($datePost): self
     {
         $this->datePost = $datePost;
-
         return $this;
     }
-
     /**
      * Get the value of statuPost
      */
@@ -141,7 +121,6 @@ final class Post
     {
         return $this->statuPost;
     }
-
     /**
      * Set the value of statuPost
      *
@@ -150,10 +129,8 @@ final class Post
     public function setStatuPost($statuPost): self
     {
         $this->statuPost = $statuPost;
-
         return $this;
     }
-
     /**
      * Get the value of UserId
      */
@@ -161,7 +138,6 @@ final class Post
     {
         return $this->UserId;
     }
-
     /**
      * Set the value of UserId
      *
@@ -170,7 +146,6 @@ final class Post
     public function setUserId($UserId): self
     {
         $this->UserId = $UserId;
-
         return $this;
     }
 }

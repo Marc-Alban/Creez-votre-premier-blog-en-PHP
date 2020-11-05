@@ -12,23 +12,36 @@ final class PostManager
 {
     private PostRepository $postRepository;
     private $errors = null;
-    private $succes = null;
+    private $success = null;
     public function __construct(PostRepository $postRepository)
     {
         $this->postRepository = $postRepository;
     }
-    public function findByIdPost(int $idPost): ?Post
+    /**
+     * Return the post find with the idPost
+     *
+     * @param integer $idPost
+     * @return Post|null
+     */
+    public function findPostByIdPost(int $idPost): ?Post
     {
-        return $this->postRepository->findById($idPost);
+        return $this->postRepository->findByIdPost($idPost);
     }
-    public function findIdPost(Request $request): int
+    /**
+     * Give the UserId with the mail
+     * @param string $email
+     * @return integer|null
+     */
+    public function findUserIdByEmail(string $email): ?int
     {
-        return (int) $request->getGet()->get('id');
+        return $this->postRepository->findUserByEmail($email);
     }
-    public function findIdUserByEmail(string $email): ?int
-    {
-        return $this->postRepository->findIdUser($email);
-    }
+    /**
+     * Pagination of the posts page where all the articles are located
+     *
+     * @param integer $perpage
+     * @return array
+     */
     public function paginationPost(int $perpage = 1): array
     {
         $minPost = 6;
@@ -47,6 +60,14 @@ final class PostManager
             'post' => $post
         ];
     }
+    /**
+     * Verification of the bdd post insertion form
+     *
+     * @param Session $session
+     * @param Token $token
+     * @param Request $request
+     * @return array|null
+     */
     public function checkFormAddPost(Session $session, Token $token, Request $request): ?array
     {
         $post = $request->getPost() ?? null;
@@ -85,8 +106,8 @@ final class PostManager
             ];
             if (empty($this->errors)) {
                 $this->postRepository->create($dataForm);
-                $this->succes['sendPost'] = "Article bien enregistré";
-                return $this->succes;
+                $this->success['sendPost'] = "Article bien enregistré";
+                return $this->success;
             }
             return $this->errors;
         }

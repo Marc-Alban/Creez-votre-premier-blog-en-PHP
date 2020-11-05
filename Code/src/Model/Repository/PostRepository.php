@@ -13,6 +13,12 @@ final class PostRepository
     {
         $this->database = $database->getPdo();
     }
+    /**
+     * Create a post with the given parameters
+     *
+     * @param array $dataForm
+     * @return array|null
+     */
     public function create(array $dataForm): ?array
     {
         $idPostMax = $this->database->query('SELECT MAX(idPost) FROM post ORDER BY idPost');
@@ -31,7 +37,13 @@ final class PostRepository
         move_uploaded_file($dataForm['tmpName'], "images/post/" . $idPost . '.' . $dataForm['extention']);
         return null;
     }
-    public function findIdUser(string $email): ?int
+    /**
+     * Allows you to find a user with the email
+     *
+     * @param string $email
+     * @return integer|null
+     */
+    public function findUserByEmail(string $email): ?int
     {
         $req = [
             ':email' => $email
@@ -43,7 +55,13 @@ final class PostRepository
         }
         return $pdo->fetch();
     }
-    public function findById(int $idPost): ?Post
+    /**
+     * Allows you to find a post with the idPost
+     *
+     * @param integer $idPost
+     * @return Post|null
+     */
+    public function findByIdPost(int $idPost): ?Post
     {
         $req = [
             ':idPost' => $idPost
@@ -55,6 +73,13 @@ final class PostRepository
         }
         return $pdo->fetchObject(Post::class);
     }
+    /**
+     * Get all posts
+     *
+     * @param integer $pagePost
+     * @param integer $perPage
+     * @return array|null
+     */
     public function findAll(int $pagePost, int $perPage): ?array
     {
         $req = $this->database->prepare("SELECT * FROM post WHERE statuPost = 1 ORDER BY idPost DESC LIMIT :pagePost, :perPage");
@@ -67,6 +92,11 @@ final class PostRepository
         }
         return $pdoStatement;
     }
+    /**
+     * Count the number of posts
+     *
+     * @return string
+     */
     public function count(): string
     {
         $total = null;

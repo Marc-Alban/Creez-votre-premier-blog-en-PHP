@@ -5,14 +5,7 @@ declare(strict_types=1);
 class AccessControl
 {
     private int $access;
-    
     public function __construct()
     {
-
-    }
-
-    public function userIsAdmin()
-    {
-        
     }
 }

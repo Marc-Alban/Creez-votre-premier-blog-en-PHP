@@ -16,14 +16,29 @@ class Request
         $this->post = new Parameter($_POST);
         $this->file = $_FILES;
     }
+    /**
+     * Using the class parameter returns the superglobal GET
+     *
+     * @return Parameter
+     */
     public function getGet(): Parameter
     {
         return $this->get;
     }
+    /**
+     * Using the class parameter returns the superglobal POST
+     *
+     * @return Parameter
+     */
     public function getPost(): Parameter
     {
         return $this->post;
     }
+    /**
+     * Get the superglobal FILE
+     *
+     * @return array
+     */
     public function getFile(): array
     {
         return $this->file;

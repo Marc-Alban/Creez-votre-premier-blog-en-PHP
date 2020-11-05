@@ -4,15 +4,21 @@ namespace App\Model\Repository;
 
 use App\Service\Database;
 
-
 final class CommentRepository
 {
     private $database;
-
     public function __construct(Database $database)
     {
         $this->database = $database->getPdo();
     }
+    /**
+     * Create a comment with the given parameters
+     *
+     * @param string $comment
+     * @param integer $idUser
+     * @param integer $idPost
+     * @return void
+     */
     public function create(string $comment, int $idUser, int $idPost): void
     {
         $sql = "
@@ -28,7 +34,13 @@ final class CommentRepository
         $req = $this->database->prepare($sql);
         $req->execute($commentArray);
     }
-    public function findById(int $postId): ?array
+    /**
+     * Allows to retrieve a comment with the id
+     *
+     * @param integer $postId
+     * @return array|null
+     */
+    public function findByPostId(int $postId): ?array
     {
         $req = [
                 ':idPost' => $postId
@@ -44,22 +56,11 @@ final class CommentRepository
         }
         return null;
     }
-    public function findByIdPost(int $idPost)
-    {
-        $tab = [
-            'idPost'=>$idPost
-        ];
-        $pdo = $this->database->prepare("SELECT UserId FROM comment WHERE idPost = :idPost");
-        $executeIsOk = $pdo->execute($tab);
-        if ($executeIsOk === true) {
-            $commentBdd = $pdo->fetchAll();
-            if ($commentBdd) {
-                return $commentBdd;
-            }
-            return null;
-        }
-        return null;
-    }
+    /**
+     * Get all comments
+     *
+     * @return array|null
+     */
     public function findAll(): ?array
     {
         $pdo = $this->database->query("SELECT * FROM comment WHERE disabled = 1");
@@ -73,6 +74,12 @@ final class CommentRepository
         }
         return null;
     }
+    /**
+     * Allows you to validate a comment
+     *
+     * @param integer $idComment
+     * @return boolean
+     */
     public function valide(int $idComment): bool
     {
         $tab = [
@@ -82,6 +89,12 @@ final class CommentRepository
         $pdo = $this->database->prepare("UPDATE comment SET disabled = :disabled WHERE idComment = :idComment");
         return $pdo->execute($tab);
     }
+    /**
+     * Allows you to delete a comment
+     *
+     * @param integer $idComment
+     * @return boolean
+     */
     public function delete(int $idComment): bool
     {
         $tab = [

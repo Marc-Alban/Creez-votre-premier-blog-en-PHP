@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 namespace App\Controller\Backoffice;
 
 use App\Model\Manager\CommentManager;
@@ -24,6 +22,11 @@ final class CommentController
         $this->request = $request;
         $this->idComment = (int) $this->request->getGet()->get('id') ?? null;
     }
+    /**
+     * display AllComments page
+     *
+     * @return void
+     */
     public function allCommentsAction(): void
     {
         $userSession = $this->session->getSessionName('user') ?? null;
@@ -34,12 +37,22 @@ final class CommentController
         $comments = $this->commentManager->findAllComments();
         $this->view->render('backoffice', 'allComments', ["comments" => $comments]);
     }
+    /**
+     * method to valide Comment
+     *
+     * @return void
+     */
     public function valideCommentAction(): void
     {
         $val = $this->commentManager->valideComment($this->idComment);
         $comments = $this->commentManager->findAllComments();
         $this->view->render('backoffice', 'allComments', ["comments" => $comments, 'val' => $val]);
     }
+    /**
+     * method to delete Comment
+     *
+     * @return void
+     */
     public function deleteCommentAction(): void
     {
         $del = $this->commentManager->deleteComment($this->idComment);

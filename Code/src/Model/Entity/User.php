@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 namespace App\Model\Entity;
 
 final class User
@@ -14,8 +12,6 @@ final class User
     private int $validationKey;
     private string $userType;
     private string $dateCreation;
-
-
     /**
      * Get the value of idUser
      */
@@ -23,7 +19,6 @@ final class User
     {
         return $this->idUser;
     }
-
     /**
      * Set the value of idUser
      *
@@ -32,10 +27,8 @@ final class User
     public function setIdUser($idUser): self
     {
         $this->idUser = $idUser;
-
         return $this;
     }
-
     /**
      * Get the value of userName
      */
@@ -43,7 +36,6 @@ final class User
     {
         return $this->userName;
     }
-
     /**
      * Set the value of userName
      *
@@ -52,10 +44,8 @@ final class User
     public function setUserName($userName): self
     {
         $this->userName = $userName;
-
         return $this;
     }
-
     /**
      * Get the value of email
      */
@@ -63,7 +53,6 @@ final class User
     {
         return $this->email;
     }
-
     /**
      * Set the value of email
      *
@@ -72,11 +61,8 @@ final class User
     public function setEmail($email): self
     {
         $this->email = $email;
-
         return $this;
     }
-
-
     /**
      * Get the value of passwordUser
      */
@@ -84,7 +70,6 @@ final class User
     {
         return $this->passwordUser;
     }
-
     /**
      * Set the value of passwordUser
      *
@@ -93,10 +78,8 @@ final class User
     public function setPasswordUser($passwordUser): self
     {
         $this->passwordUser = $passwordUser;
-
         return $this;
     }
-
     /**
      * Get the value of activated
      */
@@ -104,7 +87,6 @@ final class User
     {
         return $this->activated;
     }
-
     /**
      * Set the value of activated
      *
@@ -113,10 +95,8 @@ final class User
     public function setActivated($activated): self
     {
         $this->activated = $activated;
-
         return $this;
     }
-
     /**
      * Get the value of validationKey
      */
@@ -124,7 +104,6 @@ final class User
     {
         return $this->validationKey;
     }
-
     /**
      * Set the value of validationKey
      *
@@ -133,10 +112,8 @@ final class User
     public function setValidationKey($validationKey): self
     {
         $this->validationKey = $validationKey;
-
         return $this;
     }
-
     /**
      * Get the value of userType
      */
@@ -144,7 +121,6 @@ final class User
     {
         return $this->userType;
     }
-
     /**
      * Set the value of userType
      *
@@ -153,10 +129,8 @@ final class User
     public function setUserType($userType): self
     {
         $this->userType = $userType;
-
         return $this;
     }
-
     /**
      * Get the value of dateCreation
      */
@@ -164,7 +138,6 @@ final class User
     {
         return $this->dateCreation;
     }
-
     /**
      * Set the value of dateCreation
      *
@@ -173,7 +146,6 @@ final class User
     public function setDateCreation($dateCreation): self
     {
         $this->dateCreation = $dateCreation;
-
         return $this;
     }
 }

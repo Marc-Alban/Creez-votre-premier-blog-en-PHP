@@ -1,11 +1,8 @@
 <?php
-
 declare(strict_types=1);
-
 namespace App\Controller\Frontoffice;
 
 use App\Model\Manager\UserManager;
-use App\Service\Http\Parameter;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
 use App\Service\Mail;
@@ -31,11 +28,22 @@ final class UserController
         $this->request = $request;
         $this->userSession =  $this->session->getSessionName('user');
     }
+    /**
+     * display the home page
+     *
+     * @return void
+     */
     public function homeAction(): void
     {
         $this->session->setSession('token', $this->token->createSessionToken());
         $this->view->render('Frontoffice', 'home', []);
     }
+    /**
+     * method to send an email and display the home page
+     *
+     * @param Mail $mailClass
+     * @return void
+     */
     public function sendMailAction(Mail $mailClass): void
     {
         $mail = [];
@@ -45,12 +53,22 @@ final class UserController
         }
         $this->view->render('Frontoffice', 'home', ['mail'=>$mail]);
     }
+    /**
+     * method to disconnect the user from his account
+     *
+     * @return void
+     */
     public function logoutAction(): void
     {
         $this->session->sessionDestroy();
         header('Location: /?p=home');
         exit();
     }
+    /**
+     * display the register page
+     *
+     * @return void
+     */
     public function registerAction(): void
     {
         $this->session->setSession('token', $this->token->createSessionToken());
@@ -61,6 +79,11 @@ final class UserController
         
         $this->view->render('Frontoffice', 'register', []);
     }
+    /**
+     * method to save the user for his account
+     *
+     * @return void
+     */
     public function registrationAction(): void
     {
         if ($this->userSession !== null) {
@@ -68,7 +91,7 @@ final class UserController
             exit();
         }
         $checkRegister = $this->userManager->userRegister($this->session, $this->token, $this->request);
-        if(array_key_exists('success',$checkRegister) === true){
+        if (array_key_exists('success', $checkRegister) === true) {
             header('Location: /?page=dashboard');
             exit();
         }
@@ -76,6 +99,11 @@ final class UserController
         $this->email = $this->request->getPost()->get('email');
         $this->view->render('Frontoffice', 'register', ["checkRegister" => $checkRegister,'email' => $this->email,'pseudo'=>$this->pseudo]);
     }
+    /**
+     * display the login page
+     *
+     * @return void
+     */
     public function loginAction(): void
     {
         $this->session->setSession('token', $this->token->createSessionToken());
@@ -85,6 +113,11 @@ final class UserController
         }
         $this->view->render('Frontoffice', 'login', []);
     }
+    /**
+     * method to connect a user
+     *
+     * @return void
+     */
     public function connectionAction(): void
     {
         if ($this->userSession !== null) {
@@ -92,7 +125,7 @@ final class UserController
             exit();
         }
         $checkConnection = $this->userManager->userLogIn($this->session, $this->token, $this->request);
-        if(array_key_exists('success',$checkConnection) === true){
+        if (array_key_exists('success', $checkConnection) === true) {
             header('Location: /?page=dashboard');
             exit();
         }

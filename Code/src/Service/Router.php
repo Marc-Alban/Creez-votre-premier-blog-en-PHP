@@ -2,18 +2,18 @@
 declare(strict_types=1);
 namespace  App\Service;
 
-use App\View\View;
-use App\Service\Mail;
+use App\Controller\ErrorController;
+use App\Controller\Frontoffice\CommentController;
+use App\Model\Manager\CommentManager;
+use App\Model\Manager\UserManager;
+use App\Model\Repository\CommentRepository;
+use App\Model\Repository\UserRepository;
 use App\Service\Database;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
+use App\Service\Mail;
 use App\Service\Security\Token;
-use App\Model\Manager\UserManager;
-use App\Controller\ErrorController;
-use App\Model\Manager\CommentManager;
-use App\Model\Repository\UserRepository;
-use App\Model\Repository\CommentRepository;
-use App\Controller\Frontoffice\CommentController;
+use App\View\View;
 
 final class Router
 {
@@ -40,20 +40,21 @@ final class Router
         $this->error = new ErrorController($this->view);
         $this->mail = new Mail($this->request, $this->view);
     }
+    /**
+     * Start the router with the correct route from the past url
+     *
+     */
     public function run()
     {
         $this->url = $this->request->getGet()->get('page') ?? 'home';
         $this->page = lcfirst($this->url);
-
         $this->idGlobal = $this->request->getGet()->get('id') ?? null;
         $this->action = $this->request->getGet()->get('action') ?? null;
-
         $userFrontPage = ['home','login','register'];
         $postFrontPage = ['post','posts'];
         $userBackPage = ['dashboard','password'];
         $postBackPage = ['allPost','addPost','updatePost'];
         $commentBackPage = ['allComments'];
-
         if (in_array($this->page, $userFrontPage, true)) {
             $pathController = 'App\Controller\Frontoffice\UserController';
             $pathUserRepository = 'App\Model\Repository\UserRepository';
@@ -79,26 +80,24 @@ final class Router
             $postRepository = new $pathPostRepository($this->database);
             $postManager = new $pathPostManager($postRepository);
             $pathController = 'App\Controller\Frontoffice\PostController';
-            $instanceController = new $pathController($postManager, $this->view, $this->request, $this->token, $this->session);
+            $instanceController = new $pathController($postManager, $this->view, $this->request);
             if ($this->page  === 'post' && $this->idGlobal && $this->action === null) {
                 $commentRepo = new CommentRepository($this->database);
                 $commentManager = new CommentManager($commentRepo);
                 $commentController =  new CommentController($commentManager, $this->request, $this->token, $this->session);
                 $userRepo = new UserRepository($this->database);
                 $userManager = new UserManager($userRepo);
-                $comments = $commentController->findAllPostCommentsAction($postManager);
-                $nameUser = $commentController->findUserNameByIdCommentAction();
-                return $instanceController->postAction($userManager, $nameUser, $comments, null);
-            }else if ($this->page  === 'post' && $this->idGlobal && $this->action === 'sendComment'){
+                $comments = $commentController->findAllPostCommentsAction();
+                return $instanceController->postAction($userManager, $comments, null);
+            } elseif ($this->page  === 'post' && $this->idGlobal && $this->action === 'sendComment') {
                 $commentRepo = new CommentRepository($this->database);
                 $commentManager = new CommentManager($commentRepo);
                 $commentController =  new CommentController($commentManager, $this->request, $this->token, $this->session);
                 $userRepo = new UserRepository($this->database);
                 $userManager = new UserManager($userRepo);
                 $message = $commentController->sendAction($userManager);
-                $comments = $commentController->findAllPostCommentsAction($postManager);
-                $nameUser = $commentController->findUserNameByIdCommentAction();
-                return $instanceController->postAction($userManager, $nameUser, $comments, $message);
+                $comments = $commentController->findAllPostCommentsAction();
+                return $instanceController->postAction($userManager, $comments, $message);
             }
             $methode = $this->page .'Action';
             return $instanceController->$methode();

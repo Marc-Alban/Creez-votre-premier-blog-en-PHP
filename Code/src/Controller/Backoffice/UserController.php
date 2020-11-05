@@ -32,6 +32,11 @@ final class UserController
             $this->email = $user->getEmail();
         }
     }
+    /**
+     * Display the dashboard page
+     *
+     * @return void
+     */
     public function dashboardAction(): void
     {
         $this->session->setSession('token', $this->token->createSessionToken());
@@ -41,6 +46,11 @@ final class UserController
         }
         $this->view->render('backoffice', 'dashboard', ['pseudo' => $this->pseudo,'email'=>$this->email]);
     }
+    /**
+     * method to modify a user
+     *
+     * @return void
+     */
     public function updateUserAction(): void
     {
         if ($this->userSession === null) {
@@ -51,6 +61,11 @@ final class UserController
         header('Location: /?page=dashboard');
         $this->view->render('backoffice', 'dashboard', ['pseudo' => $this->pseudo,'email'=>$this->email, 'verif' => $verifUser]);
     }
+    /**
+     * Display the password page
+     *
+     * @return void
+     */
     public function passwordAction(): void
     {
         $this->session->setSession('token', $this->token->createSessionToken());
@@ -60,6 +75,11 @@ final class UserController
         }
         $this->view->render('backoffice', 'password', []);
     }
+    /**
+     * Methode to modify the password user
+     *
+     * @return void
+     */
     public function updatePasswordAction(): void
     {
         if ($this->userSession === null) {
@@ -68,13 +88,5 @@ final class UserController
         }
         $verifPassBdd = $this->userManager->checkPassword($this->session, $this->request, $this->token, $this->userSession);
         $this->view->render('backoffice', 'password', ['verif' => $verifPassBdd]);
-    }
-    public function updatePostAction(): void
-    {
-        if ($this->userSession === null) {
-            header('Location: /?page=login');
-            exit();
-        }
-        $this->view->render('backoffice', 'modifPost', []);
     }
 }

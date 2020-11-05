@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace App\Controller\Frontoffice;
 
-use App\Model\Manager\CommentManager;
 use App\Model\Manager\PostManager;
 use App\Model\Manager\UserManager;
 use App\Service\Http\Request;
@@ -19,13 +18,26 @@ final class PostController
         $this->view = $view;
         $this->request = $request;
     }
-    public function postAction(UserManager $userManager, ?string $nameUser, ?array $comments, ?array $message): void
+    /**
+     * diplay the post page
+     *
+     * @param UserManager $userManager
+     * @param array|null $comments
+     * @param array|null $message
+     * @return void
+     */
+    public function postAction(UserManager $userManager, ?array $comments, ?array $message): void
     {
         $idPost = (int) $this->request->getGet()->get('id') ?? null;
-        $post = $this->postManager->findByIdPost($idPost);
+        $post = $this->postManager->findPostByIdPost($idPost);
         $user = $userManager->findNameByIdUser($post->getUserId());
-        $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, 'nameUser'=>$nameUser,'comment' => $comments, 'message' => $message]);
+        $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, 'comment' => $comments, 'message' => $message]);
     }
+    /**
+     * display the blog page
+     *
+     * @return void
+     */
     public function postsAction(): void
     {
         $perpage = (int) $this->request->getGet()->get('perpage') ?? null;

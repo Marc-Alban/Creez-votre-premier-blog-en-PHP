@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 namespace App\Service;
 
 use \PDO;
@@ -14,7 +12,6 @@ final class Database
     private array $dsn;
     private $database;
     private $pdoOptions;
-
     public function __construct(ConfigProperties $configProperties)
     {
         $this->configProperties = $configProperties;
@@ -26,8 +23,11 @@ final class Database
             throw new Exception("Probleme avec la bdd");
         }
     }
-
-
+    /**
+     * get the database by the constructor function
+     *
+     * @return PDO
+     */
     public function getPdo(): PDO
     {
         return $this->database;
