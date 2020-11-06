@@ -74,6 +74,20 @@ final class PostRepository
         return $pdo->fetchObject(Post::class);
     }
     /**
+     * Get All id post
+     *
+     * @return array|null
+     */
+    public function findIdPost(): ?array
+    {
+        $pdo = $this->database->query("SELECT idPost FROM post");
+        $req = $pdo->fetchAll();
+        if ($req) {
+            return $req;
+        }
+        return null;
+    }
+    /**
      * Get all posts
      *
      * @param integer $pagePost

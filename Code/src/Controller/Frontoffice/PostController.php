@@ -21,34 +21,53 @@ final class PostController
     /**
      * diplay the post page
      *
-     * @param UserManager $userManager
+     * @param UserManager|null $userManager
      * @param array|null $comments
      * @param array|null $message
      * @return void
      */
-    public function postAction(UserManager $userManager, ?array $comments, ?array $message): void
+    public function postAction(?UserManager $userManager, ?array $comments, ?array $message): void
     {
-        $idPost = (int) $this->request->getGet()->get('id') ?? null;
-        $post = $this->postManager->findPostByIdPost($idPost);
-        $user = $userManager->findNameByIdUser($post->getUserId());
-        $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, 'comment' => $comments, 'message' => $message]);
+        $post = null;
+        $user = null;
+        $defaultPost = null;
+        $idPostBdd = [];
+        $idPost = (int) $this->request->getGet()->get('id');
+        $arrayIdBdd = $this->postManager->findAllIdPost();
+        foreach ($arrayIdBdd as $k => $v) {
+            $idPostBdd = $v;
+        }
+        if (in_array($idPost, $idPostBdd, true) === true) {
+            $post = $this->postManager->findPostByIdPost($idPost);
+            $user = $userManager->findNameByIdUser($post->getUserId());
+        } elseif (in_array($idPost, $idPostBdd, true) !== true) {
+            $defaultPost = $this->defaultPost();
+        }
+        $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, 'comment' => $comments, 'message' => $message, 'defaultPost'=> $defaultPost]);
     }
     /**
      * display the blog page
+     * if don't have a post, the page take a default post in bdd
      *
      * @return void
      */
     public function postsAction(): void
     {
+        $defaultPost = null;
         $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
         $paginationPost =  $this->postManager->paginationPost($perpage) ?? null;
-        if (empty($perpage) || $perpage === 0) {
-            header('Location: /?page=posts&perpage=1');
-            exit();
-        } elseif ($paginationPost['post'] === null) {
-            header('Location: /?page=posts&perpage=1');
-            exit();
+        if ($paginationPost['post'] === null) {
+            $defaultPost = $this->defaultPost();
         }
-        $this->view->render('Frontoffice', 'posts', ['paginationPost' => $paginationPost]);
+        $this->view->render('Frontoffice', 'posts', ['paginationPost' => $paginationPost, 'defaultPost'=> $defaultPost]);
+    }
+    /**
+     * Display default post
+     *
+     * @return array
+     */
+    public function defaultPost(): array
+    {
+        return $this->postManager->defaultPost();
     }
 }

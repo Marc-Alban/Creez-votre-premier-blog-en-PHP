@@ -25,10 +25,10 @@ final class Router
     private View $view;
     private ErrorController $error;
     private Mail $mail;
-    private $url;
-    private $page;
-    private $idGlobal;
-    private $action;
+    private ?string $url;
+    private ?string $page;
+    private ?string $idGlobal;
+    private ?string $action;
     public function __construct()
     {
         $this->session = new Session();
@@ -48,7 +48,7 @@ final class Router
     {
         $this->url = $this->request->getGet()->get('page') ?? 'home';
         $this->page = lcfirst($this->url);
-        $this->idGlobal = $this->request->getGet()->get('id') ?? null;
+        $this->idGlobal = $this->request->getGet()->get('id') ?? "0";
         $this->action = $this->request->getGet()->get('action') ?? null;
         $userFrontPage = ['home','login','register'];
         $postFrontPage = ['post','posts'];
@@ -98,6 +98,8 @@ final class Router
                 $message = $commentController->sendAction($userManager);
                 $comments = $commentController->findAllPostCommentsAction();
                 return $instanceController->postAction($userManager, $comments, $message);
+            } elseif ($this->page === 'post' && $this->idGlobal === "0" || $this->page === 'post' && empty($this->global)) {
+                return $instanceController->postAction(null, null, null);
             }
             $methode = $this->page .'Action';
             return $instanceController->$methode();

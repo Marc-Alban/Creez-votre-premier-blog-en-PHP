@@ -22,7 +22,7 @@
 							</div>
 						{% endfor %}
 					{% endif %}
-				
+					<p class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i> Attention<i class="fas fa-exclamation-triangle"></i> <br> Bien choisir votre pseudo ! Il sera relié à votre email.<br>Exemple: Si vous voulez changez le pseudo, il faudra changer l'email obligatoirement !!</p>
 					<form method="POST" action="/?page=register&action=registration">
 						<input id="userName" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre Pseudo" type="text" name="userName" {% if data.pseudo %} value="{{data.pseudo}}" {% endif %}><br>
 						<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email" {% if data.email %} value="{{data.email}}" {% endif %}><br>

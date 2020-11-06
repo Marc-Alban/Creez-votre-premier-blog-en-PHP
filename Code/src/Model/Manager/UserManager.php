@@ -18,7 +18,7 @@ final class UserManager
         $this->userRepository = $userRepository;
     }
     /**
-     * Give the name with the idUSer
+     * Give the name with the idUser
      *
      * @param integer $idUser
      * @return User|null
@@ -28,7 +28,7 @@ final class UserManager
         return $this->userRepository->findByIdUser($idUser);
     }
     /**
-     * Undocumented function
+     * Find user with email
      *
      * @param string $user
      * @return User|null
@@ -161,15 +161,27 @@ final class UserManager
         $email = $post->get('email') ?? null;
         $userName = $post->get('userName') ?? null;
         $userSession =  $session->getSessionName('user');
+        $emailBdd = null;
+        $pseudoBdd = null;
         $user = $this->findByUserEmail($userSession);
+        if ($user !== null) {
+            $emailBdd = $user->getEmail();
+            $pseudoBdd = $user->getUserName();
+        }
+
         if (empty($email) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
             $this->errors['error']["emailEmpty"] = 'L\'adresse e-mail est invalide" ';
         } elseif (empty($userName)) {
             $this->errors['error']["userEmpty"] = 'Veuillez mettre un utilisateur';
+        } elseif ($userName === $pseudoBdd && $email === $emailBdd) {
+            $this->errors['error']['noAction'] = 'Veuillez modifier un champs avant de soumettre !! ';
+        } elseif (($pseudoBdd !== $userName && $email === $emailBdd) || ($email !== $emailBdd && $pseudoBdd === $userName)) {
+            $this->errors['error']['alreadyTaken'] = 'Email ou pseudo déjà pris';
         }
         if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
             $this->errors['error']['tokenEmpty'] = 'Formulaire incorrect';
         }
+
         if (empty($this->errors)) {
             $this->success['success']['send'] = 'Utilisateur bien mis à jour:';
             $this->userRepository->update($email, $userName, $user->getIdUser());
@@ -179,3 +191,6 @@ final class UserManager
         return $this->errors;
     }
 }
+// elseif($email === $emailBdd){
+//     $this->errors['error']['alreadyTakenMail'] = 'le mail est déjà pris !! ';
+// }

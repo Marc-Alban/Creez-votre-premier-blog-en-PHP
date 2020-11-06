@@ -12,17 +12,17 @@
 				</div>
 				<div class="panel-body mt-5">
 				{#--------------------------CONDITION-DATA----------------------------#}
-					{% if data.verif %}
+					{% if data.verif.success %}
 						{#--------------------------SUCCES-MESSAGE----------------------------#}
-						{% for success in data.verif.succes %}
-							<div class="alert alert-primary" role="alert"> {{success}}
+						{% for succe in data.verif.success %}
+							<div class="alert alert-primary" role="alert"> {{succe}}
 						</div>
 					{% endfor %}
 						{#-------------------------END-CONDITION-DATA----------------------------#}
 						{#-------------------------END-SUCCES-MESSAGE----------------------------#}
 					{% endif %}
 					{#--------------------------CONDITION-DATA----------------------------#}
-					{% if data.verif %}
+					{% if data.verif.error %}
 						{#--------------------------ERROR-MESSAGE----------------------------#}
 						{% for errors in data.verif.error %}
 							<div class="alert alert-danger" role="alert">
@@ -33,6 +33,7 @@
 					{% endif %}
 					<a href="/?page=password"><button class="btn btn-primary mx-auto mdpBtn">Changer le mot de passe</button></a>
 					<hr>
+					<p class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i>Important<i class="fas fa-exclamation-triangle"></i><br> Pour plus de sécurité le pseudo est rataché à l'adresse e-mail, donc si vous changez le pseudo il faut changer l'email obligatoirement !</p>
 					<form method="POST" action="/?page=dashboard&action=sendDatasUser">
 						<input id="userName" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre Pseudo" type="text" name="userName" value="{{data.pseudo}}"><br>
 						<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email" value="{{data.email}}"><br>

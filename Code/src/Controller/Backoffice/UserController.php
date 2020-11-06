@@ -58,7 +58,6 @@ final class UserController
             exit();
         }
         $verifUser = $this->userManager->checkForm($this->session, $this->request, $this->token);
-        header('Location: /?page=dashboard');
         $this->view->render('backoffice', 'dashboard', ['pseudo' => $this->pseudo,'email'=>$this->email, 'verif' => $verifUser]);
     }
     /**

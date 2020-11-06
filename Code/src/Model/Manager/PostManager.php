@@ -37,6 +37,15 @@ final class PostManager
         return $this->postRepository->findUserByEmail($email);
     }
     /**
+     * Get all idPosts in database
+     *
+     * @return array
+     */
+    public function findAllIdPost(): array
+    {
+        return $this->postRepository->findIdPost();
+    }
+    /**
      * Pagination of the posts page where all the articles are located
      *
      * @param integer $perpage
@@ -58,6 +67,21 @@ final class PostManager
             'current' => $perpage,
             'nbPage' => $nbPage,
             'post' => $post
+        ];
+    }
+    /**
+     * Create a default post if don't have in database
+     *
+     * @return array
+     */
+    public function defaultPost(): array
+    {
+        return [
+            'title' => 'Article par défault',
+            'description' => 'Description par défault',
+            'chapo'=> 'Chapô par défault',
+            'imagePost' => 'default.png',
+            'date' => '**/**/**'
         ];
     }
     /**
