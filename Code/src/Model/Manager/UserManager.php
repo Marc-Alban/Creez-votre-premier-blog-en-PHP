@@ -168,7 +168,6 @@ final class UserManager
             $emailBdd = $user->getEmail();
             $pseudoBdd = $user->getUserName();
         }
-
         if (empty($email) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
             $this->errors['error']["emailEmpty"] = 'L\'adresse e-mail est invalide" ';
         } elseif (empty($userName)) {
@@ -191,6 +190,3 @@ final class UserManager
         return $this->errors;
     }
 }
-// elseif($email === $emailBdd){
-//     $this->errors['error']['alreadyTakenMail'] = 'le mail est déjà pris !! ';
-// }

@@ -95,27 +95,28 @@ final class PostManager
     public function checkFormAddPost(Session $session, Token $token, Request $request): ?array
     {
         $post = $request->getPost() ?? null;
-        $file = $request->getFile()['imagePost'] ?? null;
-        if ($post->get('submit')) {
+        $file = $request->getFile('imagePost') ?? null;
+        if ($post) {
             $title = $post->get('title') ?? null;
             $chapo = $post->get('chapo') ?? null;
             $description = $post->get('description') ?? null;
             $tmpName = $file['tmp_name'] ?? null;
             $size = $file['size'] ?? null;
-            $file = (empty($file['name'])) ? 'default.png' : $file['name'];
-            $extention = mb_strtolower(mb_substr(mb_strrchr($file, '.'), 1)) ?? null;
-            $extentions = ['jpg', 'png', 'gif', 'jpeg'];
+            $fileName = (empty($file['name'])) ? 'default.png' : $file['name'];
+            $extention = mb_strtolower(mb_substr(mb_strrchr($fileName, '.'), 1)) ?? null;
+            $extentionValide = ['jpg', 'png', 'gif', 'jpeg'];
             $tailleMax = 2097152;
+            $user = $this->postRepository->findUserByEmail($session->getSessionName('user'));
             if (empty($title) && empty($chapo) && empty($description) && empty($tmpName)) {
                 $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
             } elseif (empty($title)) {
                 $this->errors['error']["titleEmpty"] = 'Veuillez renseigner un titre';
-            } elseif (empty($tmpName) || in_array($extention, $extentions, true) || $size > $tailleMax) {
-                $this->errors['error']["imgWrong"] = 'Image n\'est pas valide, doit être en dessous de 2MO';
-            } elseif (empty($chapo)|| mb_strlen($chapo) <= 15) {
-                $this->errors['error']["chapoEmpty"] = "Chapô obligatoire, doit être supérieur ou égal à 15 caractères minimum";
-            } elseif (mb_strlen($description) <= 15) {
-                $this->errors['error']["descShort"] = "Description trop petite, doit être supérieur ou égal à 15 caractères";
+            } elseif (empty($tmpName) || in_array($extention, $extentionValide, true) === false || $size > $tailleMax) {
+                $this->errors['error']["imgWrong"] = 'Image absente,ou extention invalide ou encore image trop grande, doit être en dessous de 2MO';
+            } elseif (empty($chapo)|| mb_strlen($chapo) <= 10 || mb_strlen($chapo) >= 30) {
+                $this->errors['error']["chapoEmpty"] = "Chapô absent,trop petit ou trop grand, doit être supérieur ou égal à 15 caractère ou encore inférieur ou égal à 30 carctères";
+            } elseif (mb_strlen($description) <= 15 ) {
+                $this->errors['error']["descShort"] = "Description trop petite, doit être supérieur ou égal à 15 caractère";
             }
             if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
                 $this->errors['error']['formRegister'] = "Formulaire incorrect";
@@ -126,7 +127,7 @@ final class PostManager
                 'extention' => $extention,
                 'chapo' => $chapo,
                 'description' => $description,
-                'idUser' => $session->getSessionName('idUser'),
+                'userId' => $user->getIdUser(),
             ];
             if (empty($this->errors)) {
                 $this->postRepository->create($dataForm);

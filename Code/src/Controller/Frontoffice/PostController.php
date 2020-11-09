@@ -31,19 +31,17 @@ final class PostController
         $post = null;
         $user = null;
         $defaultPost = null;
-        $idPostBdd = [];
         $idPost = (int) $this->request->getGet()->get('id');
         $arrayIdBdd = $this->postManager->findAllIdPost();
         foreach ($arrayIdBdd as $k => $v) {
-            $idPostBdd = $v;
+            if (in_array($idPost, $v, false) === true) {
+                $post = $this->postManager->findPostByIdPost($idPost);
+                $user = $userManager->findNameByIdUser($post->getUserId());
+            } elseif (in_array($idPost, $v, false) === false) {
+                $defaultPost = $this->defaultPost();
+            }
         }
-        if (in_array($idPost, $idPostBdd, true) === true) {
-            $post = $this->postManager->findPostByIdPost($idPost);
-            $user = $userManager->findNameByIdUser($post->getUserId());
-        } elseif (in_array($idPost, $idPostBdd, true) !== true) {
-            $defaultPost = $this->defaultPost();
-        }
-        $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, 'comment' => $comments, 'message' => $message, 'defaultPost'=> $defaultPost]);
+        $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, 'comments' => $comments, 'message' => $message, 'defaultPost'=> $defaultPost]);
     }
     /**
      * display the blog page

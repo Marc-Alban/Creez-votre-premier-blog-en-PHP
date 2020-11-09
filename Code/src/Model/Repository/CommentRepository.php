@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace App\Model\Repository;
 
+use App\Model\Entity\User;
 use App\Service\Database;
 
 final class CommentRepository
@@ -73,6 +74,24 @@ final class CommentRepository
             return null;
         }
         return null;
+    }
+    /**
+     * Return the name of user wher the UserId is passed
+     *
+     * @param integer $userId
+     * @return User|null
+     */
+    public function findUserNameByUserId(int $userId): ?User
+    {
+        $req = [
+            ':UserId' => $userId
+        ];
+    $pdo = $this->database->prepare("SELECT userName FROM user WHERE idUser = :UserId");
+    $executeIsOk = $pdo->execute($req);
+    if ($executeIsOk === false) {
+        return null;
+    }
+    return $pdo->fetchObject(User::class);
     }
     /**
      * Allows you to validate a comment

@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace App\Model\Repository;
 
 use App\Model\Entity\Post;
+use App\Model\Entity\User;
 use App\Service\Database;
 use PDO;
 
@@ -30,7 +31,7 @@ final class PostRepository
             ':chapo'=>$dataForm['chapo'],
             ':imagePost'=>$idPost.".".$dataForm['extention'],
             ':statuPost'=>1,
-            ':UserId'=>$dataForm['idUser']
+            ':UserId'=>$dataForm['userId']
         ];
         $pdoStatement = $this->database->prepare('INSERT INTO post(title,description,chapo,imagePost, datePost, statuPost, UserId) VALUES (:title,:description, :chapo,:imagePost, NOW(), :statuPost,:UserId)');
         $pdoStatement->execute($req);
@@ -41,19 +42,19 @@ final class PostRepository
      * Allows you to find a user with the email
      *
      * @param string $email
-     * @return integer|null
+     * @return User|null
      */
-    public function findUserByEmail(string $email): ?int
+    public function findUserByEmail(string $email): ?User
     {
         $req = [
             ':email' => $email
         ];
-        $pdo = $this->database->prepare("SELECT UserId FROM post WHERE email = :email");
+        $pdo = $this->database->prepare("SELECT * FROM user WHERE email = :email");
         $executeIsOk = $pdo->execute($req);
         if ($executeIsOk === false) {
             return null;
         }
-        return $pdo->fetch();
+        return $pdo->fetchObject(User::class);
     }
     /**
      * Allows you to find a post with the idPost

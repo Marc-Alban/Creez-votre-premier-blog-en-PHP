@@ -34,13 +34,14 @@ class Request
     {
         return $this->post;
     }
-    /**
-     * Get the superglobal FILE
-     *
-     * @return array
-     */
-    public function getFile(): array
+/**
+ *  Get the superglobal FILE
+ *
+ * @param string $name
+ * @return array
+ */
+    public function getFile(string $name = null): array
     {
-        return $this->file;
+        return $this->file[$name];
     }
 }

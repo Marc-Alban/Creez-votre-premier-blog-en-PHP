@@ -104,6 +104,19 @@ hr {
 }
 
 
+/*Modification post*/
+
+#textAreaChapo {
+    height: 200px;
+    width: 100%;
+}
+
+#textAreaDescription {
+    height: 500px;
+    width: 100%;
+}
+
+
 /* MediaQuerie */
 
 @media (max-width: 768px) {

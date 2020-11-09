@@ -53,7 +53,7 @@ final class Router
         $userFrontPage = ['home','login','register'];
         $postFrontPage = ['post','posts'];
         $userBackPage = ['dashboard','password'];
-        $postBackPage = ['allPost','addPost','updatePost'];
+        $postBackPage = ['allPosts','addPost','updatePost'];
         $commentBackPage = ['allComments'];
         if (in_array($this->page, $userFrontPage, true)) {
             $pathController = 'App\Controller\Frontoffice\UserController';
@@ -126,6 +126,8 @@ final class Router
             $instanceController = new $pathController($postManager, $this->view, $this->token, $this->session, $this->request);
             if ($this->page === 'addPost' && $this->action === 'addPostAction') {
                 return $instanceController->addPostDashboardAction();
+            }elseif($this->page === 'updatePost' && $this->action === 'updatePostBdd' && !empty($this->idGlobal)){
+                return $instanceController->updatePostAction();
             }
             $methode = $this->page .'Action';
             return $instanceController->$methode();

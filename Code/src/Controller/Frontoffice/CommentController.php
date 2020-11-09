@@ -39,9 +39,17 @@ final class CommentController
      *
      * @return array|null
      */
-    public function findAllPostCommentsAction(): ?array
+    public function findAllPostCommentsAction(): void
     {
-        $idPost = (int) $this->request->getGet()->get('id');
-        return $this->commentManager->findCommentByPostId($idPost);
+        // $idPost = (int) $this->request->getGet()->get('id');
+        // $comments = $this->commentManager->findCommentByPostId($idPost);
+        // $user = [];
+        // foreach ($comments as $key => $value) {
+        //     array_push($user, $this->commentManager->findNameByUserId((int) $value["UserId"]));
+        // }
+        // echo'<pre>';
+        // var_dump($user);
+        // echo'<pre>';
+        // die(); 
     }
 }

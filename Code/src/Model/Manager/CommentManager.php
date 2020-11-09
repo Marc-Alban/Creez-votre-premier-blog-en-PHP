@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace App\Model\Manager;
 
+use App\Model\Entity\User;
 use App\Model\Repository\CommentRepository;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
@@ -55,6 +56,10 @@ final class CommentManager
     {
         return $this->commentRepository->findAll();
     }
+    public function findNameByUserId(int $UserId): ?User
+    {
+        return $this->commentRepository->findUserNameByUserId($UserId);
+    }
     /**
      * Get comment with the post id
      *
@@ -82,9 +87,9 @@ final class CommentManager
         if (empty($comment)) {
             $this->errors["error"]['messageEmpty'] = "Veuillez mettre un commentaire";
         }
-        if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
-            $this->errors['error']['formRegister'] = "Formulaire incorrect";
-        }
+        // if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
+        //     $this->errors['error']['formRegister'] = "Formulaire incorrect";
+        // }
         if (empty($this->errors)) {
             $this->success["success"]['send'] = 'Votre commentaire est en attente de validation';
             $this->commentRepository->create($comment, $idUser, $idComment);

@@ -47,30 +47,39 @@ final class PostController
     public function addPostDashboardAction(): void
     {
         $valdel = null;
+        $title = null;
+        $chapo = null;
+        $description = null;
         if ($this->userSession === null) {
             header('Location: /?page=login');
             exit();
         }
         $valdel = $this->postManager->checkFormAddPost($this->session, $this->token, $this->request);
-        $this->view->render('backoffice', 'addPost', ["valdel" => $valdel]);
+        if($this->request->getPost() && $valdel !== ['sendPost']){
+            $post = $this->request->getPost();
+            $title = $post->get('title');
+            $chapo = $post->get('chapo');
+            $description = $post->get('description');
+        }
+        $this->view->render('backoffice', 'addPost', ["valdel" => $valdel, "title"=>$title,"chapo"=>$chapo,"description"=>$description]);
     }
     /**
      * Display allPostPage
      *
      * @return void
      */
-    public function allPostAction(): void
+    public function allPostsAction(): void
     {
         $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
         if ($this->userSession === null) {
             header('Location: /?page=login');
             exit();
         } elseif (!is_int($perpage) || empty($perpage)) {
-            header('Location: /?page=allPost&perpage=1');
+            header('Location: /?page=allPosts&perpage=1');
             exit();
         }
         $post = $this->postManager->paginationPost($perpage);
-        $this->view->render('backoffice', 'allPost', ['allPosts' => $post]);
+        $this->view->render('backoffice', 'allPosts', ['post' => $post]);
     }
     /**
      * Display the updatePost Page
@@ -83,6 +92,19 @@ final class PostController
             header('Location: /?page=login');
             exit();
         }
-        $this->view->render('backoffice', 'modifPost', []);
+        $idPost = (int) $this->request->getGet()->get('id') ?? null;
+        if(empty($idPost) || $idPost == null){
+            header('Location: /?page=allPosts&pp=1');
+            exit();
+        }
+        $postBbd = $this->postManager->findPostByIdPost((int) $idPost);        
+        if($idPost !== $postBbd->getIdPost()){
+            header('Location: /?page=allPosts&pp=1');
+            exit();
+        }
+        $title = $postBbd->getTitle();
+        $chapo = $postBbd->getChapo();
+        $description = $postBbd->getDescription();
+        $this->view->render('backoffice', 'updatePost', ['id'=>$idPost, 'title'=>$title, 'chapo'=>$chapo, 'description'=>$description]);
     }
 }
