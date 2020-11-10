@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace App\Controller\Backoffice;
 
 use App\Model\Manager\PostManager;
+use App\Model\Manager\UserManager;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
 use App\Service\Security\Token;
@@ -44,7 +45,7 @@ final class PostController
      *
      * @return void
      */
-    public function addPostDashboardAction(): void
+    public function addPostDashboardAction(UserManager $userManager): void
     {
         $valdel = null;
         $title = null;
@@ -54,8 +55,8 @@ final class PostController
             header('Location: /?page=login');
             exit();
         }
-        $valdel = $this->postManager->checkFormAddPost($this->session, $this->token, $this->request);
-        if($this->request->getPost() && $valdel !== ['sendPost']){
+        $valdel = $this->postManager->checkFormPost($userManager, $this->session, $this->token, $this->request, 'create');
+        if ($valdel !== ['success']) {
             $post = $this->request->getPost();
             $title = $post->get('title');
             $chapo = $post->get('chapo');
@@ -88,23 +89,73 @@ final class PostController
      */
     public function updatePostAction(): void
     {
+        $idPost = (int) $this->request->getGet()->get('id') ?? null;
+        $postBbd = $this->postManager->findPostByIdPost($idPost);
         if ($this->userSession === null) {
             header('Location: /?page=login');
             exit();
-        }
-        $idPost = (int) $this->request->getGet()->get('id') ?? null;
-        if(empty($idPost) || $idPost == null){
-            header('Location: /?page=allPosts&pp=1');
-            exit();
-        }
-        $postBbd = $this->postManager->findPostByIdPost((int) $idPost);        
-        if($idPost !== $postBbd->getIdPost()){
-            header('Location: /?page=allPosts&pp=1');
+        } elseif (empty($idPost) || $postBbd === null || $idPost !== $postBbd->getIdPost()) {
+            header('Location: /?page=allPosts&perpage=1');
             exit();
         }
         $title = $postBbd->getTitle();
         $chapo = $postBbd->getChapo();
         $description = $postBbd->getDescription();
         $this->view->render('backoffice', 'updatePost', ['id'=>$idPost, 'title'=>$title, 'chapo'=>$chapo, 'description'=>$description]);
+    }
+
+    /**
+     * Action of the updatePost Page
+     *
+     * @return void
+     */
+    public function updatePostBddAction(UserManager $userManager): void
+    {
+        $idPost = (int) $this->request->getGet()->get('id') ?? null;
+        $postBbd = $this->postManager->findPostByIdPost($idPost);
+        $post = null;
+        $title = null;
+        $chapo = null;
+        if ($this->userSession === null) {
+            header('Location: /?page=login');
+            exit();
+        } elseif (empty($idPost) || $postBbd === null || $idPost !== $postBbd->getIdPost()) {
+            header('Location: /?page=allPosts&perpage=1');
+            exit();
+        }
+        $valdel = $this->postManager->checkFormPost($userManager, $this->session, $this->token, $this->request, 'update');
+        if ($valdel !== ['success']) {
+            $post = $this->request->getPost();
+            $title = $post->get('title');
+            $chapo = $post->get('chapo');
+            $description = $post->get('description');
+        } elseif ($valdel === ['success']) {
+            $title = $postBbd->getTitle();
+            $chapo = $postBbd->getChapo();
+            $description = $postBbd->getDescription();
+        }
+        $this->view->render('backoffice', 'updatePost', ["valdel" => $valdel, 'id'=>$idPost, 'title'=>$title, 'chapo'=>$chapo, 'description'=>$description]);
+    }
+    /**
+     * Function for delete a post in database
+     *
+     * @return void
+     */
+    public function deletePostAction(): void
+    {
+        $idPost = (int) $this->request->getGet()->get('id') ?? null;
+        $postBbd = $this->postManager->findPostByIdPost($idPost);
+        $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
+
+        if ($this->userSession === null) {
+            header('Location: /?page=login');
+            exit();
+        } elseif (!is_int($perpage) || empty($perpage) || !is_int($perpage) || empty($perpage) || empty($idPost) || $postBbd === null || $idPost !== $postBbd->getIdPost()) {
+            header('Location: /?page=allPosts&perpage=1');
+            exit();
+        }
+        $delPost = $this->postManager->deletePost($idPost);
+        $post = $this->postManager->paginationPost($perpage);
+        $this->view->render('backoffice', 'allPosts', ['post' => $post, "delPost"=>$delPost]);
     }
 }

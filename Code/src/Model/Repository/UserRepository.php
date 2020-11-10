@@ -103,22 +103,21 @@ final class UserRepository
         return null;
     }
     /**
-     * Allows to retrieve a user with the email
+     * Allows you to find a user with the email
      *
      * @param string $email
      * @return User|null
      */
     public function findByEmail(string $email = null): ?User
     {
-        $tabEmail = [
+        $req = [
             ':email' => $email
         ];
         $pdo = $this->database->prepare("SELECT * FROM user WHERE email = :email");
-        $pdo->execute($tabEmail);
-        $mailBdd = $pdo->fetchObject(User::class);
-        if ($mailBdd !== false) {
-            return $mailBdd;
+        $executeIsOk = $pdo->execute($req);
+        if ($executeIsOk === false) {
+            return null;
         }
-        return null;
+        return $pdo->fetchObject(User::class);
     }
 }

@@ -2,8 +2,10 @@
 declare(strict_types=1);
 namespace App\Model\Repository;
 
+use App\Model\Entity\Comment;
 use App\Model\Entity\User;
 use App\Service\Database;
+use PDO;
 
 final class CommentRepository
 {
@@ -48,14 +50,11 @@ final class CommentRepository
             ];
         $pdo = $this->database->prepare("SELECT * FROM comment WHERE disabled = 0  AND PostId = :idPost");
         $executeIsOk = $pdo->execute($req);
-        if ($executeIsOk === true) {
-            $commentBdd = $pdo->fetchAll();
-            if ($commentBdd) {
-                return $commentBdd;
-            }
+        if ($executeIsOk === false) {
             return null;
         }
-        return null;
+        $commentBdd = $pdo->fetchAll(PDO::FETCH_CLASS, Comment::class);
+        return $commentBdd;
     }
     /**
      * Get all comments
@@ -86,12 +85,12 @@ final class CommentRepository
         $req = [
             ':UserId' => $userId
         ];
-    $pdo = $this->database->prepare("SELECT userName FROM user WHERE idUser = :UserId");
-    $executeIsOk = $pdo->execute($req);
-    if ($executeIsOk === false) {
-        return null;
-    }
-    return $pdo->fetchObject(User::class);
+        $pdo = $this->database->prepare("SELECT userName FROM user WHERE idUser = :UserId");
+        $executeIsOk = $pdo->execute($req);
+        if ($executeIsOk === false) {
+            return null;
+        }
+        return $pdo->fetchObject(User::class);
     }
     /**
      * Allows you to validate a comment

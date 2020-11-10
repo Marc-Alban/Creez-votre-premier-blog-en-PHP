@@ -125,9 +125,15 @@ final class Router
             $pathController = 'App\Controller\Backoffice\PostController';
             $instanceController = new $pathController($postManager, $this->view, $this->token, $this->session, $this->request);
             if ($this->page === 'addPost' && $this->action === 'addPostAction') {
-                return $instanceController->addPostDashboardAction();
-            }elseif($this->page === 'updatePost' && $this->action === 'updatePostBdd' && !empty($this->idGlobal)){
-                return $instanceController->updatePostAction();
+                $userRepo = new UserRepository($this->database);
+                $userManager = new UserManager($userRepo);
+                return $instanceController->addPostDashboardAction($userManager);
+            } elseif ($this->page === 'updatePost' && $this->action === 'updatePostBdd' && $this->idGlobal) {
+                $userRepo = new UserRepository($this->database);
+                $userManager = new UserManager($userRepo);
+                return $instanceController->updatePostBddAction($userManager);
+            } elseif ($this->page === 'allPosts' && $this->action === 'delete' && $this->idGlobal) {
+                return $instanceController->deletePostAction();
             }
             $methode = $this->page .'Action';
             return $instanceController->$methode();

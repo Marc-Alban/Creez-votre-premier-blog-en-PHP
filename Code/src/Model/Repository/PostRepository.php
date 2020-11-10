@@ -3,7 +3,6 @@ declare(strict_types=1);
 namespace App\Model\Repository;
 
 use App\Model\Entity\Post;
-use App\Model\Entity\User;
 use App\Service\Database;
 use PDO;
 
@@ -15,46 +14,77 @@ final class PostRepository
         $this->database = $database->getPdo();
     }
     /**
-     * Create a post with the given parameters
+     * Return the id of the max idPost in database
      *
-     * @param array $dataForm
-     * @return array|null
+     * @return integer
      */
-    public function create(array $dataForm): ?array
+    private function idParams(string $actionPost = null): int
     {
         $idPostMax = $this->database->query('SELECT MAX(idPost) FROM post ORDER BY idPost');
         $response = $idPostMax->fetch();
-        $idPost = $response['MAX(idPost)'] + 1;
-        $req = [
+        if ($actionPost === 'create') {
+            return (int) $response['MAX(idPost)'] + 1;
+        }
+        return (int) $response['MAX(idPost)'];
+    }
+    /**
+     * Array, who have the content of the form to add or update a post
+     *
+     * @param array $dataForm
+     * @return array
+     */
+    private function params(array $dataForm, string $idImage): array
+    {
+        return [
+            'idPost'=>$dataForm['idPost'],
             ':title'=>$dataForm['title'],
             ':description'=>$dataForm['description'],
             ':chapo'=>$dataForm['chapo'],
-            ':imagePost'=>$idPost.".".$dataForm['extention'],
-            ':statuPost'=>1,
-            ':UserId'=>$dataForm['userId']
+            ':imagePost'=> $idImage,
+            ':statuPost'=>$dataForm['statuPost'],
+            ':UserId'=>$dataForm['userId'],
         ];
-        $pdoStatement = $this->database->prepare('INSERT INTO post(title,description,chapo,imagePost, datePost, statuPost, UserId) VALUES (:title,:description, :chapo,:imagePost, NOW(), :statuPost,:UserId)');
-        $pdoStatement->execute($req);
-        move_uploaded_file($dataForm['tmpName'], "images/post/" . $idPost . '.' . $dataForm['extention']);
-        return null;
     }
     /**
-     * Allows you to find a user with the email
+     * Delete a post whit idPost
      *
-     * @param string $email
-     * @return User|null
+     * @param integer $idPost
+     * @return void
      */
-    public function findUserByEmail(string $email): ?User
+    public function delete(int $idPost): void
     {
         $req = [
-            ':email' => $email
+            'idPost'=>$idPost
         ];
-        $pdo = $this->database->prepare("SELECT * FROM user WHERE email = :email");
-        $executeIsOk = $pdo->execute($req);
-        if ($executeIsOk === false) {
-            return null;
-        }
-        return $pdo->fetchObject(User::class);
+        $pdoStatement = $this->database->prepare("DELETE FROM post WHERE idPost = :idPost");
+        $pdoStatement->execute($req);
+    }
+    /**
+     * Create a post with the given parameters
+     *
+     * @param array $dataForm
+     * @return void
+     */
+    public function create(array $dataForm): void
+    {
+        $actionPost = $this->idParams('create').".".$dataForm['extention'];
+        move_uploaded_file($dataForm['tmpName'], "images/post/" . $this->idParams('create') . '.' . $dataForm['extention']);
+        $pdoStatement = $this->database->prepare('INSERT INTO post(idPost,title,description,chapo,imagePost, datePost, statuPost, UserId) VALUES (:idPost,:title,:description, :chapo,:imagePost, NOW(), :statuPost,:UserId)');
+        $pdoStatement->execute($this->params($dataForm, $actionPost));
+    }
+    /**
+     * Update a post with the given parameters
+     *
+     * @param array $dataForm
+     * @return void
+     */
+    public function update(array $dataForm, int $idPost): void
+    {
+        $dataForm['idPost'] = $idPost;
+        $actionPost = $this->idParams().".".$dataForm['extention'];
+        move_uploaded_file($dataForm['tmpName'], "images/post/" . $this->idParams() . '.' . $dataForm['extention']);
+        $pdoStatement = $this->database->prepare('UPDATE post SET title=:title,description=:description,chapo=:chapo,imagePost=:imagePost,datePost=NOW(),statuPost=:statuPost,UserId=:UserId WHERE idPost = :idPost');
+        $pdoStatement->execute($this->params($dataForm, $actionPost));
     }
     /**
      * Allows you to find a post with the idPost
@@ -69,10 +99,11 @@ final class PostRepository
         ];
         $pdo = $this->database->prepare("SELECT * FROM post WHERE idPost= :idPost");
         $executeIsOk = $pdo->execute($req);
-        if ($executeIsOk === false) {
+        $entity = $pdo->fetchObject(Post::class);
+        if ($executeIsOk === false || $entity === false) {
             return null;
         }
-        return $pdo->fetchObject(Post::class);
+        return $entity;
     }
     /**
      * Get All id post

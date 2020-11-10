@@ -26,7 +26,7 @@ final class UserController
         $this->session = $session;
         $this->request = $request;
         $this->userSession =  $this->session->getSessionName('user');
-        $user = $this->userManager->findByUserEmail($this->userSession);
+        $user = $this->userManager->findUserByEmail($this->userSession);
         if ($user !== null) {
             $this->pseudo = $user->getUserName();
             $this->email = $user->getEmail();

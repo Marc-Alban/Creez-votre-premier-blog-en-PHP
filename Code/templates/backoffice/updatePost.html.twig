@@ -10,6 +10,17 @@
 				<div class="panel-heading">
 					<div class="panel-title text-center">Modifier un article</div>
 				</div>
+					{% if data.valdel.success %}
+						<div class="alert alert-primary" role="alert">
+							{{data.valdel.success}}
+						</div>
+					{% endif %}
+					{% if data.valdel.error %}
+						{% for errors in data.valdel.error %}
+						<div class="alert alert-danger" role="alert">
+							{{ errors }}</div>
+						{% endfor %}
+					{% endif %}
 				<div class="panel-body mt-5">
 					<form method="POST" action="/?page=updatePost&action=updatePostBdd&id={{data.id}}" enctype="multipart/form-data">
 						<input id="title" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre titre" type="text" name="title" value="{{data.title}}"><br>
@@ -18,7 +29,7 @@
 						<textarea id="textAreaChapo" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" placeholder="Entrer le chapo" name="chapo">{{data.chapo}}</textarea><br>
 						<textarea id="textAreaDescription" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" placeholder="Entrer votre descrition" name="description">{{data.description}}</textarea><br>
 						<input type="hidden" name="token" id="token" value="{{session.token}}"/>
-						<button class="btn btn-primary mx-auto" type="submit">Modifier l'article</button>
+						<button class="btn btn-primary mx-auto" type="submit" name="submit">Modifier l'article</button>
 					</form>
 				</div>
 			</div>

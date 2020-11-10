@@ -33,7 +33,7 @@ final class UserManager
      * @param string $user
      * @return User|null
      */
-    public function findByUserEmail(string $user = null): ?User
+    public function findUserByEmail(string $user = null): ?User
     {
         return $this->userRepository->findByEmail($user);
     }
@@ -52,7 +52,7 @@ final class UserManager
         $password = $dataPost->get('password') ?? null;
         $emailBdd = null;
         $passwordBdd = null;
-        $user = $this->findByUserEmail($email);
+        $user = $this->findUserByEmail($email);
         if ($user !== null) {
             $emailBdd = $user->getEmail();
             $passwordBdd = $user->getPasswordUser();
@@ -90,7 +90,7 @@ final class UserManager
         $password =  $dataPost->get('password') ?? null;
         $passwordConfirmation = $dataPost->get('passwordConfirmation') ?? null;
         $userName = $this->userRepository->findByPseudo($pseudo);
-        $userEmail = $this->findByUserEmail($email);
+        $userEmail = $this->findUserByEmail($email);
         if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
         } elseif (empty($pseudo) || $userName !== null) {
@@ -124,7 +124,7 @@ final class UserManager
      */
     public function checkPassword(Session $session, Request $request, Token $token, string $user): array
     {
-        $user = $this->findByUserEmail($user);
+        $user = $this->findUserByEmail($user);
         $idUser = $user->getIdUser();
         $passwordBdd = $user->getPasswordUser();
         $postForm = $request->getPost() ?? null;
@@ -163,7 +163,7 @@ final class UserManager
         $userSession =  $session->getSessionName('user');
         $emailBdd = null;
         $pseudoBdd = null;
-        $user = $this->findByUserEmail($userSession);
+        $user = $this->findUserByEmail($userSession);
         if ($user !== null) {
             $emailBdd = $user->getEmail();
             $pseudoBdd = $user->getUserName();

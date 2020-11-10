@@ -33,6 +33,8 @@ final class PostController
         $defaultPost = null;
         $idPost = (int) $this->request->getGet()->get('id');
         $arrayIdBdd = $this->postManager->findAllIdPost();
+        var_dump($arrayIdBdd);
+        die();
         foreach ($arrayIdBdd as $k => $v) {
             if (in_array($idPost, $v, false) === true) {
                 $post = $this->postManager->findPostByIdPost($idPost);

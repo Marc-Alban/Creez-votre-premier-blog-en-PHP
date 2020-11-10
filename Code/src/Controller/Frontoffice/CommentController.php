@@ -30,26 +30,25 @@ final class CommentController
     public function sendAction(UserManager $userManager): array
     {
         $idPost = (int) $this->request->getGet()->get('id') ?? null;
-        $idUser = (int) $userManager->findByUserEmail($this->session->getSessionName('user'))->getIdUser();
+        $idUser = (int) $userManager->findUserByEmail($this->session->getSessionName('user'))->getIdUser();
         $this->session->setSession('token', $this->token->createSessionToken());
         return $this->commentManager->checkComment($idPost, $idUser, $this->request, $this->session, $this->token);
     }
     /**
      * Return all comment in a page post with the idPost
      *
-     * @return array|null
      */
     public function findAllPostCommentsAction(): void
     {
         // $idPost = (int) $this->request->getGet()->get('id');
         // $comments = $this->commentManager->findCommentByPostId($idPost);
-        // $user = [];
-        // foreach ($comments as $key => $value) {
-        //     array_push($user, $this->commentManager->findNameByUserId((int) $value["UserId"]));
-        // }
-        // echo'<pre>';
-        // var_dump($user);
-        // echo'<pre>';
-        // die(); 
+        // foreach ($comments as $comment) {
+        //     $user = $this->commentManager->findNameByUserId($comment->getUserId());
+        //     $comment->setUser($user);
+            // echo'<pre>';
+            // var_dump(($comment->getUser())->getUserName());
+            // echo'<pre>';
+            // die();
+        //}
     }
 }

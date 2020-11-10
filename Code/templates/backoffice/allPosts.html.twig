@@ -11,6 +11,7 @@
 					<div class="panel-title text-center">Tous les articles</div>
 				</div>
 				<div class="panel-body mt-5">
+					{% if data.delPost  %}<p class="alert alert-primary">{{data.delPost.success}}</p>{% endif %}
 					<a href="/?page=addPost">
 						<button class="btn btn-primary mx-auto mdpBtn">Créer un article</button>
 					</a>
@@ -28,12 +29,12 @@
 								{% for posts in data.post.post  %}
 									<tr>
 										<td>{{posts.idPost}}</td>
-										<td>{{posts.chapo}}</td>
+										<td>{{posts.chapo|raw}}</td>
 										<td>
 											<a href="/?page=updatePost&id={{posts.idPost}}">Modifier</a>
 										</td>
 										<td>
-											<a href="/?page=allPost&action=del&id={{posts.idPost}}">Supprimer</a>
+											<a href="/?page=allPosts&perpage=1&action=delete&id={{posts.idPost}}">Supprimer</a>
 										</td>
 									</tr>
 								{% endfor %}
@@ -50,7 +51,7 @@
 									or data.post.current <1 %}
 									disabled
 									{% endif %}">
-								<a class="page-link" aria-label="Previous" href="{% if data.post.current != 1 %} allPost&pp={{data.post.current - 1 }} {% else %} allPost&pp={{data.post.current }} {% endif %}">
+								<a class="page-link" aria-label="Previous" href="/?page={% if data.post.current != 1 %} allPosts&perpage={{data.post.current - 1 }} {% else %}allPosts&perpage={{data.post.current }} {% endif %}">
 									<span aria-hidden="true">&laquo;</span>
 									<span class="sr-only">Previous</span>
 								</a>
@@ -58,14 +59,14 @@
 							{% for i in 1..data.post.nbPage %}
 								{% if i == data.post.current %}
 									<li class="page-item active">
-										<a class="page-link" href="allPost&pp={{ i }}">{{ i }}</a>
+										<a class="page-link" href="/?page=allPosts&perpage={{ i }}">{{ i }}</a>
 									</li>
 								{% else %}
 									<li class="page-item
 											{% if data.post.current <1 %}
 											disabled
 											{% endif %}">
-										<a class="page-link" href="allPost&pp={{ i }}">{{ i }}</a>
+										<a class="page-link" href="/?page=allPosts&perpage={{ i }}">{{ i }}</a>
 									</li>
 								{% endif %}
 							{% endfor %}
@@ -74,7 +75,7 @@
 									data.post.nbPage %}
 									disabled
 									{% endif %}">
-								<a class="page-link" aria-label="Next" href="{% if data.post.current != data.post.nbPage %} allPost&pp={{data.post.current + 1 }} {% else %} allPost&pp={{data.allPosts.current }} {% endif %}">
+								<a class="page-link" aria-label="Next" href="/?page={% if data.post.current != data.post.nbPage %} allPosts&perpage={{data.post.current + 1 }} {% else %} allPosts&perpage={{data.allPosts.current }} {% endif %}">
 									<span aria-hidden="true">&raquo;</span>
 									<span class="sr-only">Next</span>
 								</a>

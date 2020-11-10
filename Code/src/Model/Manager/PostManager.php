@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace App\Model\Manager;
 
 use App\Model\Entity\Post;
+use App\Model\Manager\UserManager;
 use App\Model\Repository\PostRepository;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
@@ -11,8 +12,8 @@ use App\Service\Security\Token;
 final class PostManager
 {
     private PostRepository $postRepository;
-    private $errors = null;
-    private $success = null;
+    private ?array $errors = [];
+    private ?array $success = [];
     public function __construct(PostRepository $postRepository)
     {
         $this->postRepository = $postRepository;
@@ -28,20 +29,11 @@ final class PostManager
         return $this->postRepository->findByIdPost($idPost);
     }
     /**
-     * Give the UserId with the mail
-     * @param string $email
-     * @return integer|null
-     */
-    public function findUserIdByEmail(string $email): ?int
-    {
-        return $this->postRepository->findUserByEmail($email);
-    }
-    /**
      * Get all idPosts in database
      *
-     * @return array
+     * @return array|null
      */
-    public function findAllIdPost(): array
+    public function findAllIdPost(): ?array
     {
         return $this->postRepository->findIdPost();
     }
@@ -70,6 +62,23 @@ final class PostManager
         ];
     }
     /**
+     * Method for deleted a post with idPost
+     *
+     * @param integer $idPost
+     * @return array|null
+     */
+    public function deletePost(int $idPost): ?array
+    {
+        $post = $this->postRepository->findByIdPost($idPost);
+        if ($post->getIdPost() !== $idPost) {
+            return null;
+        }
+        $this->postRepository->delete($post->getIdPost());
+        unlink('images/post/'.$post->getImagePost());
+        $this->success['success'] = "Article bien supprimé";
+        return $this->success;
+    }
+    /**
      * Create a default post if don't have in database
      *
      * @return array
@@ -85,18 +94,18 @@ final class PostManager
         ];
     }
     /**
-     * Verification of the bdd post insertion form
+     * Verification form for and or update post in bdd
      *
      * @param Session $session
      * @param Token $token
      * @param Request $request
-     * @return array|null
+     * @return array
      */
-    public function checkFormAddPost(Session $session, Token $token, Request $request): ?array
+    public function checkFormPost(UserManager $userManager, Session $session, Token $token, Request $request, string $action): array
     {
         $post = $request->getPost() ?? null;
         $file = $request->getFile('imagePost') ?? null;
-        if ($post) {
+        if ($post->get('submit') !== null) {
             $title = $post->get('title') ?? null;
             $chapo = $post->get('chapo') ?? null;
             $description = $post->get('description') ?? null;
@@ -106,36 +115,41 @@ final class PostManager
             $extention = mb_strtolower(mb_substr(mb_strrchr($fileName, '.'), 1)) ?? null;
             $extentionValide = ['jpg', 'png', 'gif', 'jpeg'];
             $tailleMax = 2097152;
-            $user = $this->postRepository->findUserByEmail($session->getSessionName('user'));
+            $user = $userManager->findUserByEmail($session->getSessionName('user'));
             if (empty($title) && empty($chapo) && empty($description) && empty($tmpName)) {
                 $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
             } elseif (empty($title)) {
                 $this->errors['error']["titleEmpty"] = 'Veuillez renseigner un titre';
             } elseif (empty($tmpName) || in_array($extention, $extentionValide, true) === false || $size > $tailleMax) {
                 $this->errors['error']["imgWrong"] = 'Image absente,ou extention invalide ou encore image trop grande, doit être en dessous de 2MO';
-            } elseif (empty($chapo)|| mb_strlen($chapo) <= 10 || mb_strlen($chapo) >= 30) {
-                $this->errors['error']["chapoEmpty"] = "Chapô absent,trop petit ou trop grand, doit être supérieur ou égal à 15 caractère ou encore inférieur ou égal à 30 carctères";
-            } elseif (mb_strlen($description) <= 15 ) {
+            } elseif (empty($chapo)|| mb_strlen($chapo) <= 10 || mb_strlen($chapo) >= 100) {
+                $this->errors['error']["chapoEmpty"] = "Chapô absent,trop petit ou trop grand, doit être supérieur ou égal à 15 caractère ou encore inférieur ou égal à 100 carctères";
+            } elseif (mb_strlen($description) <= 15) {
                 $this->errors['error']["descShort"] = "Description trop petite, doit être supérieur ou égal à 15 caractère";
             }
             if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
                 $this->errors['error']['formRegister'] = "Formulaire incorrect";
             }
             $dataForm = [
+                'idPost' => null,
                 'title' => $title,
                 'tmpName' => $tmpName,
                 'extention' => $extention,
                 'chapo' => $chapo,
                 'description' => $description,
+                'statuPost' => 1,
                 'userId' => $user->getIdUser(),
             ];
-            if (empty($this->errors)) {
+            if (empty($this->errors) && $action === 'create') {
                 $this->postRepository->create($dataForm);
-                $this->success['sendPost'] = "Article bien enregistré";
+                $this->success['success'] = "Article bien enregistré";
+                return $this->success;
+            } elseif (empty($this->errors) && $action === 'update') {
+                $this->postRepository->update($dataForm, (int) $request->getGet()->get('id'));
+                $this->success['success'] = "Article bien mis à jour";
                 return $this->success;
             }
-            return $this->errors;
         }
-        return null;
+        return $this->errors;
     }
 }
