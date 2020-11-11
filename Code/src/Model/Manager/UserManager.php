@@ -91,10 +91,11 @@ final class UserManager
         $passwordConfirmation = $dataPost->get('passwordConfirmation') ?? null;
         $userName = $this->userRepository->findByPseudo($pseudo);
         $userEmail = $this->findUserByEmail($email);
+
         if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-        } elseif (empty($pseudo) || $userName !== null) {
-            $this->errors['error']["pseudoEmpty"] = 'Le champs pseudo est vide ou est déjà utilisé';
+        } elseif (empty($pseudo) || $userName !== null || preg_match('/[][(){}<>\/+"*%&=?`^\'!$_:;,-]/', $pseudo)) {
+            $this->errors['error']["pseudoEmpty"] = 'Le champs pseudo est vide ou déjà utilisé ou les caractères spéciaux ne sont pas accepté, saisissez un pseudo valide !';
         } elseif (empty($email) || $userEmail !== null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
             $this->errors['error']["emailEmpty"] = 'Le champs email est vide ou est incorrect';
         } elseif ($password !== $passwordConfirmation || empty($password) || empty($passwordConfirmation)) {

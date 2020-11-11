@@ -32,10 +32,14 @@
 					{% endfor %}
 				{% endif %}
 				<form method="post" action="/?page=home&action=sendMessage&#mail" class="form-inline d-flex">
-						<input class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre nom" type="text" name="name">
-						<input class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre prénom" type="text" name="lastName">
-						<input class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="email" name="mail"><br>
-						<textarea class="flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" placeholder="Entrer votre Message" name="message"></textarea>
+						<label for="name">Nom</label>
+						<input id="name" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre nom" type="text" name="name">
+						<label for="lastName">Prenom</label>
+						<input id="lastName" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre prénom" type="text" name="lastName">
+						<label for="email">Email</label>
+						<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="email" name="mail">
+						<label for="message">Message</label>
+						<textarea id="message" class="flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" placeholder="Entrer votre Message" name="message"></textarea>
 					</div>
 					<input type="hidden" name="token" id="token" value="{{session.token}}">
 					<button type="submit" name="submit" class="btn btn-primary mx-auto">Envoyer</button>

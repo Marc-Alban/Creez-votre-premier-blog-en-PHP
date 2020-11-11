@@ -239,6 +239,7 @@ th {
 label {
     display: inline-block;
     margin-bottom: 0.5rem;
+    color: white;
 }
 
 button {
@@ -2422,6 +2423,7 @@ textarea.form-control.is-invalid {
     display: flex;
     flex-flow: row wrap;
     align-items: center;
+    flex-direction: column;
 }
 
 .form-inline .form-check {
@@ -2429,12 +2431,6 @@ textarea.form-control.is-invalid {
 }
 
 @media (min-width: 576px) {
-    .form-inline label {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 0;
-    }
     .form-inline .form-group {
         display: flex;
         flex: 0 0 auto;
@@ -2444,7 +2440,7 @@ textarea.form-control.is-invalid {
     }
     .form-inline .form-control {
         display: block;
-        width: 150px;
+        width: 400px;
         float: left;
     }
     .form-inline .form-control-plaintext {
