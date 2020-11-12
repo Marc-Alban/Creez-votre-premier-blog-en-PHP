@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace App\Model\Manager;
 
 use App\Model\Entity\Post;
-use App\Model\Manager\UserManager;
+use App\Model\Manager\UserRepository;
 use App\Model\Repository\PostRepository;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
@@ -101,7 +101,7 @@ final class PostManager
      * @param Request $request
      * @return array
      */
-    public function checkFormPost(UserManager $userManager, Session $session, Token $token, Request $request, string $action): array
+    public function checkFormPost(Session $session, Token $token, Request $request, string $action): array
     {
         $post = $request->getPost() ?? null;
         $file = $request->getFile('imagePost') ?? null;
@@ -115,7 +115,7 @@ final class PostManager
             $extention = mb_strtolower(mb_substr(mb_strrchr($fileName, '.'), 1)) ?? null;
             $extentionValide = ['jpg', 'png', 'gif', 'jpeg'];
             $tailleMax = 2097152;
-            $user = $userManager->findUserByEmail($session->getSessionName('user'));
+            $user = $this->userRepository->findByEmail($session->getSessionName('user'));
             if (empty($title) && empty($chapo) && empty($description) && empty($tmpName)) {
                 $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
             } elseif (empty($title)) {

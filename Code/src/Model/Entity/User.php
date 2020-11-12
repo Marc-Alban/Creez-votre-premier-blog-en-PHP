@@ -148,4 +148,5 @@ final class User
         $this->dateCreation = $dateCreation;
         return $this;
     }
+
 }

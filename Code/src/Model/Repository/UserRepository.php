@@ -115,9 +115,11 @@ final class UserRepository
         ];
         $pdo = $this->database->prepare("SELECT * FROM user WHERE email = :email");
         $executeIsOk = $pdo->execute($req);
-        if ($executeIsOk === false) {
+        $userBdd = $pdo->fetchObject(User::class);
+        if ($executeIsOk === false || $userBdd === false ) {
             return null;
         }
-        return $pdo->fetchObject(User::class);
+        return $userBdd;
     }
 }
+

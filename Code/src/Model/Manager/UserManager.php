@@ -7,15 +7,19 @@ use App\Model\Repository\UserRepository;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
 use App\Service\Security\Token;
+use App\Service\Security\AccessControl;
+
 
 final class UserManager
 {
     private UserRepository $userRepository;
+    private AccessControl $accessControl;
     private $errors = null;
     private $success = null;
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, AccessControl $accessControl)
     {
         $this->userRepository = $userRepository;
+        $this->accessControl = $accessControl;
     }
     /**
      * Give the name with the idUser
@@ -47,30 +51,19 @@ final class UserManager
      */
     public function userLogIn(Session $session, Token $token, Request $request): array
     {
-        $dataPost = $request->getPost();
-        $email = $dataPost->get('email') ?? null;
-        $password = $dataPost->get('password') ?? null;
-        $emailBdd = null;
-        $passwordBdd = null;
-        $user = $this->findUserByEmail($email);
-        if ($user !== null) {
-            $emailBdd = $user->getEmail();
-            $passwordBdd = $user->getPasswordUser();
-        }
-        if (empty($email) && empty($password)) {
+        $userBdd = $this->userRepository->findByEmail($request->getPost()->get('email'));
+        $verifUserBdd = $this->accessControl->userAction($session,$request,$userBdd);
+        if (empty($request->getPost()->get('email')) && empty($request->getPost()->get('password'))) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-        } elseif ($email === null || $emailBdd === null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
-            $this->errors['error']["emailEmpty"] = 'Identifiants incorrect';
-        } elseif (empty($password) || !password_verify($password, $passwordBdd)) {
-            $this->errors['error']["passwordEmpty"] = 'Identifiants incorrect';
+        } elseif (array_key_exists('error',$verifUserBdd) || $verifUserBdd !== null){
+            $this->errors = $verifUserBdd;
         }
-        if ($token->compareTokens($session->getSessionName('token'), $dataPost->get('token')) !== false) {
+        if ($token->compareTokens($session->getSessionName('token'), $request->getPost()->get('token')) !== false) {
             $this->errors['error']['formRegister'] = "Formulaire incorrect";
         }
         if (empty($this->errors)) {
-            $session->setSession('user', $email);
-            $this->success['success'] = 'Utilisateur est bien connecté';
-            return $this->success;
+        $this->success['success'] = 'Utilisateur est bien connecté';
+        return $this->success;
         }
         return $this->errors;
     }
@@ -90,16 +83,15 @@ final class UserManager
         $password =  $dataPost->get('password') ?? null;
         $passwordConfirmation = $dataPost->get('passwordConfirmation') ?? null;
         $userName = $this->userRepository->findByPseudo($pseudo);
-        $userEmail = $this->findUserByEmail($email);
-
+        $userEmail = $this->userRepository->findByEmail($email);
         if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-        } elseif (empty($pseudo) || $userName !== null || preg_match('/[][(){}<>\/+"*%&=?`^\'!$_:;,-]/', $pseudo)) {
-            $this->errors['error']["pseudoEmpty"] = 'Le champs pseudo est vide ou déjà utilisé ou les caractères spéciaux ne sont pas accepté, saisissez un pseudo valide !';
+        } elseif (empty($pseudo) || $userName !== null || preg_match('/[][(){}<>\/+"*%&=?#`^\'!$_:;,-]/', $pseudo)) {
+            $this->errors['error']["pseudoEmpty"] = 'Le champs pseudo ne doit pas être vide, ni déjà pris, les caractères spéciaux ne sont pas accepté pour ce champs !';
         } elseif (empty($email) || $userEmail !== null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
-            $this->errors['error']["emailEmpty"] = 'Le champs email est vide ou est incorrect';
+            $this->errors['error']["emailEmpty"] = 'Le champs email ne doit pas être vide ou être incorrect';
         } elseif ($password !== $passwordConfirmation || empty($password) || empty($passwordConfirmation)) {
-            $this->errors['error']["passwordEmpty"] = 'Les champs mot de passe et mot de passe de confirmation sont vide ou ne correspond pas';
+            $this->errors['error']["passwordEmpty"] = 'Les champs mot de passe et mot de passe de confirmation ne doivent pas être vide et doivent correspond';
         } elseif (mb_strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password)) {
             $this->errors['error']["passwordEmpty"] = 'Le mot de passe doit avoir des minuscule-majuscule-chiffres-caractères et être supérieur à 8 caractères';
         }
@@ -125,7 +117,7 @@ final class UserManager
      */
     public function checkPassword(Session $session, Request $request, Token $token, string $user): array
     {
-        $user = $this->findUserByEmail($user);
+        $user = $this->userRepository->findByEmail($user);
         $idUser = $user->getIdUser();
         $passwordBdd = $user->getPasswordUser();
         $postForm = $request->getPost() ?? null;
@@ -162,21 +154,19 @@ final class UserManager
         $email = $post->get('email') ?? null;
         $userName = $post->get('userName') ?? null;
         $userSession =  $session->getSessionName('user');
+        $user = $this->userRepository->findByEmail($userSession);
         $emailBdd = null;
         $pseudoBdd = null;
-        $user = $this->findUserByEmail($userSession);
         if ($user !== null) {
             $emailBdd = $user->getEmail();
             $pseudoBdd = $user->getUserName();
         }
         if (empty($email) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
             $this->errors['error']["emailEmpty"] = 'L\'adresse e-mail est invalide" ';
-        } elseif (empty($userName)) {
-            $this->errors['error']["userEmpty"] = 'Veuillez mettre un utilisateur';
+        } elseif (empty($userName) || preg_match('/[][(){}<>\/+"*%&=?#`^\'!$_:;,-]/', $userName)) {
+            $this->errors['error']["userEmpty"] = 'Veuillez mettre un nom, caractères spéciaux non accepté';
         } elseif ($userName === $pseudoBdd && $email === $emailBdd) {
             $this->errors['error']['noAction'] = 'Veuillez modifier un champs avant de soumettre !! ';
-        } elseif (($pseudoBdd !== $userName && $email === $emailBdd) || ($email !== $emailBdd && $pseudoBdd === $userName)) {
-            $this->errors['error']['alreadyTaken'] = 'Email ou pseudo déjà pris';
         }
         if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
             $this->errors['error']['tokenEmpty'] = 'Formulaire incorrect';
@@ -185,7 +175,7 @@ final class UserManager
         if (empty($this->errors)) {
             $this->success['success']['send'] = 'Utilisateur bien mis à jour:';
             $this->userRepository->update($email, $userName, $user->getIdUser());
-            $session->setSession('user', $email);
+            ($session->getSession('user'))? $session->setSession('user', $email) : $session->setSession('userAdmin', $email);
             return $this->success;
         }
         return $this->errors;

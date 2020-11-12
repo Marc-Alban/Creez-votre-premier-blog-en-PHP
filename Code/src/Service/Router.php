@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace  App\Service;
 
 use App\Controller\ErrorController;
+use App\Service\Security\AccessControl;
 use App\Controller\Frontoffice\CommentController;
 use App\Model\Manager\CommentManager;
 use App\Model\Manager\UserManager;
@@ -17,6 +18,7 @@ use App\View\View;
 
 final class Router
 {
+    private AccessControl $accessControl;
     private ConfigProperties $configProperties;
     private Database $database;
     private Request $request;
@@ -31,6 +33,7 @@ final class Router
     private ?string $action;
     public function __construct()
     {
+        $this->accessControl = new AccessControl();
         $this->session = new Session();
         $this->request = new Request();
         $this->token = new Token();
@@ -52,7 +55,7 @@ final class Router
         $this->action = $this->request->getGet()->get('action') ?? null;
         $userFrontPage = ['home','login','register'];
         $postFrontPage = ['post','posts'];
-        $userBackPage = ['dashboard','password'];
+        $userBackPage = ['accountManagement','dashboard','password'];
         $postBackPage = ['allPosts','addPost','updatePost'];
         $commentBackPage = ['allComments'];
         if (in_array($this->page, $userFrontPage, true)) {
@@ -60,7 +63,7 @@ final class Router
             $pathUserRepository = 'App\Model\Repository\UserRepository';
             $pathUserManager = 'App\Model\Manager\UserManager';
             $userRepository = new $pathUserRepository($this->database);
-            $userManager = new $pathUserManager($userRepository);
+            $userManager = new $pathUserManager($userRepository, $this->accessControl);
             $instanceController = new $pathController($userManager, $this->view, $this->token, $this->session, $this->request);
             if ($this->page === 'home' && $this->action === 'sendMessage') {
                 return $instanceController->sendMailAction($this->mail);
@@ -86,7 +89,7 @@ final class Router
                 $commentManager = new CommentManager($commentRepo);
                 $commentController =  new CommentController($commentManager, $this->request, $this->token, $this->session);
                 $userRepo = new UserRepository($this->database);
-                $userManager = new UserManager($userRepo);
+                $userManager = new UserManager($userRepo,$this->accessControl);
                 $comments = $commentController->findAllPostCommentsAction();
                 return $instanceController->postAction($userManager, $comments, null);
             } elseif ($this->page  === 'post' && $this->idGlobal && $this->action === 'sendComment') {
@@ -94,7 +97,7 @@ final class Router
                 $commentManager = new CommentManager($commentRepo);
                 $commentController =  new CommentController($commentManager, $this->request, $this->token, $this->session);
                 $userRepo = new UserRepository($this->database);
-                $userManager = new UserManager($userRepo);
+                $userManager = new UserManager($userRepo,$this->accessControl);
                 $message = $commentController->sendAction($userManager);
                 $comments = $commentController->findAllPostCommentsAction();
                 return $instanceController->postAction($userManager, $comments, $message);
@@ -107,10 +110,10 @@ final class Router
             $pathUserRepository = 'App\Model\Repository\UserRepository';
             $pathUserManager = 'App\Model\Manager\UserManager';
             $userRepository = new $pathUserRepository($this->database);
-            $userManager = new $pathUserManager($userRepository);
+            $userManager = new $pathUserManager($userRepository,$this->accessControl);
             $pathController = 'App\Controller\Backoffice\UserController';
             $instanceController = new $pathController($userManager, $this->view, $this->token, $this->session, $this->request);
-            if ($this->page === 'dashboard' && $this->action === 'sendDatasUser') {
+            if ($this->page === 'accountManagement' && $this->action === 'sendDatasUser') {
                 return $instanceController->updateUserAction();
             } elseif ($this->page === 'password' && $this->action === 'modifPass') {
                 return $instanceController->updatePasswordAction();
@@ -125,13 +128,9 @@ final class Router
             $pathController = 'App\Controller\Backoffice\PostController';
             $instanceController = new $pathController($postManager, $this->view, $this->token, $this->session, $this->request);
             if ($this->page === 'addPost' && $this->action === 'addPostAction') {
-                $userRepo = new UserRepository($this->database);
-                $userManager = new UserManager($userRepo);
-                return $instanceController->addPostDashboardAction($userManager);
+                return $instanceController->addPostDashboardAction();
             } elseif ($this->page === 'updatePost' && $this->action === 'updatePostBdd' && $this->idGlobal) {
-                $userRepo = new UserRepository($this->database);
-                $userManager = new UserManager($userRepo);
-                return $instanceController->updatePostBddAction($userManager);
+                return $instanceController->updatePostBddAction();
             } elseif ($this->page === 'allPosts' && $this->action === 'delete' && $this->idGlobal) {
                 return $instanceController->deletePostAction();
             }

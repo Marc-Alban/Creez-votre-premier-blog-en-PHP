@@ -45,7 +45,7 @@ final class PostController
      *
      * @return void
      */
-    public function addPostDashboardAction(UserManager $userManager): void
+    public function addPostDashboardAction(): void
     {
         $valdel = null;
         $title = null;
@@ -55,7 +55,7 @@ final class PostController
             header('Location: /?page=login');
             exit();
         }
-        $valdel = $this->postManager->checkFormPost($userManager, $this->session, $this->token, $this->request, 'create');
+        $valdel = $this->postManager->checkFormPost($this->session, $this->token, $this->request, 'create');
         if ($valdel !== ['success']) {
             $post = $this->request->getPost();
             $title = $post->get('title');
@@ -109,13 +109,14 @@ final class PostController
      *
      * @return void
      */
-    public function updatePostBddAction(UserManager $userManager): void
+    public function updatePostBddAction(): void
     {
         $idPost = (int) $this->request->getGet()->get('id') ?? null;
         $postBbd = $this->postManager->findPostByIdPost($idPost);
         $post = null;
         $title = null;
         $chapo = null;
+        $description = null;
         if ($this->userSession === null) {
             header('Location: /?page=login');
             exit();
@@ -123,7 +124,7 @@ final class PostController
             header('Location: /?page=allPosts&perpage=1');
             exit();
         }
-        $valdel = $this->postManager->checkFormPost($userManager, $this->session, $this->token, $this->request, 'update');
+        $valdel = $this->postManager->checkFormPost($this->session, $this->token, $this->request, 'update');
         if ($valdel !== ['success']) {
             $post = $this->request->getPost();
             $title = $post->get('title');

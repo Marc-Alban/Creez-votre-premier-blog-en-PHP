@@ -26,25 +26,26 @@ final class UserController
         $this->session = $session;
         $this->request = $request;
         $this->userSession =  $this->session->getSessionName('user');
-        $user = $this->userManager->findUserByEmail($this->userSession);
+        $this->userAdminSession =  $this->session->getSessionName('userAdmin');
+        $user = ($this->userManager->findUserByEmail($this->userSession))? $this->userManager->findUserByEmail($this->userSession):$this->userManager->findUserByEmail($this->userAdminSession);
         if ($user !== null) {
             $this->pseudo = $user->getUserName();
             $this->email = $user->getEmail();
         }
     }
     /**
-     * Display the dashboard page
+     * Display the accountManagement page
      *
      * @return void
      */
-    public function dashboardAction(): void
+    public function accountManagementAction(): void
     {
         $this->session->setSession('token', $this->token->createSessionToken());
-        if ($this->userSession === null) {
+        if (($this->userSession === null && $this->userAdminSession === null) || ($this->userSession !== null && $this->userAdminSession !== null)) {
             header('Location: /?page=login');
             exit();
         }
-        $this->view->render('backoffice', 'dashboard', ['pseudo' => $this->pseudo,'email'=>$this->email]);
+        $this->view->render('backoffice', 'accountManagement', ['pseudo' => $this->pseudo,'email'=>$this->email]);
     }
     /**
      * method to modify a user
@@ -53,12 +54,16 @@ final class UserController
      */
     public function updateUserAction(): void
     {
-        if ($this->userSession === null) {
+        if (($this->userSession === null && $this->userAdminSession === null) || ($this->userSession !== null && $this->userAdminSession !== null)) {
             header('Location: /?page=login');
             exit();
         }
         $verifUser = $this->userManager->checkForm($this->session, $this->request, $this->token);
-        $this->view->render('backoffice', 'dashboard', ['pseudo' => $this->pseudo,'email'=>$this->email, 'verif' => $verifUser]);
+        if (array_key_exists('success',$verifUser)) {
+            header('Refresh: 5;url=/?page=accountManagement');
+            exit();
+        }
+        $this->view->render('backoffice', 'accountManagement', ['pseudo' => $this->pseudo,'email'=>$this->email, 'verif' => $verifUser]);
     }
     /**
      * Display the password page
@@ -68,7 +73,7 @@ final class UserController
     public function passwordAction(): void
     {
         $this->session->setSession('token', $this->token->createSessionToken());
-        if ($this->userSession === null) {
+        if (($this->userSession === null && $this->userAdminSession === null) || ($this->userSession !== null && $this->userAdminSession !== null)) {
             header('Location: /?page=login');
             exit();
         }
@@ -81,11 +86,25 @@ final class UserController
      */
     public function updatePasswordAction(): void
     {
-        if ($this->userSession === null) {
+        if (($this->userSession === null && $this->userAdminSession === null) || ($this->userSession !== null && $this->userAdminSession !== null)) {
             header('Location: /?page=login');
             exit();
         }
         $verifPassBdd = $this->userManager->checkPassword($this->session, $this->request, $this->token, $this->userSession);
         $this->view->render('backoffice', 'password', ['verif' => $verifPassBdd]);
+    }
+    /**
+     * Display the dashboard page
+     *
+     * @return void
+     */
+    public function dashboardAction(): void
+    {
+        $this->session->setSession('token', $this->token->createSessionToken());
+        if ($this->userSession === null || $this->userSession !== null || $this->userAdminSession === null) {
+            header('Location: /?page=login');
+            exit();
+        }
+        $this->view->render('backoffice', 'dashboard', []);
     }
 }

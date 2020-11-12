@@ -27,6 +27,7 @@ final class UserController
         $this->session = $session;
         $this->request = $request;
         $this->userSession =  $this->session->getSessionName('user');
+        $this->userAdminSession =  $this->session->getSessionName('userAdmin');
     }
     /**
      * display the home page
@@ -72,7 +73,7 @@ final class UserController
     public function registerAction(): void
     {
         $this->session->setSession('token', $this->token->createSessionToken());
-        if ($this->userSession !== null) {
+        if ($this->userSession !== null || $this->userAdminSession !== null) {
             header('Location: /?page=home');
             exit();
         }
@@ -86,13 +87,13 @@ final class UserController
      */
     public function registrationAction(): void
     {
-        if ($this->userSession !== null) {
+        if ($this->userSession !== null || $this->userAdminSession !== null) {
             header('Location: /?page=home');
             exit();
         }
         $checkRegister = $this->userManager->userRegister($this->session, $this->token, $this->request);
         if (array_key_exists('success', $checkRegister) === true) {
-            header('Location: /?page=dashboard');
+            header('Location: /?page=accountManagement');
             exit();
         }
         $this->pseudo = $this->request->getPost()->get('userName');
@@ -107,7 +108,7 @@ final class UserController
     public function loginAction(): void
     {
         $this->session->setSession('token', $this->token->createSessionToken());
-        if ($this->userSession !== null) {
+        if ($this->userSession !== null || $this->userAdminSession !== null) {
             header('Location: /?page=home');
             exit();
         }
@@ -120,13 +121,13 @@ final class UserController
      */
     public function connectionAction(): void
     {
-        if ($this->userSession !== null) {
+        if ($this->userSession !== null || $this->userAdminSession !== null) {
             header('Location: /?page=home');
             exit();
         }
         $checkConnection = $this->userManager->userLogIn($this->session, $this->token, $this->request);
         if (array_key_exists('success', $checkConnection) === true) {
-            header('Location: /?page=dashboard');
+            header('Location: /?page=accountManagement');
             exit();
         }
         $this->email = $this->request->getPost()->get('email');

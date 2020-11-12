@@ -32,16 +32,11 @@ final class PostController
         $user = null;
         $defaultPost = null;
         $idPost = (int) $this->request->getGet()->get('id');
-        $arrayIdBdd = $this->postManager->findAllIdPost();
-        var_dump($arrayIdBdd);
-        die();
-        foreach ($arrayIdBdd as $k => $v) {
-            if (in_array($idPost, $v, false) === true) {
-                $post = $this->postManager->findPostByIdPost($idPost);
-                $user = $userManager->findNameByIdUser($post->getUserId());
-            } elseif (in_array($idPost, $v, false) === false) {
-                $defaultPost = $this->defaultPost();
-            }
+        $post = $this->postManager->findPostByIdPost($idPost);
+        if ($post !== null) {
+            $user = $userManager->findNameByIdUser($post->getUserId());
+        } elseif ($post === null) {
+            $defaultPost = $this->defaultPost();
         }
         $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, 'comments' => $comments, 'message' => $message, 'defaultPost'=> $defaultPost]);
     }
