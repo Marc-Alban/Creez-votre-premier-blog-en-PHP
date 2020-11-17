@@ -5,19 +5,31 @@
 
 {% block content %}
 	<div class="container">
-		<div  class="mainbox mx-auto col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 mt-5">
+		<div  class="mainbox mx-auto col-md-9 col-md-offset-3 col-sm-6 col-sm-offset-3 mt-5">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<div class="panel-title text-center">Modifier un article</div>
 				</div>
+					{% if data.valdel.success %}
+						<div class="alert alert-primary" role="alert">
+							{{data.valdel.success}}
+						</div>
+					{% endif %}
+					{% if data.valdel.error %}
+						{% for errors in data.valdel.error %}
+						<div class="alert alert-danger" role="alert">
+							{{ errors }}</div>
+						{% endfor %}
+					{% endif %}
 				<div class="panel-body mt-5">
-					<form method="POST" action="/modifPost/modifPostBdd" enctype="multipart/form-data">
-						<input id="title" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre titre" type="text" name="title" value="{{post.title}}"><br>
-						<input id="image" class="flex-fill col-sm-2 col-md-12 mr-0 mr-sm-2 mb-3 mb-sm-2"  type="file" name="imagePost" value="{{post.imagePost}}"><br>
-						<textarea class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" placeholder="Entrer le chapo" name="chapo" value="{{post.chapo}}"></textarea><br>
-						<textarea class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" placeholder="Entrer votre descrition" name="description" value="{{post.description}}"></textarea><br>
+					<form method="POST" action="/?page=updatePost&action=updatePostBdd&id={{data.id}}" enctype="multipart/form-data">
+						<input id="title" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre titre" type="text" name="title" value="{{data.title|raw}}"><br>
+						<p class="alert alert-warning">Veuillez remettre une image</p>
+						<input id="image" class="flex-fill col-sm-2 col-md-12 mr-0 mr-sm-2 mb-3 mb-sm-2"  type="file" name="imagePost"><br>
+						<textarea id="textAreaChapo" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" placeholder="Entrer le chapo" name="chapo">{{data.chapo|raw}}</textarea><br>
+						<textarea id="textAreaDescription" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" placeholder="Entrer votre descrition" name="description">{{data.description|raw}}</textarea><br>
 						<input type="hidden" name="token" id="token" value="{{session.token}}"/>
-						<button class="btn btn-primary mx-auto" type="submit">Modifier l'article</button>
+						<button class="btn btn-primary mx-auto" type="submit" name="submit">Modifier l'article</button>
 					</form>
 				</div>
 			</div>

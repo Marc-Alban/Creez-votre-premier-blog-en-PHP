@@ -2,6 +2,8 @@
 declare(strict_types=1);
 namespace App\Controller\Backoffice;
 
+use App\Model\Manager\CommentManager;
+use App\Model\Manager\PostManager;
 use App\Model\Manager\UserManager;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
@@ -15,6 +17,8 @@ final class UserController
     private Token $token;
     private Session $session;
     private Request $request;
+    private ?string $userSession;
+    private ?string $adminSession;
     public function __construct(UserManager $userManager, View $view, Token $token, Session $session, Request $request)
     {
         $this->userManager = $userManager;
@@ -22,58 +26,95 @@ final class UserController
         $this->token = $token;
         $this->session = $session;
         $this->request = $request;
+        $this->userSession =  $this->session->getSessionName('user');
+        $this->adminSession =  $this->session->getSessionName('admin');
     }
-    public function dashboardAction(): void
+    /**
+     * Display the accountManagement page
+     *
+     * @return void
+     */
+    public function accountManagementAction(): void
     {
-        $userSession =  $this->session->getSessionName('user') ?? null;
-        $user = $this->userManager->findAllUser();
-        if (!isset($userSession) && $userSession === null) {
+        $this->session->setSession('token', $this->token->createSessionToken());
+        if (($this->userSession === null && $this->adminSession === null) || ($this->userSession !== null && $this->adminSession !== null)) {
             header('Location: /?page=login');
             exit();
         }
-        $this->view->render('backoffice', 'dashboard', ['user' => $user]);
+        $user = $this->userManager->findUserBySession();
+        if ($user === null) {
+            header('Location: /?page=login');
+            exit();
+        }
+        $this->view->render('backoffice', 'accountManagement', ['user'=>$user]);
     }
+    /**
+     * method to modify a user
+     *
+     * @return void
+     */
     public function updateUserAction(): void
     {
-        $userSession =  $this->session->getSessionName('user') ?? null;
-        if (!isset($userSession) && $userSession === null) {
+        if (($this->userSession === null && $this->adminSession === null) || ($this->userSession !== null && $this->adminSession !== null)) {
             header('Location: /?page=login');
             exit();
         }
-        $this->session->setSession('token', $this->token->createSessionToken());
         $verifUser = $this->userManager->checkForm($this->session, $this->request, $this->token);
-        $user = $this->userManager->findAllUser();
-        $verifUser = null;
-        $this->view->render('backoffice', 'dashboard', ['user' => $user, 'verif' => $verifUser]);
+        $user = $this->userManager->findUserBySession();
+        $this->view->render('backoffice', 'accountManagement', ['verif' => $verifUser,'user'=> $user]);
     }
+    /**
+     * Display the password page
+     *
+     * @return void
+     */
     public function passwordAction(): void
     {
-        $userSession =  $this->session->getSessionName('user') ?? null;
-        if (!isset($userSession) && $userSession === null) {
+        $this->session->setSession('token', $this->token->createSessionToken());
+        if (($this->userSession === null && $this->adminSession === null) || ($this->userSession !== null && $this->adminSession !== null)) {
             header('Location: /?page=login');
             exit();
         }
         $this->view->render('backoffice', 'password', []);
     }
+    /**
+     * Methode to modify the password user
+     *
+     * @return void
+     */
     public function updatePasswordAction(): void
     {
-        $userSession =  $this->session->getSessionName('user') ?? null;
-        $verifPassBdd = null;
-        if (!isset($userSession) && $userSession === null) {
+        if (($this->userSession === null && $this->adminSession === null) || ($this->userSession !== null && $this->adminSession !== null)) {
             header('Location: /?page=login');
             exit();
         }
-        $this->session->setSession('token', $this->token->createSessionToken());
-        $verifPassBdd = $this->userManager->checkPassword($this->session, $this->request, $this->token, $userSession);
+        $verifPassBdd = $this->userManager->checkPassword($this->session, $this->request, $this->token, $this->userSession);
         $this->view->render('backoffice', 'password', ['verif' => $verifPassBdd]);
     }
-    public function updatePostAction(): void
+    /**
+     * Display the dashboard page
+     *
+     * @return void
+     */
+    public function dashboardAction(CommentManager $commentManager, PostManager $postManager): void
     {
-        $userSession =  $this->session->getSessionName('user') ?? null;
-        if (!isset($userSession) && $userSession === null) {
+        $this->session->setSession('token', $this->token->createSessionToken());
+        if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
         }
-        $this->view->render('backoffice', 'modifPost', []);
+        $commentDisable = $commentManager->countAllCommentsDisabled();
+        $comment = $commentManager->countAllComments();
+        $post = $postManager->countAllPost();
+        $this->view->render('backoffice', 'dashboard', ["commentDisable"=>$commentDisable,"comment"=>$comment,"post"=>$post]);
+    }
+
+    public function userManagementAction(): void
+    {
+        if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
+            header('Location: /?page=login');
+            exit();
+        }
+        $this->view->render('backoffice', 'userManagement', []);
     }
 }

@@ -23,6 +23,11 @@ class ConfigProperties
         $this->DbUser  = $this->ini['DbUser'];
         $this->DbPass  = $this->ini['DbPass'];
     }
+    /**
+     * Returns the connection parameters from the config file
+     *
+     * @return array
+     */
     public function connect(): array
     {
         return [

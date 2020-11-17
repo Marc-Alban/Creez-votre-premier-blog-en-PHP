@@ -2,7 +2,6 @@
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"></span>
 	</button>
-
 	<div class="collapse navbar-collapse" id="navbarTogglerDemo03">
 		<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 			<li class="nav-item">
@@ -10,40 +9,36 @@
 				</a>
 			</li>
 		</ul>
-
 		<div class="adminNav mr-5">
 			<ul class="navbar-nav mr-auto mt-2 mt-lg-0 mr-4">
 				<li class="nav-item">
-					<a class="nav-link" href="/?page=home">Accueil
+					<a class="nav-link" href="/?page=home">Page d'accueil
 						<span class="sr-only">(current)</span>
 					</a>
 				</li>
 				<li class="nav-item dropdown dmenu">
 					<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-						{{ session.user }}
+					{% if session.user %}{{ session.user }}{% else %}{{ session.admin }}{% endif %}
 					</a>
 					<div class="dropdown-menu sm-menu">
-						<a class="dropdown-item" href="/dashboard">Gestion de compte</a>
-						<a class="dropdown-item" href="/?page=home&logout">Se déconnecter</a>
+						<a class="dropdown-item" href="/?page=accountManagement">Gestion de compte</a>
+						<a class="dropdown-item" href="/?page=home&action=logout">Se déconnecter</a>
 					</div>
 				</li>
-				{% if session.userAdmin == 1 %}
-					<li class="nav-item">
-						<a class="nav-link" href="/allComments">Commentaires
-							<span class="sr-only">(current)</span>
-						</a>
-					</li>
-					<li class="nav-item dropdown dmenu">
-						<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-							Articles
-						</a>
-						<div class="dropdown-menu sm-menu">
-							<a class="dropdown-item" href="/addPost">Ajouter</a>
-							<a class="dropdown-item" href="/updatePost">Modifier</a>
-							<a class="dropdown-item" href="/allPost&pp=1">Tous les articles</a>
-						</div>
-					</li>
-				{% endif %}
+				{% if session.admin %}
+				<li class="nav-item dropdown dmenu">
+					<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+					Administration
+					</a>
+					<div class="dropdown-menu sm-menu">
+						<a class="dropdown-item" href="/?page=dashboard">Dashboard</a>
+						<hr>
+						<a class="dropdown-item" href="/?page=allComments">Commentaires</a>
+						<hr>
+						<a class="dropdown-item" href="/?page=allPosts&perpage=1">Articles</a>
+					</div>
+				</li>
+				{% endif %} 
 			</ul>
 		</div>
 	</div>

@@ -2,21 +2,26 @@
 declare(strict_types = 1);
 namespace App\Service\Security;
 
-use App\Service\Http\Session;
-
 class Token
 {
     private $token;
-
-    /************************************Create Token Session************************************************ */
+    /**
+     * Create a token in session
+     *
+     * @return string
+     */
     public function createSessionToken(): string
     {
         $this->token = bin2hex(random_bytes(32));
         return $this->token;
     }
-    /************************************End Create Token Session************************************************ */
-    /************************************Compare Token Session************************************************ */
-
+    /**
+     * Function that compares the token in session and the token of a form passed as a parameter
+     *
+     * @param string $sessionToken
+     * @param string $token
+     * @return boolean
+     */
     public function compareTokens(string $sessionToken, string $token): bool
     {
         if (empty($sessionToken) || empty($token) || $sessionToken !== $token) {
@@ -24,5 +29,4 @@ class Token
         }
         return false;
     }
-    /************************************End Compare Token Session************************************************ */
 }

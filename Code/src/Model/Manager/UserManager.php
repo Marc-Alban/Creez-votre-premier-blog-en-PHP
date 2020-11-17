@@ -6,69 +6,120 @@ use App\Model\Entity\User;
 use App\Model\Repository\UserRepository;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
+use App\Service\Security\AccessControl;
 use App\Service\Security\Token;
 
 final class UserManager
 {
     private UserRepository $userRepository;
+    private AccessControl $accessControl;
     private $errors = null;
     private $success = null;
-    public function __construct(UserRepository $userRepository)
+    private Session $session;
+    private ?string $userSession;
+    private ?string $adminSession;
+    public function __construct(UserRepository $userRepository, AccessControl $accessControl, Session $session)
     {
         $this->userRepository = $userRepository;
+        $this->accessControl = $accessControl;
+        $this->session = $session;
+        $this->userSession =  $this->session->getSessionName('user');
+        $this->adminSession =  $this->session->getSessionName('admin');
     }
+    /**
+     * Give the name with the idUser
+     *
+     * @param integer $idUser
+     * @return User|null
+     */
     public function findNameByIdUser(int $idUser): ?User
     {
-        return $this->userRepository->findById($idUser);
+        return $this->userRepository->findByIdUser($idUser);
     }
-    public function findAllUser(): ?User
+    /**
+     * Find user with the session
+     *
+     * @return User|null
+     */
+    public function findUserBySession(): ?User
     {
-        return $this->userRepository->findAll();
+        $user = null;
+        if ($this->userSession !== null) {
+            $user = $this->userRepository->findByEmail($this->userSession);
+        } elseif ($this->adminSession !== null) {
+            $user = $this->userRepository->findByEmail($this->adminSession);
+        }
+        if ($user !== null) {
+            return $user;
+        }
+        return null;
     }
+    /**
+     * Find user with email
+     *
+     * @param string $user
+     * @return User|null
+     */
+    public function findUserByEmail(string $user = null): ?User
+    {
+        return $this->userRepository->findByEmail($user);
+    }
+    /**
+     * method to connect users or return an error
+     *
+     * @param Session $session
+     * @param Token $token
+     * @param Request $request
+     * @return array
+     */
     public function userLogIn(Session $session, Token $token, Request $request): array
     {
-        $dataPost = $request->getPost() ?? null;
-        $email = $dataPost->get('email') ?? null;
-        $emailBdd = $this->userRepository->findByEmail($email);
-        $password = $dataPost->get('password') ?? null;
-        $passwordBdd = $this->userRepository->findPasswordByUserOrEmail(null, $email);
-        if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
+        $userBdd = $this->userRepository->findByEmail($request->getPost()->get('email'));
+        $verifUserBdd = $this->accessControl->userAction($session, $request, $userBdd);
+        if (empty($request->getPost()->get('email')) && empty($request->getPost()->get('password'))) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-        } elseif ($email === null || $emailBdd === null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
-            $this->errors['error']["emailEmpty"] = 'E-mail invalid ou inexistant ';
-        } elseif (empty($password) || !password_verify($password, $passwordBdd)) {
-            $this->errors['error']["passwordEmpty"] = 'Mot de passe incorrect';
+        } elseif ($verifUserBdd !== null) {
+            $this->errors = $verifUserBdd;
         }
-        if ($token->compareTokens($session->getSessionName('token'), $dataPost->get('token')) !== false) {
-            $this->errors['error']['formRgister'] = "Formulaire incorrect";
+        if ($token->compareTokens($session->getSessionName('token'), $request->getPost()->get('token')) !== false) {
+            $this->errors['error']['formRegister'] = "Formulaire incorrect";
         }
         if (empty($this->errors)) {
-            $session->setSession('user', $email);
             $this->success['success'] = 'Utilisateur est bien connecté';
             return $this->success;
         }
         return $this->errors;
     }
+    /**
+     * method to save users or return an error
+     *
+     * @param Session $session
+     * @param Token $token
+     * @param Request $request
+     * @return array
+     */
     public function userRegister(Session $session, Token $token, Request $request): array
     {
         $dataPost = $request->getPost() ?? null;
         $pseudo = $dataPost->get('userName') ?? null;
-        $pseudoBdd = $this->userRepository->findByName($pseudo);
         $email = $dataPost->get('email') ?? null;
-        $emailBdd = $this->userRepository->findByEmail($email);
         $password =  $dataPost->get('password') ?? null;
         $passwordConfirmation = $dataPost->get('passwordConfirmation') ?? null;
+        $userName = $this->userRepository->findByPseudo($pseudo);
+        $userEmail = $this->userRepository->findByEmail($email);
         if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-        } elseif ($pseudo === null || $pseudoBdd !== null) {
-            $this->errors['error']["pseudoEmpty"] = 'Pseudo manquant ou déjà pris';
-        } elseif ($email === null || $emailBdd !== null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
-            $this->errors['error']["emailEmpty"] = 'Mail invalide ou est déjà présente en bdd';
-        } elseif (empty($password) || mb_strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password) || $password !== $passwordConfirmation) {
-            $this->errors['error']["passwordEmpty"] = 'Mot de passe invalid, doit avoir minuscule-majuscule-chiffres-caractères ';
+        } elseif (empty($pseudo) || $userName !== null ||  preg_replace("#~[A-Z][a-z]*(-[A-Z][a-z]?)?~#", '', $pseudo)) {
+            $this->errors['error']["pseudoEmpty"] = 'Le champs pseudo ne doit pas être vide, ni déjà pris, les caractères spéciaux ne sont pas accepté pour ce champs !';
+        } elseif (empty($email) || $userEmail !== null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
+            $this->errors['error']["emailEmpty"] = 'Le champs email ne doit pas être vide ou être incorrect';
+        } elseif ($password !== $passwordConfirmation || empty($password) || empty($passwordConfirmation)) {
+            $this->errors['error']["passwordEmpty"] = 'Les champs mot de passe et mot de passe de confirmation ne doivent pas être vide et doivent correspond';
+        } elseif (mb_strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password)) {
+            $this->errors['error']["passwordEmpty"] = 'Le mot de passe doit avoir des minuscule-majuscule-chiffres-caractères et être supérieur à 8 caractères';
         }
         if ($token->compareTokens($session->getSessionName('token'), $dataPost->get('token')) !== false) {
-            $this->errors['error']['formRgister'] = "Formulaire incorrect";
+            $this->errors['error']['formRegister'] = "Formulaire incorrect";
         }
         if (empty($this->errors)) {
             $session->setSession('user', $email);
@@ -78,55 +129,79 @@ final class UserManager
         }
         return $this->errors;
     }
-    public function findPasswordByUser(string $user): string
+    /**
+     * method to verify password form
+     *
+     * @param Session $session
+     * @param Request $request
+     * @param Token $token
+     * @param string $user
+     * @return array
+     */
+    public function checkPassword(Session $session, Request $request, Token $token, string $user): array
     {
-        return $this->userRepository->findPasswordByUserOrEmail($user);
-    }
-    public function checkPassword(Session $session, Request $request, Token $token, string $user)
-    {
-        $idUser = $session->getSession()['idUser'] ?? null;
-        $pass = $this->findPasswordByUser($user);
-        $post = $request->getPost() ?? null;
-        $password = $post->get('password') ?? null;
-        $passwordConf = $post->get('passwordConfirmation') ?? null;
-        if (empty($password) || $password !== $passwordConf || mb_strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password)) {
-            $this->errors['error']["passwordEmpty"] = 'Mot de passe invalid, mot de passe doit être identique à celui de confirmation, supérieur à 8 caractères et doit avoir minuscule-majuscule-chiffres-caractères ';
-        } elseif (empty($passwordConf) || password_verify($password, $pass)) {
-            $this->errors['error']["passwordConfEmpty"] = 'Mot de passe de confirmation absent ou ne correspond pas à celui en bdd';
+        $user = $this->userRepository->findByEmail($user);
+        $idUser = $user->getIdUser();
+        $passwordBdd = $user->getPasswordUser();
+        $postForm = $request->getPost() ?? null;
+        $lastPassword = $postForm->get('lastPassword') ?? null;
+        $password = $postForm->get('password') ?? null;
+        $passwordConf = $postForm->get('passwordConfirmation') ?? null;
+        if (password_verify($lastPassword, $passwordBdd) === false || empty($lastPassword)) {
+            $this->errors['error']["passwordConfEmpty"] = 'Ancien mot de passe incorrect ou absent';
+        } elseif (empty($password) || empty($passwordConf) || $password !== $passwordConf || mb_strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password)) {
+            $this->errors['error']["passwordEmpty"] = 'Nouveau mot de passe ou de confirmation absent, les nouveaux mot de passe doit être identique, et doit contenir 8 caractères ou plus et au format minuscule-majuscule-chiffres-caractères ';
         }
-        if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
+        if ($token->compareTokens($session->getSessionName('token'), $postForm->get('token')) !== false) {
             $this->errors['error']['tokenEmpty'] = 'Formulaire incorrect';
         }
         if (empty($this->errors)) {
-            $this->success['success']['send'] = 'Mot de passe  bien mis à jour:';
+            $this->success['success']['send'] = 'Mot de passe  bien mis à jour';
             $passhash = password_hash($password, PASSWORD_BCRYPT);
             $this->userRepository->updatePassword($passhash, $idUser);
             return $this->success;
         }
         return $this->errors;
     }
-    
-    public function checkForm(Session $session, Request $request, Token $token)
+    /**
+     * method to check user update form or return error
+     *
+     * @param Session $session
+     * @param Request $request
+     * @param Token $token
+     * @return array
+     */
+    public function checkForm(Session $session, Request $request, Token $token): array
     {
         $post = $request->getPost() ?? null;
         $email = $post->get('email') ?? null;
         $userName = $post->get('userName') ?? null;
-        $userBdd = $this->findAllUser()->getUserName();
-        $idUser = $this->findAllUser()->getIdUser();
+        $userSession =  $session->getSessionName('user') ?? $session->getSessionName('admin');
+        $user = $this->userRepository->findByEmail($userSession);
+        $emailBdd = null;
+        $pseudoBdd = null;
+        if ($user !== null) {
+            $emailBdd = $user->getEmail();
+            $pseudoBdd = $user->getUserName();
+        }
         if (empty($email) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
             $this->errors['error']["emailEmpty"] = 'L\'adresse e-mail est invalide" ';
-        } elseif (empty($userName)) {
-            $this->errors['error']["userEmpty"] = 'Veuillez mettre un utilisateur';
+        } elseif (empty($userName) || preg_match('/[][(){}<>\/+"*%&=?#`^\'!$_:;,-]/', $userName)) {
+            $this->errors['error']["userEmpty"] = 'Veuillez mettre un nom, caractères spéciaux non accepté';
+        } elseif ($userName === $pseudoBdd && $email === $emailBdd) {
+            $this->errors['error']['noAction'] = 'Veuillez modifier un champs avant de soumettre !! ';
         }
         if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
             $this->errors['error']['tokenEmpty'] = 'Formulaire incorrect';
         }
         if (empty($this->errors)) {
             $this->success['success']['send'] = 'Utilisateur bien mis à jour:';
-            $this->userRepository->update($idUser, $email, $userName);
-            $session->setSession('user', $userBdd);
-            $session->setSession('userAdmin', $this->findAllUser()->getActivated());
-            $session->setSession('idUser', $this->findAllUser()->getIdUser());
+            $this->userRepository->update($email, $userName, $user->getIdUser());
+            if ($user->getActivated() === 0) {
+                $session->setSession('user', $email);
+            } elseif ($user->getActivated() === 1) {
+                $session->setSession('admin', $email);
+            }
             return $this->success;
         }
         return $this->errors;

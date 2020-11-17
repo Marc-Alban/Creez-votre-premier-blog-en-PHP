@@ -18,6 +18,11 @@ final class Mail
         $this->request = $request;
         $this->view = $view;
     }
+    /**
+     * Send a mail with the function php mail()
+     *
+     * @return void
+     */
     public function sendMail(): void
     {
         $entete  = 'MIME-Version: 1.0' . "\r\n";
@@ -26,6 +31,14 @@ final class Mail
         $message = $this->view->renderMail(['name'=>$this->request->getPost()->get('name'),'lastName'=>$this->request->getPost()->get('lastName'),'mail'=>$this->request->getPost()->get('mail'),'message'=>$this->request->getPost()->get('message')]);
         mail('millet.marcalban@gmail.com', 'E-mail envoyé du site DevDark', $message, $entete);
     }
+    /**
+     * Check the email to avoid errors
+     *
+     * @param Session $session
+     * @param Token $token
+     * @param Request $request
+     * @return array|null
+     */
     public function checkMail(Session $session, Token $token, Request $request): ?array
     {
         $post = $request->getPost() ?? null;

@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace App\Controller\Backoffice;
 
 use App\Model\Manager\PostManager;
+use App\Model\Repository\UserRepository;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
 use App\Service\Security\Token;
@@ -15,6 +16,8 @@ final class PostController
     private Token $token;
     private Session $session;
     private Request $request;
+    private ?string $userSession;
+    private ?string $adminSession;
     public function __construct(PostManager $postManager, View $view, Token $token, Session $session, Request $request)
     {
         $this->view = $view;
@@ -22,40 +25,140 @@ final class PostController
         $this->session = $session;
         $this->postManager = $postManager;
         $this->request = $request;
+        $this->userSession =  $this->session->getSessionName('user');
+        $this->adminSession =  $this->session->getSessionName('admin');
     }
+    /**
+     * display addPost Page
+     *
+     * @return void
+     */
     public function addPostAction(): void
     {
-        $userSession = $this->session->getSessionName('user') ?? null;
-        if ($userSession === null) {
+        $this->session->setSession('token', $this->token->createSessionToken());
+        if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
         }
         $this->view->render('backoffice', 'addPost', []);
     }
-    public function addPostDashboardAction(): void
+    /**
+     * method to add a post in bdd
+     *
+     * @return void
+     */
+    public function addPostDashboardAction(UserRepository $userRepository): void
     {
-        $userSession = $this->session->getSessionName('user') ?? null;
         $valdel = null;
-        if ($userSession === null) {
+        $title = null;
+        $chapo = null;
+        $description = null;
+        if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
         }
-        $this->session->setSession('token', $this->token->createSessionToken());
-        $valdel = $this->postManager->checkFormAddPost($this->session, $this->token, $this->request);
-        $this->view->render('backoffice', 'addPost', ["valdel" => $valdel]);
+        $valdel = $this->postManager->checkFormPost($userRepository, $this->session, $this->token, $this->request, 'create');
+        if ($valdel !== ['success']) {
+            $post = $this->request->getPost();
+            $title = $post->get('title');
+            $chapo = $post->get('chapo');
+            $description = $post->get('description');
+        }
+        $this->view->render('backoffice', 'addPost', ["valdel" => $valdel, "title"=>$title,"chapo"=>$chapo,"description"=>$description]);
     }
-    public function allPostAction(): void
+    /**
+     * Display allPostPage
+     *
+     * @return void
+     */
+    public function allPostsAction(): void
     {
-        $userSession = $this->session->getSessionName('user') ?? null;
-        $perpage = intval($this->request->getGet()->get('perpage')) ?? null;
-        if ($userSession === null) {
+        $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
+        if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
         } elseif (!is_int($perpage) || empty($perpage)) {
-            header('Location: /?page=allPost&perpage=1');
+            header('Location: /?page=allPosts&perpage=1');
             exit();
         }
         $post = $this->postManager->paginationPost($perpage);
-        $this->view->render('backoffice', 'allPost', ['allPosts' => $post]);
+        $this->view->render('backoffice', 'allPosts', ['post' => $post]);
+    }
+    /**
+     * Display the updatePost Page
+     *
+     * @return void
+     */
+    public function updatePostAction(): void
+    {
+        $idPost = (int) $this->request->getGet()->get('id') ?? null;
+        $postBbd = $this->postManager->findPostByIdPost($idPost);
+        if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
+            header('Location: /?page=login');
+            exit();
+        } elseif (empty($idPost) || $postBbd === null || $idPost !== $postBbd->getIdPost()) {
+            header('Location: /?page=allPosts&perpage=1');
+            exit();
+        }
+        $title = $postBbd->getTitle();
+        $chapo = $postBbd->getChapo();
+        $description = $postBbd->getDescription();
+        $this->view->render('backoffice', 'updatePost', ['id'=>$idPost, 'title'=>$title, 'chapo'=>$chapo, 'description'=>$description]);
+    }
+
+    /**
+     * Action of the updatePost Page
+     *
+     * @return void
+     */
+    public function updatePostBddAction(UserRepository $userRepository): void
+    {
+        $idPost = (int) $this->request->getGet()->get('id') ?? null;
+        $postBbd = $this->postManager->findPostByIdPost($idPost);
+        $post = null;
+        $title = null;
+        $chapo = null;
+        $description = null;
+        if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
+            header('Location: /?page=login');
+            exit();
+        } elseif (empty($idPost) || $postBbd === null || $idPost !== $postBbd->getIdPost()) {
+            header('Location: /?page=allPosts&perpage=1');
+            exit();
+        }
+        $valdel = $this->postManager->checkFormPost($userRepository, $this->session, $this->token, $this->request, 'update');
+        if ($valdel !== ['success']) {
+            $post = $this->request->getPost();
+            $title = $post->get('title');
+            $chapo = $post->get('chapo');
+            $description = $post->get('description');
+        } elseif ($valdel === ['success']) {
+            $title = $postBbd->getTitle();
+            $chapo = $postBbd->getChapo();
+            $description = $postBbd->getDescription();
+        }
+        $this->view->render('backoffice', 'updatePost', ["valdel" => $valdel, 'id'=>$idPost, 'title'=>$title, 'chapo'=>$chapo, 'description'=>$description]);
+    }
+    /**
+     * Function for delete a post in database
+     *
+     * @return void
+     */
+    public function deletePostAction(): void
+    {
+        $idPost = (int) $this->request->getGet()->get('id') ?? null;
+        $postBbd = $this->postManager->findPostByIdPost($idPost);
+        $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
+
+        if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
+            header('Location: /?page=login');
+            exit();
+        } elseif (!is_int($perpage) || empty($perpage) || !is_int($perpage) || empty($perpage) || empty($idPost) || $postBbd === null || $idPost !== $postBbd->getIdPost()) {
+            header('Location: /?page=allPosts&perpage=1');
+            exit();
+        }
+        $delPost = $this->postManager->deletePost($idPost);
+        $post = $this->postManager->paginationPost($perpage);
+        $this->view->render('backoffice', 'allPosts', ['post' => $post, "delPost"=>$delPost]);
     }
 }

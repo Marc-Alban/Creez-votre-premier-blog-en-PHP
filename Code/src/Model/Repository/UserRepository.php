@@ -4,15 +4,22 @@ namespace App\Model\Repository;
 
 use App\Model\Entity\User;
 use App\Service\Database;
-use App\Service\Http\Parameter;
 
 final class UserRepository
 {
-    private $db;
-    public function __construct(Database $db)
+    private $database;
+    public function __construct(Database $database)
     {
-        $this->db = $db->getPdo();
+        $this->database = $database->getPdo();
     }
+    /**
+     * Create a user with the given parameters
+     *
+     * @param string $email
+     * @param string $pseudo
+     * @param string $password
+     * @return void
+     */
     public function create(string $email, string $pseudo, string $password): void
     {
         $tabUser = [
@@ -20,34 +27,55 @@ final class UserRepository
             ':email' => $email,
             ':passwordUser' => password_hash($password, PASSWORD_BCRYPT),
         ];
-        $req = $this->db->prepare("INSERT INTO user (userName, email, passwordUser) VALUES (:userName, :email, :passwordUser)");
+        $req = $this->database->prepare("INSERT INTO user (userName, email, passwordUser) VALUES (:userName, :email, :passwordUser)");
         $req->execute($tabUser);
     }
-    public function update(int $idUser, string $email, string $userName): void
+    /**
+     * Update a user with the given parameters
+     *
+     * @param string $email
+     * @param string $userName
+     * @param integer $idUser
+     * @return void
+     */
+    public function update(string $email, string $userName, int $idUser): void
     {
-        $commentArray = [
-            ':idUser' => $idUser,
+        $reqArray = [
             ':email' => $email,
             ':userName' => $userName,
+            ':idUser' => $idUser
         ];
-        $req = $this->db->prepare("UPDATE `user` SET `userName`=:userName,`email`=:email WHERE idUser = :idUser");
-        $req->execute($commentArray);
+        $req = $this->database->prepare("UPDATE user SET userName=:userName,email=:email WHERE idUser = :idUser");
+        $req->execute($reqArray);
     }
-    public function updatePassword(string $pass, int $idUser): void
+    /**
+     * Update a password with the given parameters
+     *
+     * @param string $password
+     * @param integer $idUser
+     * @return void
+     */
+    public function updatePassword(string $password, int $idUser): void
     {
-        $commentArray = [
-            ':passwordUser' => $pass,
+        $reqArray = [
+            ':passwordUser' => $password,
             ':idUser' => $idUser,
         ];
-        $req = $this->db->prepare("UPDATE `user` SET `passwordUser`=:passwordUser WHERE id = :id");
-        $req->execute($commentArray);
+        $req = $this->database->prepare("UPDATE user SET passwordUser=:passwordUser WHERE idUser = :idUser");
+        $req->execute($reqArray);
     }
-    public function findById(int $idUser): ?User
+    /**
+     * Allows to retrieve a user with the id
+     *
+     * @param integer $idUser
+     * @return User|null
+     */
+    public function findByIdUser(int $idUser): ?User
     {
         $req = [
                 ':idUser' => $idUser
             ];
-        $pdo = $this->db->prepare("SELECT * FROM user WHERE idUser = :idUser");
+        $pdo = $this->database->prepare("SELECT * FROM user WHERE idUser = :idUser");
         $executeIsOk = $pdo->execute($req);
         if ($executeIsOk === true) {
             $userBdd = $pdo->fetchObject(User::class);
@@ -55,12 +83,18 @@ final class UserRepository
         }
         return null;
     }
-    public function findByName(string $pseudo): ?User
+    /**
+     * Allows to retrieve a user with the pseudo
+     *
+     * @param string $pseudo
+     * @return User|null
+     */
+    public function findByPseudo(string $pseudo = null): ?User
     {
         $tabUser = [
             ':userName' => $pseudo
         ];
-        $pdo = $this->db->prepare("SELECT * FROM user WHERE userName = :userName");
+        $pdo = $this->database->prepare("SELECT * FROM user WHERE userName = :userName");
         $executeIsOk = $pdo->execute($tabUser);
         $userBdd = $pdo->fetchObject(User::class);
         if ($executeIsOk === true && $userBdd !== false) {
@@ -68,55 +102,23 @@ final class UserRepository
         }
         return null;
     }
-    public function findByEmail(string $email): ?User
+    /**
+     * Allows you to find a user with the email
+     *
+     * @param string $email
+     * @return User|null
+     */
+    public function findByEmail(string $email = null): ?User
     {
-        $tabEmail = [
+        $req = [
             ':email' => $email
         ];
-        $pdo = $this->db->prepare("SELECT * FROM user WHERE email = :email");
-        $executeIsOk = $pdo->execute($tabEmail);
-        $mailBdd = $pdo->fetchObject(User::class);
-        if ($executeIsOk === true && $mailBdd !== false) {
-            return $mailBdd;
-        }
-        return null;
-    }
-    public function findPasswordByUserOrEmail(string $user = null, string $email = null): ?string
-    {
-        $executeIsOk = null;
-        $pdo = null;
-        if ($user !== null && $email === null) {
-            $tabPass = [
-                ':userName' => $user
-            ];
-            $pdo = $this->db->prepare("SELECT passwordUser FROM `user` WHERE userName = :userName");
-            $executeIsOk = $pdo->execute($tabPass);
-        } elseif ($user === null && $email !== null) {
-            $tabPass = [
-                ':email' => $email
-            ];
-            $pdo = $this->db->prepare("SELECT passwordUser FROM user WHERE email = :email");
-            $executeIsOk = $pdo->execute($tabPass);
-        }
-        if ($executeIsOk === true) {
-            $passwordBdd = $pdo->fetchObject(User::class);
-            if ($passwordBdd) {
-                $pass = $passwordBdd->getPasswordUser();
-                return $pass;
-            }
-            return null;
-        } elseif ($executeIsOk === false) {
+        $pdo = $this->database->prepare("SELECT * FROM user WHERE email = :email");
+        $executeIsOk = $pdo->execute($req);
+        $userBdd = $pdo->fetchObject(User::class);
+        if ($executeIsOk === false || $userBdd === false) {
             return null;
         }
-        return null;
-    }
-    public function findAll(): ?User
-    {
-        $pdo = $this->db->query("SELECT * FROM user");
-        $executeIsOk = $pdo->execute();
-        if ($executeIsOk === false) {
-            return null;
-        }
-        return $pdo->fetchObject(User::class);
+        return $userBdd;
     }
 }

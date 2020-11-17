@@ -6,7 +6,8 @@
 				<h2>Bl<b>og</b>
 				</h2>
 				<div class="row-page row">
-					{% for otherPost in  data.paginationPost.post %}
+					{% if data.paginationPost.post %}
+						{% for otherPost in  data.paginationPost.post %}
 						{# Other post #}
 						<div class="col-page col-sm-4 col-md-6">
 							<a href="/?page=post&id={{ otherPost.idPost }}" class="postPublicationHome">
@@ -14,8 +15,8 @@
 									<img class="img-responsive" src="images/post/{{ otherPost.imagePost }}">
 								</div>
 								<div class="contentPostHome">
-									<h3>{{ otherPost.title }}</h3>
-									<p class="descPost">{{ otherPost.chapo }}</p>
+									<h3>{{ otherPost.title|raw }}</h3>
+									<p class="descPost">{{ otherPost.chapo|raw }}</p>
 									<p class="datePost">{{ otherPost.datePost|date('d/m/Y') }}</p>
 								</div>
 								<div class="readMoreBlogHome">
@@ -25,10 +26,29 @@
 							</a>
 						</div>
 						{# End post #}
-					{% endfor %}
+						{% endfor %}
+					{% elseif data.defaultPost %}
+						<div class="col-page col-sm-4 col-md-6">
+							<a href="/?page=post&id=0" class="postPublicationHome">
+								<div class="imgPostPublication">
+									<img class="img-responsive" src="images/post/{{ data.defaultPost.imagePost }}">
+								</div>
+								<div class="contentPostHome">
+									<h3>{{ data.defaultPost.title|raw  }}</h3>
+									<p class="descPost">{{ data.defaultPost.chapo|raw }}</p>
+									<p class="datePost">{{ data.defaultPost.date }}</p>
+								</div>
+								<div class="readMoreBlogHome">
+									<span>Lire plus...
+									</span>
+								</div>
+							</a>
+						</div>
+						{# End post #}
+					{% endif %}
 				</div>
 					{#--------------------------END-lastPost-----------------------------#}
-          	{% if data.paginationPost %}
+        	{% if data.paginationPost.post %}
 						{#--------------------------paginationPost-----------------------------#}
 						<nav aria-label="Page navigation mr-auto">
 							<ul class="paginationPost pg-blue">

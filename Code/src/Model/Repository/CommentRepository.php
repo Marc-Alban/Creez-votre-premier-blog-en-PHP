@@ -2,52 +2,68 @@
 declare(strict_types=1);
 namespace App\Model\Repository;
 
+use App\Model\Entity\Comment;
+use App\Model\Entity\User;
 use App\Service\Database;
+use PDO;
 
 final class CommentRepository
 {
-    private $db;
-
-    public function __construct(Database $db)
+    private $database;
+    public function __construct(Database $database)
     {
-        $this->db = $db->getPdo();
+        $this->database = $database->getPdo();
     }
-    public function create(string $comment, string $UserComment, int $idUser, int $idPost): void
+    /**
+     * Create a comment with the given parameters
+     *
+     * @param string $comment
+     * @param integer $idUser
+     * @param integer $idPost
+     * @return void
+     */
+    public function create(string $comment, int $idUser, int $idPost): void
     {
         $sql = "
-        INSERT INTO comment(content, disabled, signalComment,UserComment, UserId, PostId, dateCreation)
-        VALUES(:content, :disabled, :signalComment,:UserComment, :UserId, :PostId, CURRENT_TIMESTAMP)
+        INSERT INTO comment(content, disabled, UserId, PostId, dateCreation)
+        VALUES(:content, :disabled, :UserId, :PostId, CURRENT_TIMESTAMP)
         ";
         $commentArray = [
             ':content' => $comment,
             ':disabled' => 1,
-            ':signalComment' => 0,
-            ':UserComment' => $UserComment,
             ':UserId' => $idUser,
             ':PostId' => $idPost,
         ];
-        $req = $this->db->prepare($sql);
+        $req = $this->database->prepare($sql);
         $req->execute($commentArray);
     }
-    public function findById(int $postId): ?array
+    /**
+     * Allows to retrieve a comment with the id
+     *
+     * @param integer $postId
+     * @return array|null
+     */
+    public function findByPostId(int $postId): ?array
     {
         $req = [
                 ':idPost' => $postId
             ];
-        $pdo = $this->db->prepare("SELECT * FROM comment WHERE disabled = 0  AND PostId = :idPost");
+        $pdo = $this->database->prepare("SELECT * FROM comment WHERE disabled = 0  AND PostId = :idPost");
         $executeIsOk = $pdo->execute($req);
-        if ($executeIsOk === true) {
-            $commentBdd = $pdo->fetchAll();
-            if ($commentBdd) {
-                return $commentBdd;
-            }
+        if ($executeIsOk === false) {
             return null;
         }
-        return null;
+        $commentBdd = $pdo->fetchAll(PDO::FETCH_CLASS, Comment::class);
+        return $commentBdd;
     }
+    /**
+     * Get all comments
+     *
+     * @return array|null
+     */
     public function findAll(): ?array
     {
-        $pdo = $this->db->query("SELECT * FROM comment");
+        $pdo = $this->database->query("SELECT * FROM comment WHERE disabled = 1");
         $executeIsOk = $pdo->execute();
         if ($executeIsOk === true) {
             $commentBdd = $pdo->fetchAll();
@@ -58,38 +74,72 @@ final class CommentRepository
         }
         return null;
     }
-    public function valid(int $idComment, int $signal = 0): bool
+    /**
+     * Count all comment and return a integer
+     *
+     * @param integer $disabled
+     * @return integer|null
+     */
+    public function count(int $disabled): ?int
     {
-        if ($signal === 0) {
-            $tab = [
-                ':disabled' => 0,
-                ':idComment' => $idComment
-            ];
-            $pdo = $this->db->prepare("UPDATE comment SET disabled = :disabled WHERE idComment = :idComment");
-            return $pdo->execute($tab);
+        $pdo = null;
+        if ($disabled === 0) {
+            $pdo = $this->database->query("SELECT count(*) FROM comment WHERE disabled = 0");
+        } elseif ($disabled === 1) {
+            $pdo = $this->database->query("SELECT count(*) FROM comment WHERE disabled = 1");
         }
+        $pdo->execute();
+        if ($pdo->execute() === true) {
+            $nbComment = $pdo->fetch();
+            return (int) $nbComment[0];
+        }
+        return null;
+    }
+    /**
+     * Return the name of user wher the UserId is passed
+     *
+     * @param integer $userId
+     * @return User|null
+     */
+    public function findUserNameByUserId(int $userId): ?User
+    {
+        $req = [
+            ':UserId' => $userId
+        ];
+        $pdo = $this->database->prepare("SELECT userName FROM user WHERE idUser = :UserId");
+        $executeIsOk = $pdo->execute($req);
+        if ($executeIsOk === false) {
+            return null;
+        }
+        return $pdo->fetchObject(User::class);
+    }
+    /**
+     * Allows you to validate a comment
+     *
+     * @param integer $idComment
+     * @return boolean
+     */
+    public function valide(int $idComment): bool
+    {
         $tab = [
-            ':signalComment' => 0,
+            ':disabled' => 0,
             ':idComment' => $idComment
         ];
-        $pdo = $this->db->prepare("UPDATE comment SET signalComment = :signalComment WHERE idComment = :idComment");
+        $pdo = $this->database->prepare("UPDATE comment SET disabled = :disabled WHERE idComment = :idComment");
         return $pdo->execute($tab);
     }
+    /**
+     * Allows you to delete a comment
+     *
+     * @param integer $idComment
+     * @return boolean
+     */
     public function delete(int $idComment): bool
     {
         $tab = [
             ':idComment' => $idComment,
         ];
-        $pdo = $this->db->prepare("DELETE FROM comment WHERE idComment = :idComment ");
+        $pdo = $this->database->prepare("DELETE FROM comment WHERE idComment = :idComment ");
         return $pdo->execute($tab);
-    }
-    public function signal(int $idComment): bool
-    {
-        $commentArray = [
-            ':signalComment' => 1,
-            ':idComment' => $idComment,
-        ];
-        $req = $this->db->prepare("UPDATE `comment` SET `signalComment`=:signalComment  WHERE  idComment = :idComment");
-        return $req->execute($commentArray);
     }
 }

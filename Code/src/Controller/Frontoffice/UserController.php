@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 namespace App\Controller\Frontoffice;
 
 use App\Model\Manager\UserManager;
@@ -18,6 +16,10 @@ final class UserController
     private Session $session;
     private Request $request;
     private Token $token;
+    private ?string $userSession;
+    private ?string $adminSession;
+    private string $pseudo;
+    private string $email;
     public function __construct(UserManager $userManager, View $view, Token $token, Session $session, Request $request)
     {
         $this->userManager = $userManager;
@@ -25,67 +27,111 @@ final class UserController
         $this->token = $token;
         $this->session = $session;
         $this->request = $request;
+        $this->userSession =  $this->session->getSessionName('user');
+        $this->adminSession =  $this->session->getSessionName('admin');
     }
+    /**
+     * display the home page
+     *
+     * @return void
+     */
     public function homeAction(): void
     {
+        $this->session->setSession('token', $this->token->createSessionToken());
         $this->view->render('Frontoffice', 'home', []);
     }
+    /**
+     * method to send an email and display the home page
+     *
+     * @param Mail $mailClass
+     * @return void
+     */
     public function sendMailAction(Mail $mailClass): void
     {
         $mail = [];
-        $this->session->setSession('token', $this->token->createSessionToken());
         $mail = $mailClass->checkMail($this->session, $this->token, $this->request);
         if (array_key_exists("send", $mail)) {
             $mailClass->sendMail();
         }
         $this->view->render('Frontoffice', 'home', ['mail'=>$mail]);
     }
+    /**
+     * method to disconnect the user from his account
+     *
+     * @return void
+     */
     public function logoutAction(): void
     {
         $this->session->sessionDestroy();
         header('Location: /?p=home');
         exit();
     }
+    /**
+     * display the register page
+     *
+     * @return void
+     */
     public function registerAction(): void
     {
-        $user = $this->session->getSessionName('user') ?? null;
-        if (isset($user) && $user !== null) {
+        $this->session->setSession('token', $this->token->createSessionToken());
+        if ($this->userSession !== null || $this->adminSession !== null) {
             header('Location: /?page=home');
             exit();
         }
+        
         $this->view->render('Frontoffice', 'register', []);
     }
+    /**
+     * method to save the user for his account
+     *
+     * @return void
+     */
     public function registrationAction(): void
     {
-        $user = $this->session->getSessionName('user') ?? null;
-        if (isset($user) && $user !== null) {
+        if ($this->userSession !== null || $this->adminSession !== null) {
             header('Location: /?page=home');
             exit();
         }
-        $checkRegister = null;
-        $this->session->setSession('token', $this->token->createSessionToken());
         $checkRegister = $this->userManager->userRegister($this->session, $this->token, $this->request);
-        $this->view->render('Frontoffice', 'register', ["checkRegister" => $checkRegister]);
+        if (array_key_exists('success', $checkRegister) === true) {
+            header('Location: /?page=accountManagement');
+            exit();
+        }
+        $this->pseudo = $this->request->getPost()->get('userName');
+        $this->email = $this->request->getPost()->get('email');
+        $this->view->render('Frontoffice', 'register', ["checkRegister" => $checkRegister,'email' => $this->email,'pseudo'=>$this->pseudo]);
     }
+    /**
+     * display the login page
+     *
+     * @return void
+     */
     public function loginAction(): void
     {
-        $user = $this->session->getSessionName('user') ?? null;
-        if (isset($user) && $user !== null) {
+        $this->session->setSession('token', $this->token->createSessionToken());
+        if ($this->userSession !== null || $this->adminSession !== null) {
             header('Location: /?page=home');
             exit();
         }
         $this->view->render('Frontoffice', 'login', []);
     }
+    /**
+     * method to connect a user
+     *
+     * @return void
+     */
     public function connectionAction(): void
     {
-        $user = $this->session->getSessionName('user') ?? null;
-        if (isset($user) && $user !== null) {
+        if ($this->userSession !== null || $this->adminSession !== null) {
             header('Location: /?page=home');
             exit();
         }
-        $logIn = null;
-        $this->session->setSession('token', $this->token->createSessionToken());
-        $logIn = $this->userManager->userLogIn($this->session, $this->token, $this->request);
-        $this->view->render('Frontoffice', 'login', ["logIn" => $logIn]);
+        $checkConnection = $this->userManager->userLogIn($this->session, $this->token, $this->request);
+        if (array_key_exists('success', $checkConnection) === true) {
+            header('Location: /?page=accountManagement');
+            exit();
+        }
+        $this->email = $this->request->getPost()->get('email');
+        $this->view->render('Frontoffice', 'login', ["checkConnection" => $checkConnection,'email' => $this->email]);
     }
 }

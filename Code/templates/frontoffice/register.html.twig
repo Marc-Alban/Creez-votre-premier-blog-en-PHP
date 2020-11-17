@@ -22,11 +22,15 @@
 							</div>
 						{% endfor %}
 					{% endif %}
-				
+					<p class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i> Attention<i class="fas fa-exclamation-triangle"></i> <br> Bien choisir votre pseudo ! Il sera relié à votre email.<br>Exemple: Si vous voulez changez le pseudo, il faudra changer l'email obligatoirement !!</p>
 					<form method="POST" action="/?page=register&action=registration">
-						<input id="userName" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre Pseudo" type="text" name="userName"><br>
-						<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email"><br>
+						<label for="userName">Pseudo</label><br>
+						<input id="userName" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre Pseudo" type="text" name="userName" {% if data.pseudo %} value="{{data.pseudo|raw}}" {% endif %}><br>
+						<label for="email">E-mail</label><br>
+						<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email" {% if data.email %} value="{{data.email|raw}}" {% endif %}><br>
+						<label for="password">Mot de passe</label><br>
 						<input id="password" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre mot de passe" type="password" name="password"><br>
+						<label for="passwordConfirmation">Mot de passe de confirmation</label><br>
 						<input id="passwordConfirmation" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre mot de passe de confirmation" type="password" name="passwordConfirmation"><br>
 						<input type="hidden" name="token" id="token" value="{{session.token}}"/>
 						<button class="btn btn-primary mx-auto" type="submit">S'inscrire</button>
