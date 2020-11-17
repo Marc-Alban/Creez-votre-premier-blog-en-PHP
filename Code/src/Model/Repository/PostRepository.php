@@ -128,14 +128,15 @@ final class PostRepository
      */
     public function findAll(int $pagePost, int $perPage): ?array
     {
+        $req = null;
+        if (empty($pagePost) && empty($perPage)) {
+            return null;
+        }
         $req = $this->database->prepare("SELECT * FROM post WHERE statuPost = 1 ORDER BY idPost DESC LIMIT :pagePost, :perPage");
         $req->bindValue(":pagePost", $pagePost, PDO::PARAM_INT);
         $req->bindValue(":perPage", $perPage, PDO::PARAM_INT);
         $req->execute();
         $pdoStatement = $req->fetchAll(PDO::FETCH_CLASS);
-        if (empty($pdoStatement)) {
-            return null;
-        }
         return $pdoStatement;
     }
     /**

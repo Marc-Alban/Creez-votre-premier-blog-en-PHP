@@ -3,8 +3,8 @@ declare(strict_types=1);
 namespace App\Model\Manager;
 
 use App\Model\Entity\Post;
-use App\Model\Manager\UserRepository;
 use App\Model\Repository\PostRepository;
+use App\Model\Repository\UserRepository;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
 use App\Service\Security\Token;
@@ -62,6 +62,16 @@ final class PostManager
         ];
     }
     /**
+     * Count All post with not parameters
+     *
+     * @return string
+     */
+    public function countAllPost(): string
+    {
+        $post = $this->postRepository->count();
+        return $post;
+    }
+    /**
      * Method for deleted a post with idPost
      *
      * @param integer $idPost
@@ -94,14 +104,16 @@ final class PostManager
         ];
     }
     /**
-     * Verification form for and or update post in bdd
+     * Verification form for push or update post in bdd
      *
+     * @param UserRepository $userRepository
      * @param Session $session
      * @param Token $token
      * @param Request $request
+     * @param string $action
      * @return array
      */
-    public function checkFormPost(Session $session, Token $token, Request $request, string $action): array
+    public function checkFormPost(UserRepository $userRepository, Session $session, Token $token, Request $request, string $action): array
     {
         $post = $request->getPost() ?? null;
         $file = $request->getFile('imagePost') ?? null;
@@ -115,7 +127,8 @@ final class PostManager
             $extention = mb_strtolower(mb_substr(mb_strrchr($fileName, '.'), 1)) ?? null;
             $extentionValide = ['jpg', 'png', 'gif', 'jpeg'];
             $tailleMax = 2097152;
-            $user = $this->userRepository->findByEmail($session->getSessionName('user'));
+            $userSession = ($session->getSessionName('user'))? $session->getSessionName('user') : $session->getSessionName('admin');
+            $user = $userRepository->findByEmail($userSession);
             if (empty($title) && empty($chapo) && empty($description) && empty($tmpName)) {
                 $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
             } elseif (empty($title)) {

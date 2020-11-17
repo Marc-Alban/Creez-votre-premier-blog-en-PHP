@@ -75,6 +75,27 @@ final class CommentRepository
         return null;
     }
     /**
+     * Count all comment and return a integer
+     *
+     * @param integer $disabled
+     * @return integer|null
+     */
+    public function count(int $disabled): ?int
+    {
+        $pdo = null;
+        if ($disabled === 0) {
+            $pdo = $this->database->query("SELECT count(*) FROM comment WHERE disabled = 0");
+        } elseif ($disabled === 1) {
+            $pdo = $this->database->query("SELECT count(*) FROM comment WHERE disabled = 1");
+        }
+        $pdo->execute();
+        if ($pdo->execute() === true) {
+            $nbComment = $pdo->fetch();
+            return (int) $nbComment[0];
+        }
+        return null;
+    }
+    /**
      * Return the name of user wher the UserId is passed
      *
      * @param integer $userId

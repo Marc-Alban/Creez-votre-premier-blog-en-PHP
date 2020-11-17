@@ -56,6 +56,38 @@ final class CommentManager
     {
         return $this->commentRepository->findAll();
     }
+    /**
+     * Returns the number of comments as a number not online
+     *
+     * @return integer|null
+     */
+    public function countAllCommentsDisabled(): ?int
+    {
+        $commentsDisabled = $this->commentRepository->count(1);
+        if ($commentsDisabled !== null) {
+            return $commentsDisabled;
+        }
+        return null;
+    }
+    /**
+     * Returns the number of comments as a number online
+     *
+     * @return integer|null
+     */
+    public function countAllComments(): ?int
+    {
+        $comments = $this->commentRepository->count(0);
+        if ($comments !== null) {
+            return $comments;
+        }
+        return null;
+    }
+    /**
+     * Find userName with id
+     *
+     * @param integer $UserId
+     * @return User|null
+     */
     public function findNameByUserId(int $UserId): ?User
     {
         return $this->commentRepository->findUserNameByUserId($UserId);

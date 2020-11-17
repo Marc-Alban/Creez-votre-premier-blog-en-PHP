@@ -35,8 +35,8 @@
 					<hr>
 					<p class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i>Important<i class="fas fa-exclamation-triangle"></i><br> Pour plus de sécurité le pseudo est rataché à l'adresse e-mail, donc si vous changez le pseudo il faut changer l'email obligatoirement !</p>
 					<form method="POST" action="/?page=accountManagement&action=sendDatasUser">
-						<input id="userName" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre Pseudo" type="text" name="userName" value="{{data.pseudo}}"><br>
-						<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email" value="{{data.email}}"><br>
+						<input id="userName" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre Pseudo" type="text" name="userName" value="{{data.user.userName|raw}}"><br>
+						<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email" value="{{data.user.email|raw}}"><br>
 						<input type="hidden" name="token" id="token" value="{{session.token}}"/>
 						<button class="btn btn-primary mx-auto" type="submit">Modifier ses infos personnelles</button>
 					</form>

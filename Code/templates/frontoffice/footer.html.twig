@@ -21,7 +21,7 @@
 						</a>
 					</div>
 					<div class="d-flex justify-content-center flex-wrap w-100">
-					{% if session.userAdmin %}
+					{% if session.admin %}
 						<a href="/?page=dashboard">Administration</a>
 					{% elseif session.user %}
 						<a href="/?page=accountManagement">Administration</a>

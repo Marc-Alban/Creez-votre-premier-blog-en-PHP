@@ -6,9 +6,8 @@ use App\Model\Entity\User;
 use App\Model\Repository\UserRepository;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
-use App\Service\Security\Token;
 use App\Service\Security\AccessControl;
-
+use App\Service\Security\Token;
 
 final class UserManager
 {
@@ -16,10 +15,16 @@ final class UserManager
     private AccessControl $accessControl;
     private $errors = null;
     private $success = null;
-    public function __construct(UserRepository $userRepository, AccessControl $accessControl)
+    private Session $session;
+    private ?string $userSession;
+    private ?string $adminSession;
+    public function __construct(UserRepository $userRepository, AccessControl $accessControl, Session $session)
     {
         $this->userRepository = $userRepository;
         $this->accessControl = $accessControl;
+        $this->session = $session;
+        $this->userSession =  $this->session->getSessionName('user');
+        $this->adminSession =  $this->session->getSessionName('admin');
     }
     /**
      * Give the name with the idUser
@@ -30,6 +35,24 @@ final class UserManager
     public function findNameByIdUser(int $idUser): ?User
     {
         return $this->userRepository->findByIdUser($idUser);
+    }
+    /**
+     * Find user with the session
+     *
+     * @return User|null
+     */
+    public function findUserBySession(): ?User
+    {
+        $user = null;
+        if ($this->userSession !== null) {
+            $user = $this->userRepository->findByEmail($this->userSession);
+        } elseif ($this->adminSession !== null) {
+            $user = $this->userRepository->findByEmail($this->adminSession);
+        }
+        if ($user !== null) {
+            return $user;
+        }
+        return null;
     }
     /**
      * Find user with email
@@ -52,18 +75,18 @@ final class UserManager
     public function userLogIn(Session $session, Token $token, Request $request): array
     {
         $userBdd = $this->userRepository->findByEmail($request->getPost()->get('email'));
-        $verifUserBdd = $this->accessControl->userAction($session,$request,$userBdd);
+        $verifUserBdd = $this->accessControl->userAction($session, $request, $userBdd);
         if (empty($request->getPost()->get('email')) && empty($request->getPost()->get('password'))) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-        } elseif (array_key_exists('error',$verifUserBdd) || $verifUserBdd !== null){
+        } elseif ($verifUserBdd !== null) {
             $this->errors = $verifUserBdd;
         }
         if ($token->compareTokens($session->getSessionName('token'), $request->getPost()->get('token')) !== false) {
             $this->errors['error']['formRegister'] = "Formulaire incorrect";
         }
         if (empty($this->errors)) {
-        $this->success['success'] = 'Utilisateur est bien connecté';
-        return $this->success;
+            $this->success['success'] = 'Utilisateur est bien connecté';
+            return $this->success;
         }
         return $this->errors;
     }
@@ -86,7 +109,7 @@ final class UserManager
         $userEmail = $this->userRepository->findByEmail($email);
         if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-        } elseif (empty($pseudo) || $userName !== null || preg_match('/[][(){}<>\/+"*%&=?#`^\'!$_:;,-]/', $pseudo)) {
+        } elseif (empty($pseudo) || $userName !== null ||  preg_replace("#~[A-Z][a-z]*(-[A-Z][a-z]?)?~#", '', $pseudo)) {
             $this->errors['error']["pseudoEmpty"] = 'Le champs pseudo ne doit pas être vide, ni déjà pris, les caractères spéciaux ne sont pas accepté pour ce champs !';
         } elseif (empty($email) || $userEmail !== null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
             $this->errors['error']["emailEmpty"] = 'Le champs email ne doit pas être vide ou être incorrect';
@@ -153,7 +176,7 @@ final class UserManager
         $post = $request->getPost() ?? null;
         $email = $post->get('email') ?? null;
         $userName = $post->get('userName') ?? null;
-        $userSession =  $session->getSessionName('user');
+        $userSession =  $session->getSessionName('user') ?? $session->getSessionName('admin');
         $user = $this->userRepository->findByEmail($userSession);
         $emailBdd = null;
         $pseudoBdd = null;
@@ -171,11 +194,14 @@ final class UserManager
         if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
             $this->errors['error']['tokenEmpty'] = 'Formulaire incorrect';
         }
-
         if (empty($this->errors)) {
             $this->success['success']['send'] = 'Utilisateur bien mis à jour:';
             $this->userRepository->update($email, $userName, $user->getIdUser());
-            ($session->getSession('user'))? $session->setSession('user', $email) : $session->setSession('userAdmin', $email);
+            if ($user->getActivated() === 0) {
+                $session->setSession('user', $email);
+            } elseif ($user->getActivated() === 1) {
+                $session->setSession('admin', $email);
+            }
             return $this->success;
         }
         return $this->errors;

@@ -1,0 +1,43 @@
+{% extends "backoffice/layout.html.twig" %}
+
+{% block title %}Gestion des utilisateurs
+{% endblock %}
+
+{% block content %}
+		<div class="container">
+		<div class="mainbox mx-auto col-md-12 col-md-offset-3 col-sm-6 col-sm-offset-3 mt-5 overflow-auto">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="panel-title text-center">Gestion des utilisateurs</div>
+				</div>
+				<div class="panel-body mt-5 h-10">
+					{% if data.role.admin %}
+							<div class="alert alert-primary" role="alert"> {{ data.role.admin }}</div>
+					{% elseif data.role.user %}
+							<div class="alert alert-primary" role="alert"> {{ data.role.user }}</div>
+					{% endif %}
+					<table class="table table-bordered table-hover table-responsive-sm ">
+						<thead class="thead-dark">
+							<tr>
+								<th scope="col">Utilisateurs</th>
+								<th scope="col">Rôles</th>
+								<th scope="col">Devenir Admin</th>
+								<th scope="col">Devenir Utilisateur</th>
+							</tr>
+						</thead>
+						<tbody>
+						{% for users in data.user %}
+							<tr>
+								<td scope="row">{{users.content}}</td>
+								<td scope="row" >{{users.roles}}</td>
+								<td><a href="/?page=user&action=admin&id={{users.idUser}}" class="linkHover">Admin</a></td>
+								<td><a href="/?page=user&action=user&id={{users.idUser}}" class="linkHover">Utilisateur</a></td>
+							</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

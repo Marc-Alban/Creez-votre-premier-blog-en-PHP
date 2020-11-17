@@ -14,12 +14,16 @@ final class CommentController
     private Token $token;
     private Session $session;
     private Request $request;
+    private ?string $userSession;
+    private ?string $adminSession;
     public function __construct(CommentManager $commentManager, Request $request, Token $token, Session $session)
     {
         $this->commentManager = $commentManager;
         $this->token = $token;
         $this->session = $session;
         $this->request = $request;
+        $this->userSession =  $this->session->getSessionName('user');
+        $this->adminSession =  $this->session->getSessionName('admin');
     }
     /**
      * Send a comment in the page post
@@ -30,7 +34,8 @@ final class CommentController
     public function sendAction(UserManager $userManager): array
     {
         $idPost = (int) $this->request->getGet()->get('id') ?? null;
-        $idUser = (int) $userManager->findUserByEmail($this->session->getSessionName('user'))->getIdUser();
+        $userSession = ($this->session->getSessionName('user'))? $this->session->getSessionName('user') : $this->session->getSessionName('admin');
+        $idUser = (int) $userManager->findUserByEmail($userSession)->getIdUser();
         $this->session->setSession('token', $this->token->createSessionToken());
         return $this->commentManager->checkComment($idPost, $idUser, $this->request, $this->session, $this->token);
     }

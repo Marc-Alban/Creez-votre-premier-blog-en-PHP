@@ -17,6 +17,7 @@ final class UserController
     private Request $request;
     private Token $token;
     private ?string $userSession;
+    private ?string $adminSession;
     private string $pseudo;
     private string $email;
     public function __construct(UserManager $userManager, View $view, Token $token, Session $session, Request $request)
@@ -27,7 +28,7 @@ final class UserController
         $this->session = $session;
         $this->request = $request;
         $this->userSession =  $this->session->getSessionName('user');
-        $this->userAdminSession =  $this->session->getSessionName('userAdmin');
+        $this->adminSession =  $this->session->getSessionName('admin');
     }
     /**
      * display the home page
@@ -73,7 +74,7 @@ final class UserController
     public function registerAction(): void
     {
         $this->session->setSession('token', $this->token->createSessionToken());
-        if ($this->userSession !== null || $this->userAdminSession !== null) {
+        if ($this->userSession !== null || $this->adminSession !== null) {
             header('Location: /?page=home');
             exit();
         }
@@ -87,7 +88,7 @@ final class UserController
      */
     public function registrationAction(): void
     {
-        if ($this->userSession !== null || $this->userAdminSession !== null) {
+        if ($this->userSession !== null || $this->adminSession !== null) {
             header('Location: /?page=home');
             exit();
         }
@@ -108,7 +109,7 @@ final class UserController
     public function loginAction(): void
     {
         $this->session->setSession('token', $this->token->createSessionToken());
-        if ($this->userSession !== null || $this->userAdminSession !== null) {
+        if ($this->userSession !== null || $this->adminSession !== null) {
             header('Location: /?page=home');
             exit();
         }
@@ -121,7 +122,7 @@ final class UserController
      */
     public function connectionAction(): void
     {
-        if ($this->userSession !== null || $this->userAdminSession !== null) {
+        if ($this->userSession !== null || $this->adminSession !== null) {
             header('Location: /?page=home');
             exit();
         }

@@ -58,7 +58,7 @@
 							</p>
 						</div>
 					</div>
-					{% if session.user %}
+					{% if session.user or session.admin %}
 						<div class="container">
 							<div class="raw formComment">
 								{% if data.message.success %}

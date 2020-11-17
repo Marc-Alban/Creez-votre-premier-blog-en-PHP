@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace App\Controller\Backoffice;
 
 use App\Model\Manager\PostManager;
-use App\Model\Manager\UserManager;
+use App\Model\Repository\UserRepository;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
 use App\Service\Security\Token;
@@ -17,6 +17,7 @@ final class PostController
     private Session $session;
     private Request $request;
     private ?string $userSession;
+    private ?string $adminSession;
     public function __construct(PostManager $postManager, View $view, Token $token, Session $session, Request $request)
     {
         $this->view = $view;
@@ -24,7 +25,8 @@ final class PostController
         $this->session = $session;
         $this->postManager = $postManager;
         $this->request = $request;
-        $this->userSession = $this->session->getSessionName('user') ?? null;
+        $this->userSession =  $this->session->getSessionName('user');
+        $this->adminSession =  $this->session->getSessionName('admin');
     }
     /**
      * display addPost Page
@@ -34,7 +36,7 @@ final class PostController
     public function addPostAction(): void
     {
         $this->session->setSession('token', $this->token->createSessionToken());
-        if ($this->userSession === null) {
+        if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
         }
@@ -45,17 +47,17 @@ final class PostController
      *
      * @return void
      */
-    public function addPostDashboardAction(): void
+    public function addPostDashboardAction(UserRepository $userRepository): void
     {
         $valdel = null;
         $title = null;
         $chapo = null;
         $description = null;
-        if ($this->userSession === null) {
+        if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
         }
-        $valdel = $this->postManager->checkFormPost($this->session, $this->token, $this->request, 'create');
+        $valdel = $this->postManager->checkFormPost($userRepository, $this->session, $this->token, $this->request, 'create');
         if ($valdel !== ['success']) {
             $post = $this->request->getPost();
             $title = $post->get('title');
@@ -72,7 +74,7 @@ final class PostController
     public function allPostsAction(): void
     {
         $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
-        if ($this->userSession === null) {
+        if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
         } elseif (!is_int($perpage) || empty($perpage)) {
@@ -91,7 +93,7 @@ final class PostController
     {
         $idPost = (int) $this->request->getGet()->get('id') ?? null;
         $postBbd = $this->postManager->findPostByIdPost($idPost);
-        if ($this->userSession === null) {
+        if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
         } elseif (empty($idPost) || $postBbd === null || $idPost !== $postBbd->getIdPost()) {
@@ -109,7 +111,7 @@ final class PostController
      *
      * @return void
      */
-    public function updatePostBddAction(): void
+    public function updatePostBddAction(UserRepository $userRepository): void
     {
         $idPost = (int) $this->request->getGet()->get('id') ?? null;
         $postBbd = $this->postManager->findPostByIdPost($idPost);
@@ -117,14 +119,14 @@ final class PostController
         $title = null;
         $chapo = null;
         $description = null;
-        if ($this->userSession === null) {
+        if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
         } elseif (empty($idPost) || $postBbd === null || $idPost !== $postBbd->getIdPost()) {
             header('Location: /?page=allPosts&perpage=1');
             exit();
         }
-        $valdel = $this->postManager->checkFormPost($this->session, $this->token, $this->request, 'update');
+        $valdel = $this->postManager->checkFormPost($userRepository, $this->session, $this->token, $this->request, 'update');
         if ($valdel !== ['success']) {
             $post = $this->request->getPost();
             $title = $post->get('title');
@@ -148,7 +150,7 @@ final class PostController
         $postBbd = $this->postManager->findPostByIdPost($idPost);
         $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
 
-        if ($this->userSession === null) {
+        if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
         } elseif (!is_int($perpage) || empty($perpage) || !is_int($perpage) || empty($perpage) || empty($idPost) || $postBbd === null || $idPost !== $postBbd->getIdPost()) {

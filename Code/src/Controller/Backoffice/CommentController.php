@@ -14,6 +14,8 @@ final class CommentController
     private Session $session;
     private Request $request;
     private int $idComment;
+    private ?string $userSession;
+    private ?string $adminSession;
     public function __construct(CommentManager $commentManager, View $view, Session $session, Request $request)
     {
         $this->commentManager = $commentManager;
@@ -29,8 +31,9 @@ final class CommentController
      */
     public function allCommentsAction(): void
     {
-        $userSession = $this->session->getSessionName('user') ?? null;
-        if (!isset($userSession) && $userSession === null) {
+        $this->userSession =  $this->session->getSessionName('user');
+        $this->adminSession =  $this->session->getSessionName('admin');
+        if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
         }

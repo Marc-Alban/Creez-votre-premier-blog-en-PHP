@@ -9,7 +9,6 @@ final class User
     private string $email;
     private string $passwordUser;
     private int $activated;
-    private int $validationKey;
     private string $userType;
     private string $dateCreation;
     /**
@@ -98,23 +97,6 @@ final class User
         return $this;
     }
     /**
-     * Get the value of validationKey
-     */
-    public function getValidationKey(): int
-    {
-        return $this->validationKey;
-    }
-    /**
-     * Set the value of validationKey
-     *
-     * @return  self
-     */
-    public function setValidationKey($validationKey): self
-    {
-        $this->validationKey = $validationKey;
-        return $this;
-    }
-    /**
      * Get the value of userType
      */
     public function getUserType(): string
@@ -148,5 +130,4 @@ final class User
         $this->dateCreation = $dateCreation;
         return $this;
     }
-
 }

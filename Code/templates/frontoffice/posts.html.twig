@@ -15,8 +15,8 @@
 									<img class="img-responsive" src="images/post/{{ otherPost.imagePost }}">
 								</div>
 								<div class="contentPostHome">
-									<h3>{{ otherPost.title }}</h3>
-									<p class="descPost">{{ otherPost.chapo }}</p>
+									<h3>{{ otherPost.title|raw }}</h3>
+									<p class="descPost">{{ otherPost.chapo|raw }}</p>
 									<p class="datePost">{{ otherPost.datePost|date('d/m/Y') }}</p>
 								</div>
 								<div class="readMoreBlogHome">
@@ -34,8 +34,8 @@
 									<img class="img-responsive" src="images/post/{{ data.defaultPost.imagePost }}">
 								</div>
 								<div class="contentPostHome">
-									<h3>{{ data.defaultPost.title  }}</h3>
-									<p class="descPost">{{ data.defaultPost.chapo }}</p>
+									<h3>{{ data.defaultPost.title|raw  }}</h3>
+									<p class="descPost">{{ data.defaultPost.chapo|raw }}</p>
 									<p class="datePost">{{ data.defaultPost.date }}</p>
 								</div>
 								<div class="readMoreBlogHome">
