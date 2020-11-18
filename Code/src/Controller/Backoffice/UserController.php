@@ -106,7 +106,8 @@ final class UserController
         $commentDisable = $commentManager->countAllCommentsDisabled();
         $comment = $commentManager->countAllComments();
         $post = $postManager->countAllPost();
-        $this->view->render('backoffice', 'dashboard', ["commentDisable"=>$commentDisable,"comment"=>$comment,"post"=>$post]);
+        $user = $this->userManager->countAllUser();
+        $this->view->render('backoffice', 'dashboard', ["commentDisable"=>$commentDisable,"comment"=>$comment,"post"=>$post,'user'=>$user]);
     }
     /**
      * Display the userManagement page
@@ -118,9 +119,13 @@ final class UserController
         if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
+        }elseif(empty($this->request->getGet()->get('perpage'))){
+            header('Location: /?page=userManagement&perpage=1');
+            exit();
         }
-        $user = $this->userManager->findAllUser();
-        $this->view->render('backoffice', 'userManagement', ['user'=>$user]);
+        $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
+        $paginationUser =  $this->userManager->paginationUser($perpage) ?? null;
+        $this->view->render('backoffice', 'userManagement', ['paginationUser'=>$paginationUser]);
     }
     
     /**
@@ -133,12 +138,16 @@ final class UserController
         if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
+        }elseif(empty($this->request->getGet()->get('perpage'))){
+            header('Location: /?page=userManagement&perpage=1');
+            exit();
         }
-        $user = $this->userManager->findAllUser();
+        $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
+        $paginationUser =  $this->userManager->paginationUser($perpage) ?? null;
         $roleMessage = $this->userManager->checkUrlRole($this->request);
         if (array_key_exists('success', $roleMessage)) {
-            header("Refresh: 3;url=/?page=userManagement");
+            header("Refresh: 1;url=/?page=userManagement");
         }
-        $this->view->render('backoffice', 'userManagement', ['user'=>$user,'roleMessage'=>$roleMessage]);
+        $this->view->render('backoffice', 'userManagement', ['paginationUser'=>$paginationUser,'roleMessage'=>$roleMessage]);
     }
 }

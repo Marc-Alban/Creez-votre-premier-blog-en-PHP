@@ -57,22 +57,24 @@ final class CommentRepository
         return $commentBdd;
     }
     /**
-     * Get all comments
+     * Get all comments for pagination
      *
+     * @param integer $pageComment
+     * @param integer $perPage
      * @return array|null
      */
-    public function findAll(): ?array
+    public function findAll(int $pageComment, int $perPage): ?array
     {
-        $pdo = $this->database->query("SELECT * FROM comment WHERE disabled = 1");
-        $executeIsOk = $pdo->execute();
-        if ($executeIsOk === true) {
-            $commentBdd = $pdo->fetchAll();
-            if ($commentBdd) {
-                return $commentBdd;
-            }
+        $req = null;
+        if (empty($pageComment) && empty($perPage)) {
             return null;
         }
-        return null;
+        $req = $this->database->prepare("SELECT * FROM comment ORDER BY idComment DESC LIMIT :pageComment, :perPage");
+        $req->bindValue(":pageComment", $pageComment, PDO::PARAM_INT);
+        $req->bindValue(":perPage", $perPage, PDO::PARAM_INT);
+        $req->execute();
+        $pdoStatement = $req->fetchAll();
+        return $pdoStatement;
     }
     /**
      * Count all comment and return a integer
@@ -94,6 +96,18 @@ final class CommentRepository
             return (int) $nbComment[0];
         }
         return null;
+    }
+    /**
+     * Count all comment in database
+     *
+     * @return array
+     */
+    public function total(): int
+    {
+        $pdo = $this->database->query("SELECT count(*) FROM comment");
+        $pdo->execute();
+        $execute =$pdo->fetch();
+        return (int) $execute[0];
     }
     /**
      * Return the name of user wher the UserId is passed

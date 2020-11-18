@@ -48,13 +48,28 @@ final class CommentManager
         return null;
     }
     /**
-     * Get All Comments
+     * Pagination of the comment management page where all the comment are located
      *
-     * @return array|null
+     * @param integer $perpage
+     * @return array
      */
-    public function findAllComments(): ?array
+    public function paginationComments(int $perpage = 1): array
     {
-        return $this->commentRepository->findAll();
+        $minComment = 10;
+        $total = $this->commentRepository->total();
+        $nbPage = (int) ceil($total/$minComment);
+        if (ctype_digit($perpage) === true || $perpage <= 0) {
+            $perpage = 1;
+        } elseif ($perpage > $nbPage) {
+            $perpage = $nbPage;
+        }
+        $page =  ($perpage-1) * $minComment;
+        $comment = $this->commentRepository->findAll($page, $minComment);
+        return [
+            'current' => $perpage,
+            'nbPage' => $nbPage,
+            'comment' => $comment
+        ];
     }
     /**
      * Returns the number of comments as a number not online

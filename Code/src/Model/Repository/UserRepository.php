@@ -2,8 +2,9 @@
 declare(strict_types=1);
 namespace App\Model\Repository;
 
-use App\Model\Entity\User;
+use PDO;
 use App\Service\Database;
+use App\Model\Entity\User;
 
 final class UserRepository
 {
@@ -29,6 +30,18 @@ final class UserRepository
         ];
         $req = $this->database->prepare("INSERT INTO user (userName, email, passwordUser) VALUES (:userName, :email, :passwordUser)");
         $req->execute($tabUser);
+    }
+    /**
+     * Count all user in database
+     *
+     * @return array
+     */
+    public function count(): int
+    {
+        $pdo = $this->database->query("SELECT count(*) FROM user");
+        $pdo->execute();
+        $execute =$pdo->fetch();
+        return (int) $execute[0];
     }
     /**
      * Change the role with the id user
@@ -83,19 +96,24 @@ final class UserRepository
         $req->execute($reqArray);
     }
     /**
-     * Get all User
+     * Get all user for pagination
      *
+     * @param integer $pageuser
+     * @param integer $perPage
      * @return array|null
      */
-    public function findAll(): ?array
+    public function findAll(int $pageUser, int $perPage): ?array
     {
-        $pdo = $this->database->query("SELECT * FROM user");
-        $executeIsOk = $pdo->execute();
-        if ($executeIsOk === true) {
-            $userBdd = $pdo->fetchAll();
-            return $userBdd;
+        $req = null;
+        if (empty($pageUser) && empty($perPage)) {
+            return null;
         }
-        return null;
+        $req = $this->database->prepare("SELECT * FROM user ORDER BY idUser DESC LIMIT :pageUser, :perPage");
+        $req->bindValue(":pageUser", $pageUser, PDO::PARAM_INT);
+        $req->bindValue(":perPage", $perPage, PDO::PARAM_INT);
+        $req->execute();
+        $pdoStatement = $req->fetchAll();
+        return $pdoStatement;
     }
     /**
      * Allows to retrieve a user with the id

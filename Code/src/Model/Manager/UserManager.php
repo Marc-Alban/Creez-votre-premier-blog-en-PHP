@@ -91,15 +91,6 @@ final class UserManager
         return $this->errors;
     }
     /**
-     * Get all User in database for handling the role
-     *
-     * @return array|null
-     */
-    public function findAllUser(): ?array
-    {
-        return $this->userRepository->findAll();
-    }
-    /**
      * Check the role of admin and change with the choice
      *
      * @param Request $request
@@ -123,6 +114,39 @@ final class UserManager
             $this->errors['error'] = 'Utilisateur à déjà le rôle demandé, (admin ou utilisateur) !';
         }
         return $this->errors;
+    }
+    /**
+     * Pagination of the usermanagement page where all the user are located
+     *
+     * @param integer $perpage
+     * @return array
+     */
+    public function paginationUser(int $perpage = 1): array
+    {
+        $minUser = 10;
+        $total = $this->userRepository->count();
+        $nbPage = (int) ceil($total/$minUser);
+        if (ctype_digit($perpage) === true || $perpage <= 0) {
+            $perpage = 1;
+        } elseif ($perpage > $nbPage) {
+            $perpage = $nbPage;
+        }
+        $page =  ($perpage-1) * $minUser;
+        $user = $this->userRepository->findAll($page, $minUser);
+        return [
+            'current' => $perpage,
+            'nbPage' => $nbPage,
+            'user' => $user
+        ];
+    }
+    /**
+     * return count all user in database
+     *
+     * @return integer
+     */
+    public function countAllUser(): int
+    {
+        return $this->userRepository->count();
     }
     /**
      * method to save users or return an error

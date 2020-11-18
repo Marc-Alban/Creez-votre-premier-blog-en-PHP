@@ -26,17 +26,59 @@
 							</tr>
 						</thead>
 						<tbody>
-						{% for users in data.user %}
+						{% for users in data.paginationUser.user %}
 							<tr>
 								<td scope="row">{{users.userName}}</td>
 								<td scope="row" >{{users.userType}}</td>
-								<td><a href="/?page=userManagement&action=admin&id={{users.idUser}}" class="linkHover">Admin</a></td>
-								<td><a href="/?page=userManagement&action=user&id={{users.idUser}}" class="linkHover">Utilisateur</a></td>
+								<td><a href="/?page=userManagement&perpage={{data.paginationUser.current}}&action=admin&id={{users.idUser}}" class="linkHover">Admin</a></td>
+								<td><a href="/?page=userManagement&perpage={{data.paginationUser.current}}&action=user&id={{users.idUser}}" class="linkHover">Utilisateur</a></td>
 							</tr>
 						{% endfor %}
 						</tbody>
 					</table>
 				</div>
+				{% if data.paginationUser %}
+					{#--------------------------allUserPagination-----------------------------#}
+					<nav aria-label="Page navigation mr-auto">
+						<ul class="paginationPost pg-blue">
+							<li class="page-item
+									{% if data.paginationUser.current == 1
+									or data.paginationUser.current <1 %}
+									disabled
+									{% endif %}">
+								<a class="page-link" aria-label="Previous" href="/?page={% if data.paginationUser.current != 1 %} userManagement&perpage={{data.paginationUser.current - 1 }} {% else %}userManagement&perpage={{data.paginationUser.current }} {% endif %}">
+									<span aria-hidden="true">&laquo;</span>
+									<span class="sr-only">Previous</span>
+								</a>
+							</li>
+							{% for i in 1.. data.paginationUser.nbPage %}
+								{% if i == data.paginationUser.current %}
+									<li class="page-item active">
+										<a class="page-link" href="/?page=userManagement&perpage={{ i }}">{{ i }}</a>
+									</li>
+								{% else %}
+									<li class="page-item
+											{% if data.paginationUser.current <1 %}
+											disabled
+											{% endif %}">
+										<a class="page-link" href="/?page=userManagement&perpage={{ i }}">{{ i }}</a>
+									</li>
+								{% endif %}
+							{% endfor %}
+							<li class="page-item
+									{% if data.paginationUser.current ==
+									data.paginationUser.nbPage %}
+									disabled
+									{% endif %}">
+								<a class="page-link" aria-label="Next" href="/?page={% if data.paginationUser.current != data.paginationUser.nbPage %} userManagement&perpage={{data.paginationUser.current + 1 }} {% else %} userManagement&perpage={{data.paginationUser.current }} {% endif %}">
+									<span aria-hidden="true">&raquo;</span>
+									<span class="sr-only">Next</span>
+								</a>
+							</li>
+						</ul>
+					</nav>
+				{% endif %}
+				{#-------------------------END-PAGINATION-----------------------------#}
 			</div>
 		</div>
 	</div>

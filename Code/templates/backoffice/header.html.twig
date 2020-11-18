@@ -22,7 +22,6 @@
 					</a>
 					<div class="dropdown-menu sm-menu">
 						<a class="dropdown-item" href="/?page=accountManagement">Gestion de compte</a>
-						<a class="dropdown-item" href="/?page=home&action=logout">Se déconnecter</a>
 					</div>
 				</li>
 				{% if session.admin %}
@@ -33,14 +32,18 @@
 					<div class="dropdown-menu sm-menu">
 						<a class="dropdown-item" href="/?page=dashboard">Dashboard</a>
 						<hr>
-						<a class="dropdown-item" href="/?page=userManagement">Gestion utilisateur</a>
+						<a class="dropdown-item" href="/?page=userManagement&perpage=1">Gestion utilisateur</a>
 						<hr>
-						<a class="dropdown-item" href="/?page=allComments">Commentaires</a>
+						<a class="dropdown-item" href="/?page=allComments&perpage=1">Commentaires</a>
 						<hr>
 						<a class="dropdown-item" href="/?page=allPosts&perpage=1">Articles</a>
 					</div>
 				</li>
 				{% endif %} 
+				<li class="nav-item">
+					<a class="dnav-link" href="/?page=home&action=logout">Se déconnecter</a>
+				</li>
+				
 			</ul>
 		</div>
 	</div>

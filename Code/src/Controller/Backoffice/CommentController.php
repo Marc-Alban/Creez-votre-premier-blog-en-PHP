@@ -36,9 +36,13 @@ final class CommentController
         if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
+        }elseif(empty($this->request->getGet()->get('perpage'))){
+            header('Location: /?page=allComments&perpage=1');
+            exit();
         }
-        $comments = $this->commentManager->findAllComments();
-        $this->view->render('backoffice', 'allComments', ["comments" => $comments]);
+        $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
+        $paginationComments = $this->commentManager->paginationComments($perpage);
+        $this->view->render('backoffice', 'allComments', ["paginationComments" => $paginationComments]);
     }
     /**
      * method to valide Comment
@@ -48,8 +52,9 @@ final class CommentController
     public function valideCommentAction(): void
     {
         $val = $this->commentManager->valideComment($this->idComment);
-        $comments = $this->commentManager->findAllComments();
-        $this->view->render('backoffice', 'allComments', ["comments" => $comments, 'val' => $val]);
+        $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
+        $paginationComments = $this->commentManager->paginationComments($perpage);
+        $this->view->render('backoffice', 'allComments', ["paginationComments" => $paginationComments, 'val' => $val]);
     }
     /**
      * method to delete Comment
@@ -59,7 +64,8 @@ final class CommentController
     public function deleteCommentAction(): void
     {
         $del = $this->commentManager->deleteComment($this->idComment);
-        $comments = $this->commentManager->findAllComments();
-        $this->view->render('backoffice', 'allComments', ["comments" => $comments, 'del' => $del]);
+        $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
+        $paginationComments = $this->commentManager->paginationComments($perpage);
+        $this->view->render('backoffice', 'allComments', ["paginationComments" => $paginationComments, 'del' => $del]);
     }
 }
