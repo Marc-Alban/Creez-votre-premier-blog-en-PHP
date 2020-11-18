@@ -108,13 +108,37 @@ final class UserController
         $post = $postManager->countAllPost();
         $this->view->render('backoffice', 'dashboard', ["commentDisable"=>$commentDisable,"comment"=>$comment,"post"=>$post]);
     }
-
+    /**
+     * Display the userManagement page
+     *
+     * @return void
+     */
     public function userManagementAction(): void
     {
         if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
         }
-        $this->view->render('backoffice', 'userManagement', []);
+        $user = $this->userManager->findAllUser();
+        $this->view->render('backoffice', 'userManagement', ['user'=>$user]);
+    }
+    
+    /**
+     * Action for check role and change this
+     *
+     * @return void
+     */
+    public function userManagementRoleAction(): void
+    {
+        if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
+            header('Location: /?page=login');
+            exit();
+        }
+        $user = $this->userManager->findAllUser();
+        $roleMessage = $this->userManager->checkUrlRole($this->request);
+        if (array_key_exists('success', $roleMessage)) {
+            header("Refresh: 3;url=/?page=userManagement");
+        }
+        $this->view->render('backoffice', 'userManagement', ['user'=>$user,'roleMessage'=>$roleMessage]);
     }
 }

@@ -13,8 +13,8 @@ final class UserManager
 {
     private UserRepository $userRepository;
     private AccessControl $accessControl;
-    private $errors = null;
-    private $success = null;
+    private array $errors = [];
+    private array $success = [];
     private Session $session;
     private ?string $userSession;
     private ?string $adminSession;
@@ -87,6 +87,40 @@ final class UserManager
         if (empty($this->errors)) {
             $this->success['success'] = 'Utilisateur est bien connecté';
             return $this->success;
+        }
+        return $this->errors;
+    }
+    /**
+     * Get all User in database for handling the role
+     *
+     * @return array|null
+     */
+    public function findAllUser(): ?array
+    {
+        return $this->userRepository->findAll();
+    }
+    /**
+     * Check the role of admin and change with the choice
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function checkUrlRole(Request $request): array
+    {
+        $roleUrl = $request->getGet()->get("action");
+        $idUserUrl = (int) $request->getGet()->get("id");
+        $user = $this->userRepository->findByIdUser($idUserUrl);
+        $roleUser = $user->getActivated();
+        if ($roleUrl === 'admin' && $roleUser === 0) {
+            $this->userRepository->changeRoleUser(1, 'Admin', $idUserUrl);
+            $this->success['success'] = 'Le rôle de l\'utilisateur est bien devenu : <<Admin>>';
+            return $this->success;
+        } elseif ($roleUrl === 'user' && $roleUser === 1) {
+            $this->userRepository->changeRoleUser(0, 'Utilisateur', $idUserUrl);
+            $this->success['success'] = 'Le rôle de l\'utilisateur est bien devenu : <<Utilisateur>>';
+            return $this->success;
+        } elseif (($roleUrl === 'user' && $roleUser === 0) || ($roleUrl === 'admin' && $roleUser === 1)) {
+            $this->errors['error'] = 'Utilisateur à déjà le rôle demandé, (admin ou utilisateur) !';
         }
         return $this->errors;
     }

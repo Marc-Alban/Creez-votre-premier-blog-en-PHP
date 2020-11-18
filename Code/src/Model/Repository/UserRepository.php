@@ -31,6 +31,24 @@ final class UserRepository
         $req->execute($tabUser);
     }
     /**
+     * Change the role with the id user
+     *
+     * @param integer $actived
+     * @param string $userType
+     * @param integer $idUser
+     * @return void
+     */
+    public function changeRoleUser(int $actived, string $userType, int $idUser): void
+    {
+        $tabUser = [
+            ':actived' => $actived,
+            ':userType' => $userType,
+            ':idUser' => $idUser,
+        ];
+        $req = $this->database->prepare("UPDATE `user` SET `activated` = :actived,`userType` = :userType WHERE `user`.`idUser` = :idUser");
+        $req->execute($tabUser);
+    }
+    /**
      * Update a user with the given parameters
      *
      * @param string $email
@@ -63,6 +81,21 @@ final class UserRepository
         ];
         $req = $this->database->prepare("UPDATE user SET passwordUser=:passwordUser WHERE idUser = :idUser");
         $req->execute($reqArray);
+    }
+    /**
+     * Get all User
+     *
+     * @return array|null
+     */
+    public function findAll(): ?array
+    {
+        $pdo = $this->database->query("SELECT * FROM user");
+        $executeIsOk = $pdo->execute();
+        if ($executeIsOk === true) {
+            $userBdd = $pdo->fetchAll();
+            return $userBdd;
+        }
+        return null;
     }
     /**
      * Allows to retrieve a user with the id

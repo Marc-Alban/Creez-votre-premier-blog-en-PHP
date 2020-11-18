@@ -11,10 +11,10 @@
 					<div class="panel-title text-center">Gestion des utilisateurs</div>
 				</div>
 				<div class="panel-body mt-5 h-10">
-					{% if data.role.admin %}
-							<div class="alert alert-primary" role="alert"> {{ data.role.admin }}</div>
-					{% elseif data.role.user %}
-							<div class="alert alert-primary" role="alert"> {{ data.role.user }}</div>
+					{% if data.roleMessage.success %}
+							<div class="alert alert-primary" role="alert"> {{  data.roleMessage.success }}</div>
+					{% elseif data.roleMessage.error %}
+							<div class="alert alert-danger" role="alert"> {{  data.roleMessage.error }}</div>
 					{% endif %}
 					<table class="table table-bordered table-hover table-responsive-sm ">
 						<thead class="thead-dark">
@@ -28,10 +28,10 @@
 						<tbody>
 						{% for users in data.user %}
 							<tr>
-								<td scope="row">{{users.content}}</td>
-								<td scope="row" >{{users.roles}}</td>
-								<td><a href="/?page=user&action=admin&id={{users.idUser}}" class="linkHover">Admin</a></td>
-								<td><a href="/?page=user&action=user&id={{users.idUser}}" class="linkHover">Utilisateur</a></td>
+								<td scope="row">{{users.userName}}</td>
+								<td scope="row" >{{users.userType}}</td>
+								<td><a href="/?page=userManagement&action=admin&id={{users.idUser}}" class="linkHover">Admin</a></td>
+								<td><a href="/?page=userManagement&action=user&id={{users.idUser}}" class="linkHover">Utilisateur</a></td>
 							</tr>
 						{% endfor %}
 						</tbody>
