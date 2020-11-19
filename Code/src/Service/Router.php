@@ -39,10 +39,10 @@ final class Router
         $this->session = new Session();
         $this->request = new Request();
         $this->token = new Token();
-        $this->configProperties = new ConfigProperties();
-        $this->database = new Database($this->configProperties);
         $this->view = new View($this->session);
         $this->error = new ErrorController($this->view);
+        $this->configProperties = new ConfigProperties();
+        $this->database = new Database($this->configProperties);
         $this->mail = new Mail($this->request, $this->view);
     }
     /**
@@ -86,24 +86,27 @@ final class Router
             $postManager = new $pathPostManager($postRepository);
             $pathController = 'App\Controller\Frontoffice\PostController';
             $instanceController = new $pathController($postManager, $this->view, $this->request);
+            //**------------------------Ici les controlleurs en double à rectifier ?----------------------**/
             if ($this->page  === 'post' && $this->idGlobal && $this->action === null) {
                 $commentRepo = new CommentRepository($this->database);
                 $commentManager = new CommentManager($commentRepo);
                 $commentController =  new CommentController($commentManager, $this->request, $this->token, $this->session);
                 $userRepo = new UserRepository($this->database);
                 $userManager = new UserManager($userRepo, $this->accessControl, $this->session);
-                $comments = $commentController->findAllPostCommentsAction();
-                return $instanceController->postAction($userManager, $comments, null);
+                $comments = $commentController->findAllPostCommentsAction();// la un controller <<comment>>
+                return $instanceController->postAction($userManager, $comments, null);// ici un deuxieme controller <<post>>
             } elseif ($this->page  === 'post' && $this->idGlobal && $this->action === 'sendComment') {
                 $commentRepo = new CommentRepository($this->database);
                 $commentManager = new CommentManager($commentRepo);
                 $commentController =  new CommentController($commentManager, $this->request, $this->token, $this->session);
                 $userRepo = new UserRepository($this->database);
                 $userManager = new UserManager($userRepo, $this->accessControl, $this->session);
-                $message = $commentController->sendAction($userManager);
-                $comments = $commentController->findAllPostCommentsAction();
+                $message = $commentController->sendAction($userManager);// idem ici
+                $comments = $commentController->findAllPostCommentsAction();// et ici
                 return $instanceController->postAction($userManager, $comments, $message);
-            } elseif ($this->page === 'post' && $this->idGlobal === "0" || $this->page === 'post' && empty($this->global)) {
+            }
+            //**------------------------Fin controlleurs en double à rectifier----------------------**/
+            elseif ($this->page === 'post' && $this->idGlobal === "0" || $this->page === 'post' && empty($this->global)) {
                 return $instanceController->postAction(null, null, null);
             }
             $methode = $this->page .'Action';

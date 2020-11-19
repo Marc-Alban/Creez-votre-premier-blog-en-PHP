@@ -100,7 +100,7 @@ final class CommentRepository
     /**
      * Count all comment in database
      *
-     * @return array
+     * @return int
      */
     public function total(): int
     {

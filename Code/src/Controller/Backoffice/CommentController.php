@@ -36,7 +36,7 @@ final class CommentController
         if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
-        }elseif(empty($this->request->getGet()->get('perpage'))){
+        } elseif (empty($this->request->getGet()->get('perpage'))) {
             header('Location: /?page=allComments&perpage=1');
             exit();
         }

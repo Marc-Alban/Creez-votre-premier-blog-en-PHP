@@ -128,8 +128,13 @@ final class UserController
         }
         $checkConnection = $this->userManager->userLogIn($this->session, $this->token, $this->request);
         if (array_key_exists('success', $checkConnection) === true) {
-            header('Location: /?page=accountManagement');
-            exit();
+            if ($this->session->getSessionName('user') && !$this->session->getSessionName('admin')) {
+                header('Location: /?page=accountManagement');
+                exit();
+            } elseif (!$this->session->getSessionName('user') && $this->session->getSessionName('admin')) {
+                header('Location: /?page=dashboard');
+                exit();
+            }
         }
         $this->email = $this->request->getPost()->get('email');
         $this->view->render('Frontoffice', 'login', ["checkConnection" => $checkConnection,'email' => $this->email]);

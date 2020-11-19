@@ -2,9 +2,9 @@
 declare(strict_types=1);
 namespace App\Model\Repository;
 
-use PDO;
-use App\Service\Database;
 use App\Model\Entity\User;
+use App\Service\Database;
+use PDO;
 
 final class UserRepository
 {
@@ -34,7 +34,7 @@ final class UserRepository
     /**
      * Count all user in database
      *
-     * @return array
+     * @return int
      */
     public function count(): int
     {
@@ -98,7 +98,7 @@ final class UserRepository
     /**
      * Get all user for pagination
      *
-     * @param integer $pageuser
+     * @param integer $pageUser
      * @param integer $perPage
      * @return array|null
      */

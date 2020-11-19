@@ -119,7 +119,7 @@ final class UserController
         if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
-        }elseif(empty($this->request->getGet()->get('perpage'))){
+        } elseif (empty($this->request->getGet()->get('perpage'))) {
             header('Location: /?page=userManagement&perpage=1');
             exit();
         }
@@ -138,7 +138,7 @@ final class UserController
         if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
-        }elseif(empty($this->request->getGet()->get('perpage'))){
+        } elseif (empty($this->request->getGet()->get('perpage'))) {
             header('Location: /?page=userManagement&perpage=1');
             exit();
         }
