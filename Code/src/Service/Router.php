@@ -129,7 +129,7 @@ final class Router
                 $commentManager = new CommentManager($commentRepo);
                 return $instanceController->dashboardAction($commentManager, $postManager);
             } elseif (($this->page === 'userManagement' && $this->action === 'user') || ($this->page === 'userManagement' && $this->action === 'admin')) {
-                return $instanceController->userManagementRoleAction();
+                return $instanceController->userManagementRoleAction($this->accessControl);
             }
             $methode = $this->page .'Action';
             return $instanceController->$methode();

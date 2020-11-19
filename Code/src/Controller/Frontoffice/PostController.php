@@ -34,7 +34,7 @@ final class PostController
         $idPost = (int) $this->request->getGet()->get('id');
         $post = $this->postManager->findPostByIdPost($idPost);
         if ($post !== null) {
-            $user = $userManager->findNameByIdUser($post->getUserId());
+            $user = $userManager->findUserByIdUser($post->getUserId());
         } elseif ($post === null) {
             $defaultPost = $this->defaultPost();
         }

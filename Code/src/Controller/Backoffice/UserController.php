@@ -7,6 +7,7 @@ use App\Model\Manager\PostManager;
 use App\Model\Manager\UserManager;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
+use App\Service\Security\AccessControl;
 use App\Service\Security\Token;
 use App\View\View;
 
@@ -133,7 +134,7 @@ final class UserController
      *
      * @return void
      */
-    public function userManagementRoleAction(): void
+    public function userManagementRoleAction(AccessControl $accessControl): void
     {
         if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
@@ -145,8 +146,12 @@ final class UserController
         $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
         $paginationUser =  $this->userManager->paginationUser($perpage) ?? null;
         $roleMessage = $this->userManager->checkUrlRole($this->request);
+        $admin = $this->userManager->findUserByIdUser((int) $this->request->getGet()->get('id'))->getEmail();
         if (array_key_exists('success', $roleMessage)) {
             header("Refresh: 1;url=/?page=userManagement");
+            if ($this->adminSession === $admin) {
+                $accessControl->IsAdmin($this->session);
+            }
         }
         $this->view->render('backoffice', 'userManagement', ['paginationUser'=>$paginationUser,'roleMessage'=>$roleMessage]);
     }

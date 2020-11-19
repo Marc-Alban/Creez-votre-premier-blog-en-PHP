@@ -5,11 +5,11 @@
 			<div class="raw">
 				<h2>Bl<b>og</b>
 				</h2>
+			<article>
 				<div class="row-page row">
 					{% if data.paginationPost.post %}
 						{% for otherPost in  data.paginationPost.post %}
 							{# Other post #}
-							<article>
 								<div class="col-page col-sm-4 col-md-6">
 									<a href="/?page=post&id={{ otherPost.idPost }}" class="postPublicationHome">
 										<div class="imgPostPublication">
@@ -26,11 +26,9 @@
 										</div>
 									</a>
 								</div>
-							</article>
 							{# End post #}
 						{% endfor %}
 					{% elseif data.defaultPost %}
-						<article>
 							<div class="col-page col-sm-4 col-md-6">
 								<a href="/?page=post&id=0" class="postPublicationHome">
 									<div class="imgPostPublication">
@@ -47,10 +45,10 @@
 									</div>
 								</a>
 							</div>
-						</article>
 						{# End post #}
 					{% endif %}
 				</div>
+			</article>
 				{#--------------------------END-lastPost-----------------------------#}
 				{% if data.paginationPost.post %}
 					{#--------------------------paginationPost-----------------------------#}

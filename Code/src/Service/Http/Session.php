@@ -54,4 +54,14 @@ class Session
     {
         session_destroy();
     }
+    /**
+     * Destroy parametre session
+     *
+     * @param string $name
+     * @return void
+     */
+    public function sessionDestroyName(string $name):void
+    {
+        unset($this->session[$name]);
+    }
 }

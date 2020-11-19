@@ -27,12 +27,12 @@ final class UserManager
         $this->adminSession =  $this->session->getSessionName('admin');
     }
     /**
-     * Give the name with the idUser
+     * Give the user with the idUser
      *
      * @param integer $idUser
      * @return User|null
      */
-    public function findNameByIdUser(int $idUser): ?User
+    public function findUserByIdUser(int $idUser): ?User
     {
         return $this->userRepository->findByIdUser($idUser);
     }
@@ -167,7 +167,7 @@ final class UserManager
         $userEmail = $this->userRepository->findByEmail($email);
         if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-        } elseif (empty($pseudo) || $userName !== null ||  preg_replace("#~[A-Z][a-z]*(-[A-Z][a-z]?)?~#", '', $pseudo)) {
+        } elseif (empty($pseudo) || $userName !== null ||  !preg_match("#[a-zA-Z0-9ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ_\-\s]#", $pseudo)) {
             $this->errors['error']["pseudoEmpty"] = 'Le champs pseudo ne doit pas être vide, ni déjà pris, les caractères spéciaux ne sont pas accepté pour ce champs !';
         } elseif (empty($email) || $userEmail !== null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
             $this->errors['error']["emailEmpty"] = 'Le champs email ne doit pas être vide ou être incorrect';
@@ -244,7 +244,7 @@ final class UserManager
         }
         if (empty($email) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
             $this->errors['error']["emailEmpty"] = 'L\'adresse e-mail est invalide" ';
-        } elseif (empty($userName) || preg_match('/[][(){}<>\/+"*%&=?#`^\'!$_:;,-]/', $userName)) {
+        } elseif (empty($userName) || !preg_match("#[a-zA-Z0-9ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ_\-\s]#", $userName)) {
             $this->errors['error']["userEmpty"] = 'Veuillez mettre un nom, caractères spéciaux non accepté';
         } elseif ($userName === $pseudoBdd && $email === $emailBdd) {
             $this->errors['error']['noAction'] = 'Veuillez modifier un champs avant de soumettre !! ';

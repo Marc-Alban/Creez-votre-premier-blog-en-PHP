@@ -41,4 +41,16 @@ class AccessControl
         }
         return $this->errors;
     }
+    /**
+     * Get the admin session and reset this, after create a user session 
+     *
+     * @param Session $session
+     * @return void
+     */
+    public function IsAdmin(Session $session): void
+    {
+        $admin = $session->getSessionName('admin');
+        $session->setSession('user', $admin);
+        $session->sessionDestroyName('admin');
+    }
 }
