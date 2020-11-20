@@ -130,13 +130,13 @@ final class CommentManager
     public function checkComment(int $idComment, int $idUser, Request $request, Session $session, Token $token): ?array
     {
         $post = $request->getPost() ?? null;
-        $comment = $post->get('comment');
+        $comment = $post->getName('comment');
         if (empty($comment)) {
             $this->errors["error"]['messageEmpty'] = "Veuillez mettre un commentaire";
         }
-        // if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
-        //     $this->errors['error']['formRegister'] = "Formulaire incorrect";
-        // }
+        if ($token->compareTokens($session->getSessionName('token'), $post->getName('token')) !== false) {
+            $this->errors['error']['formRegister'] = "Formulaire incorrect";
+        }
         if (empty($this->errors)) {
             $this->success["success"]['send'] = 'Votre commentaire est en attente de validation';
             $this->commentRepository->create($comment, $idUser, $idComment);

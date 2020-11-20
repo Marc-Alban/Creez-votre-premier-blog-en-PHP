@@ -9,7 +9,7 @@ use App\Service\Mail;
 use App\Service\Security\Token;
 use App\View\View;
 
-final class UserController
+final class FrontUserController
 {
     private UserManager $userManager;
     private View $view;
@@ -97,8 +97,8 @@ final class UserController
             header('Location: /?page=accountManagement');
             exit();
         }
-        $this->pseudo = $this->request->getPost()->get('userName');
-        $this->email = $this->request->getPost()->get('email');
+        $this->pseudo = $this->request->getGet()->getName('userName');
+        $this->email = $this->request->getGet()->getName('email');
         $this->view->render('Frontoffice', 'register', ["checkRegister" => $checkRegister,'email' => $this->email,'pseudo'=>$this->pseudo]);
     }
     /**
@@ -136,7 +136,7 @@ final class UserController
                 exit();
             }
         }
-        $this->email = $this->request->getPost()->get('email');
+        $this->email = $this->request->getGet()->getName('email');
         $this->view->render('Frontoffice', 'login', ["checkConnection" => $checkConnection,'email' => $this->email]);
     }
 }

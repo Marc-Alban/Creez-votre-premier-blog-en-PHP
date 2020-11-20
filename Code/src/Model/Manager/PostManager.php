@@ -117,10 +117,10 @@ final class PostManager
     {
         $post = $request->getPost() ?? null;
         $file = $request->getFile('imagePost') ?? null;
-        if ($post->get('submit') !== null) {
-            $title = $post->get('title') ?? null;
-            $chapo = $post->get('chapo') ?? null;
-            $description = $post->get('description') ?? null;
+        if ($post->getName('submit') !== null) {
+            $title = $post->getName('title') ?? null;
+            $chapo = $post->getName('chapo') ?? null;
+            $description = $post->getName('description') ?? null;
             $tmpName = $file['tmp_name'] ?? null;
             $size = $file['size'] ?? null;
             $fileName = (empty($file['name'])) ? 'default.png' : $file['name'];
@@ -140,7 +140,7 @@ final class PostManager
             } elseif (mb_strlen($description) <= 15) {
                 $this->errors['error']["descShort"] = "Description trop petite, doit être supérieur ou égal à 15 caractère";
             }
-            if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
+            if ($token->compareTokens($session->getSessionName('token'), $post->getName('token')) !== false) {
                 $this->errors['error']['formRegister'] = "Formulaire incorrect";
             }
             $dataForm = [
@@ -158,7 +158,7 @@ final class PostManager
                 $this->success['success'] = "Article bien enregistré";
                 return $this->success;
             } elseif (empty($this->errors) && $action === 'update') {
-                $this->postRepository->update($dataForm, (int) $request->getGet()->get('id'));
+                $this->postRepository->update($dataForm, (int) $request->getGet()->getName('id'));
                 $this->success['success'] = "Article bien mis à jour";
                 return $this->success;
             }

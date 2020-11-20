@@ -74,14 +74,14 @@ final class UserManager
      */
     public function userLogIn(Session $session, Token $token, Request $request): array
     {
-        $userBdd = $this->userRepository->findByEmail($request->getPost()->get('email'));
+        $userBdd = $this->userRepository->findByEmail($request->getGet()->getName('email'));
         $verifUserBdd = $this->accessControl->userAction($session, $request, $userBdd);
-        if (empty($request->getPost()->get('email')) && empty($request->getPost()->get('password'))) {
+        if (empty($request->getGet()->getName('email')) && empty($request->getGet()->getName('password'))) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
         } elseif ($verifUserBdd !== null) {
             $this->errors = $verifUserBdd;
         }
-        if ($token->compareTokens($session->getSessionName('token'), $request->getPost()->get('token')) !== false) {
+        if ($token->compareTokens($session->getSessionName('token'), $request->getGet()->getName('token')) !== false) {
             $this->errors['error']['formRegister'] = "Formulaire incorrect";
         }
         if (empty($this->errors)) {
@@ -98,8 +98,8 @@ final class UserManager
      */
     public function checkUrlRole(Request $request): array
     {
-        $roleUrl = $request->getGet()->get("action");
-        $idUserUrl = (int) $request->getGet()->get("id");
+        $roleUrl = $request->getGet()->getName("action");
+        $idUserUrl = (int) $request->getGet()->getName("id");
         $user = $this->userRepository->findByIdUser($idUserUrl);
         $roleUser = $user->getActivated();
         if ($roleUrl === 'admin' && $roleUser === 0) {
@@ -232,8 +232,8 @@ final class UserManager
     public function checkForm(Session $session, Request $request, Token $token): array
     {
         $post = $request->getPost() ?? null;
-        $email = $post->get('email') ?? null;
-        $userName = $post->get('userName') ?? null;
+        $email = $post->getName('email') ?? null;
+        $userName = $post->getName('userName') ?? null;
         $userSession =  $session->getSessionName('user') ?? $session->getSessionName('admin');
         $user = $this->userRepository->findByEmail($userSession);
         $emailBdd = null;
@@ -249,7 +249,7 @@ final class UserManager
         } elseif ($userName === $pseudoBdd && $email === $emailBdd) {
             $this->errors['error']['noAction'] = 'Veuillez modifier un champs avant de soumettre !! ';
         }
-        if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
+        if ($token->compareTokens($session->getSessionName('token'), $post->getName('token')) !== false) {
             $this->errors['error']['tokenEmpty'] = 'Formulaire incorrect';
         }
         if (empty($this->errors)) {

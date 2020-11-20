@@ -7,7 +7,7 @@ use App\Service\Http\Request;
 use App\Service\Http\Session;
 use App\View\View;
 
-final class CommentController
+final class BackCommentController
 {
     private CommentManager $commentManager;
     private View $view;
@@ -22,7 +22,7 @@ final class CommentController
         $this->view = $view;
         $this->session = $session;
         $this->request = $request;
-        $this->idComment = (int) $this->request->getGet()->get('id') ?? null;
+        $this->idComment = (int) $this->request->getGet()->getName('id') ?? null;
     }
     /**
      * display AllComments page
@@ -36,11 +36,11 @@ final class CommentController
         if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
-        } elseif (empty($this->request->getGet()->get('perpage'))) {
+        } elseif (empty($this->request->getGet()->getName('perpage'))) {
             header('Location: /?page=allComments&perpage=1');
             exit();
         }
-        $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
+        $perpage = (int) $this->request->getGet()->getName('perpage') ?? null;
         $paginationComments = $this->commentManager->paginationComments($perpage);
         $this->view->render('backoffice', 'allComments', ["paginationComments" => $paginationComments]);
     }
@@ -52,7 +52,7 @@ final class CommentController
     public function valideCommentAction(): void
     {
         $val = $this->commentManager->valideComment($this->idComment);
-        $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
+        $perpage = (int) $this->request->getGet()->getName('perpage') ?? null;
         $paginationComments = $this->commentManager->paginationComments($perpage);
         $this->view->render('backoffice', 'allComments', ["paginationComments" => $paginationComments, 'val' => $val]);
     }
@@ -64,7 +64,7 @@ final class CommentController
     public function deleteCommentAction(): void
     {
         $del = $this->commentManager->deleteComment($this->idComment);
-        $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
+        $perpage = (int) $this->request->getGet()->getName('perpage') ?? null;
         $paginationComments = $this->commentManager->paginationComments($perpage);
         $this->view->render('backoffice', 'allComments', ["paginationComments" => $paginationComments, 'del' => $del]);
     }

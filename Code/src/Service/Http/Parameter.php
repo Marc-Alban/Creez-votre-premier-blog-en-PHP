@@ -15,7 +15,7 @@ class Parameter
      * @param string $name
      * @return string|null
      */
-    public function get(string $name = null): ?string
+    public function getName(string $name = null): ?string
     {
         if (isset($this->parameter[$name])) {
             return htmlentities(strip_tags(trim($this->parameter[$name])));

@@ -11,7 +11,7 @@ use App\Service\Security\AccessControl;
 use App\Service\Security\Token;
 use App\View\View;
 
-final class UserController
+final class BackUserController
 {
     private UserManager $userManager;
     private View $view;
@@ -120,11 +120,11 @@ final class UserController
         if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
-        } elseif (empty($this->request->getGet()->get('perpage'))) {
+        } elseif (empty($this->request->getGet()->getName('perpage'))) {
             header('Location: /?page=userManagement&perpage=1');
             exit();
         }
-        $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
+        $perpage = (int) $this->request->getGet()->getName('perpage') ?? null;
         $paginationUser =  $this->userManager->paginationUser($perpage) ?? null;
         $this->view->render('backoffice', 'userManagement', ['paginationUser'=>$paginationUser]);
     }
@@ -139,14 +139,14 @@ final class UserController
         if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
-        } elseif (empty($this->request->getGet()->get('perpage'))) {
+        } elseif (empty($this->request->getGet()->getName('perpage'))) {
             header('Location: /?page=userManagement&perpage=1');
             exit();
         }
-        $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
+        $perpage = (int) $this->request->getGet()->getName('perpage') ?? null;
         $paginationUser =  $this->userManager->paginationUser($perpage) ?? null;
         $roleMessage = $this->userManager->checkUrlRole($this->request);
-        $admin = $this->userManager->findUserByIdUser((int) $this->request->getGet()->get('id'))->getEmail();
+        $admin = $this->userManager->findUserByIdUser((int) $this->request->getGet()->getName('id'))->getEmail();
         if (array_key_exists('success', $roleMessage)) {
             header("Refresh: 1;url=/?page=userManagement");
             if ($this->adminSession === $admin) {

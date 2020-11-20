@@ -2,12 +2,13 @@
 declare(strict_types=1);
 namespace App\Controller\Frontoffice;
 
+use App\Model\Manager\CommentManager;
 use App\Model\Manager\PostManager;
 use App\Model\Manager\UserManager;
 use App\Service\Http\Request;
 use App\View\View;
 
-final class PostController
+final class FrontPostController
 {
     private PostManager $postManager;
     private View $view;
@@ -22,23 +23,23 @@ final class PostController
      * diplay the post page
      *
      * @param UserManager|null $userManager
-     * @param array|null $comments
-     * @param array|null $message
+     * @param CommentManager $comments
      * @return void
      */
-    public function postAction(?UserManager $userManager, ?array $comments, ?array $message): void
+    public function postAction(?UserManager $userManager,CommentManager $comment): void
     {
         $post = null;
         $user = null;
         $defaultPost = null;
-        $idPost = (int) $this->request->getGet()->get('id');
+        $idPost = (int) $this->request->getGet()->getName('id');
         $post = $this->postManager->findPostByIdPost($idPost);
         if ($post !== null) {
             $user = $userManager->findUserByIdUser($post->getUserId());
         } elseif ($post === null) {
             $defaultPost = $this->defaultPost();
         }
-        $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, 'comments' => $comments, 'message' => $message, 'defaultPost'=> $defaultPost]);
+        $comments = $comment->findCommentByPostId($idPost);
+        $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, 'comments' => $comments,'defaultPost'=> $defaultPost]);
     }
     /**
      * display the blog page
@@ -46,10 +47,9 @@ final class PostController
      *
      * @return void
      */
-    public function postsAction(): void
+    public function postsAction(int $perpage): void
     {
         $defaultPost = null;
-        $perpage = (int) $this->request->getGet()->get('perpage') ?? null;
         $paginationPost =  $this->postManager->paginationPost($perpage) ?? null;
         if ($paginationPost['post'] === null) {
             $defaultPost = $this->defaultPost();

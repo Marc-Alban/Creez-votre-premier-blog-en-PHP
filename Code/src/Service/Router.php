@@ -2,171 +2,274 @@
 declare(strict_types=1);
 namespace  App\Service;
 
-use App\Controller\ErrorController;
-use App\Controller\Frontoffice\CommentController;
-use App\Model\Manager\CommentManager;
-use App\Model\Manager\PostManager;
-use App\Model\Manager\UserManager;
-use App\Model\Repository\CommentRepository;
-use App\Model\Repository\PostRepository;
-use App\Model\Repository\UserRepository;
-use App\Service\Database;
-use App\Service\Http\Request;
-use App\Service\Http\Session;
-use App\Service\Mail;
-use App\Service\Security\AccessControl;
-use App\Service\Security\Token;
 use App\View\View;
+use App\Service\{Database,Mail};
+use App\Controller\ErrorController;
+use App\Service\Http\{Request,Session,Parameter};
+use App\Service\Security\{AccessControl,Token};
+use App\Controller\Frontoffice\{FrontCommentController,FrontPostController,FrontUserController};
+use App\Controller\Backoffice\{BackCommentController,BackPostController,BackUserController};
+use App\Model\Manager\{CommentManager,PostManager,UserManager};
+use App\Model\Repository\{CommentRepository,PostRepository,UserRepository};
 
 final class Router
 {
-    private AccessControl $accessControl;
+    //Config & Database
     private ConfigProperties $configProperties;
     private Database $database;
-    private Request $request;
-    private Token $token;
+    //Session
     private Session $session;
+    //AccessControl
+    private AccessControl $accessControl;
+    //Request / -get - post
+    private Request $request;
+    private Parameter $post;
+    private Parameter $get;
+    //Token
+    private Token $token;
+    //View
     private View $view;
-    private ErrorController $error;
+    //Mail
     private Mail $mail;
-    private ?string $url;
-    private ?string $page;
-    private ?string $idGlobal;
-    private ?string $action;
+    //Controller - Error
+    private ErrorController $errorController;
+    //Controller - Front
+    private FrontCommentController $frontCommentController;
+    private FrontPostController $frontPostController;
+    private FrontUserController $frontUserController;
+    //Controller - Back
+    private BackCommentController $backCommentController;
+    private BackPostController $backPostController;
+    private BackUserController $backUserController;
+    //Manager
+    private CommentManager $commentManager;
+    private PostManager $postManager;
+    private UserManager $userManager;
+    //Repository
+    private CommentRepository $commentRepository;
+    private PostRepository $postRepository;
+    private UserRepository $userRepository;
+
     public function __construct()
     {
-        $this->accessControl = new AccessControl();
-        $this->session = new Session();
-        $this->request = new Request();
-        $this->token = new Token();
-        $this->view = new View($this->session);
-        $this->error = new ErrorController($this->view);
+        //Config & Database
         $this->configProperties = new ConfigProperties();
         $this->database = new Database($this->configProperties);
+        //Session
+        $this->session = new Session();
+        //AccessControl
+        $this->accessControl = new AccessControl();
+        //Request / -get - post 
+        $this->request = new Request();
+        $this->get = $this->request->getGet();
+        $this->post = $this->request->getPost();
+        //Token
+        $this->token = new Token();
+        //View
+        $this->view = new View($this->session);
+        //Mail
         $this->mail = new Mail($this->request, $this->view);
+        //Repository
+        $this->commentRepository = new CommentRepository($this->database);
+        $this->postRepository = new PostRepository($this->database);
+        $this->userRepository = new UserRepository($this->database);
+        //Manager 
+        $this->commentManager = new CommentManager($this->commentRepository);
+        $this->postManager = new PostManager($this->postRepository);
+        $this->userManager = new UserManager($this->userRepository, $this->accessControl, $this->session);
+        //Controller - Error
+        $this->errorController = new ErrorController($this->view);
+        //Controller - Front
+        $this->frontCommentController = new FrontCommentController($this->commentManager, $this->request, $this->token, $this->session);
+        $this->frontPostController = new FrontPostController($this->postManager, $this->view, $this->request);
+        $this->frontUserController = new FrontUserController($this->userManager, $this->view, $this->token, $this->session, $this->request);
+        //Controller - Back
+        $this->backCommentController = new BackCommentController($this->commentManager, $this->view, $this->session, $this->request);
+        $this->backPostController = new BackPostController($this->postManager, $this->view, $this->token, $this->session, $this->request);
+        $this->backUserController = new BackUserController($this->userManager, $this->view, $this->token, $this->session, $this->request);
     }
     /**
      * Start the router with the correct route from the past url
-     *
      */
     public function run()
     {
-        $this->url = $this->request->getGet()->get('page') ?? 'home';
-        $this->page = lcfirst($this->url);
-        $this->idGlobal = $this->request->getGet()->get('id') ?? "0";
-        $this->action = $this->request->getGet()->get('action') ?? null;
-        $userFrontPage = ['home','login','register'];
-        $postFrontPage = ['post','posts'];
-        $userBackPage = ['accountManagement','dashboard','password','userManagement'];
-        $postBackPage = ['allPosts','addPost','updatePost'];
-        $commentBackPage = ['allComments'];
-        if (in_array($this->page, $userFrontPage, true)) {
-            $pathController = 'App\Controller\Frontoffice\UserController';
-            $pathUserRepository = 'App\Model\Repository\UserRepository';
-            $pathUserManager = 'App\Model\Manager\UserManager';
-            $userRepository = new $pathUserRepository($this->database);
-            $userManager = new $pathUserManager($userRepository, $this->accessControl, $this->session);
-            $instanceController = new $pathController($userManager, $this->view, $this->token, $this->session, $this->request);
-            if ($this->page === 'home' && $this->action === 'sendMessage') {
-                return $instanceController->sendMailAction($this->mail);
-            } elseif ($this->page === 'home' && $this->action === 'logout') {
-                return $instanceController->logoutAction();
-            } elseif ($this->page === 'register' && $this->action === 'registration') {
-                return $instanceController->registrationAction();
-            } elseif ($this->page === 'login' && $this->action === 'connection') {
-                return $instanceController->connectionAction();
-            } elseif ($this->action === null) {
-                $methode = $this->page .'Action';
-                return $instanceController->$methode();
-            }
-        } elseif (in_array($this->page, $postFrontPage, true)) {
-            $pathPostRepository = 'App\Model\Repository\PostRepository';
-            $pathPostManager = 'App\Model\Manager\PostManager';
-            $postRepository = new $pathPostRepository($this->database);
-            $postManager = new $pathPostManager($postRepository);
-            $pathController = 'App\Controller\Frontoffice\PostController';
-            $instanceController = new $pathController($postManager, $this->view, $this->request);
-            //**------------------------Ici les controlleurs en double à rectifier ?----------------------**/
-            if ($this->page  === 'post' && $this->idGlobal && $this->action === null) {
-                $commentRepo = new CommentRepository($this->database);
-                $commentManager = new CommentManager($commentRepo);
-                $commentController =  new CommentController($commentManager, $this->request, $this->token, $this->session);
-                $userRepo = new UserRepository($this->database);
-                $userManager = new UserManager($userRepo, $this->accessControl, $this->session);
-                $comments = $commentController->findAllPostCommentsAction();// la un controller <<comment>>
-                return $instanceController->postAction($userManager, $comments, null);// ici un deuxieme controller <<post>>
-            } elseif ($this->page  === 'post' && $this->idGlobal && $this->action === 'sendComment') {
-                $commentRepo = new CommentRepository($this->database);
-                $commentManager = new CommentManager($commentRepo);
-                $commentController =  new CommentController($commentManager, $this->request, $this->token, $this->session);
-                $userRepo = new UserRepository($this->database);
-                $userManager = new UserManager($userRepo, $this->accessControl, $this->session);
-                $message = $commentController->sendAction($userManager);// idem ici
-                $comments = $commentController->findAllPostCommentsAction();// et ici
-                return $instanceController->postAction($userManager, $comments, $message);
-            }
-            //**------------------------Fin controlleurs en double à rectifier----------------------**/
-            elseif ($this->page === 'post' && $this->idGlobal === "0" || $this->page === 'post' && empty($this->global)) {
-                return $instanceController->postAction(null, null, null);
-            }
-            $methode = $this->page .'Action';
-            return $instanceController->$methode();
-        } elseif (in_array($this->page, $userBackPage, true)) {
-            $pathUserRepository = 'App\Model\Repository\UserRepository';
-            $pathUserManager = 'App\Model\Manager\UserManager';
-            $userRepository = new $pathUserRepository($this->database);
-            $userManager = new $pathUserManager($userRepository, $this->accessControl, $this->session);
-            $pathController = 'App\Controller\Backoffice\UserController';
-            $instanceController = new $pathController($userManager, $this->view, $this->token, $this->session, $this->request);
-            if ($this->page === 'accountManagement' && $this->action === 'sendDatasUser') {
-                return $instanceController->updateUserAction();
-            } elseif ($this->page === 'password' && $this->action === 'modifPass') {
-                return $instanceController->updatePasswordAction();
-            } elseif ($this->page === 'dashboard') {
-                $postRepo = new PostRepository($this->database);
-                $postManager = new PostManager($postRepo);
-                $commentRepo = new CommentRepository($this->database);
-                $commentManager = new CommentManager($commentRepo);
-                return $instanceController->dashboardAction($commentManager, $postManager);
-            } elseif (($this->page === 'userManagement' && $this->action === 'user') || ($this->page === 'userManagement' && $this->action === 'admin')) {
-                return $instanceController->userManagementRoleAction($this->accessControl);
-            }
-            $methode = $this->page .'Action';
-            return $instanceController->$methode();
-        } elseif (in_array($this->page, $postBackPage, true)) {
-            $pathPostRepository = 'App\Model\Repository\PostRepository';
-            $pathPostManager = 'App\Model\Manager\PostManager';
-            $postRepository = new $pathPostRepository($this->database);
-            $postManager = new $pathPostManager($postRepository);
-            $pathController = 'App\Controller\Backoffice\PostController';
-            $instanceController = new $pathController($postManager, $this->view, $this->token, $this->session, $this->request);
-            if ($this->page === 'addPost' && $this->action === 'addPostAction') {
-                $userRepo = new UserRepository($this->database);
-                return $instanceController->addPostDashboardAction($userRepo);
-            } elseif ($this->page === 'updatePost' && $this->action === 'updatePostBdd' && $this->idGlobal) {
-                $userRepo = new UserRepository($this->database);
-                return $instanceController->updatePostBddAction($userRepo);
-            } elseif ($this->page === 'allPosts' && $this->action === 'delete' && $this->idGlobal) {
-                return $instanceController->deletePostAction();
-            }
-            $methode = $this->page .'Action';
-            return $instanceController->$methode();
-        } elseif (in_array($this->page, $commentBackPage, true)) {
-            $pathCommentRepo = 'App\Model\Repository\CommentRepository';
-            $pathCommentManager = 'App\Model\Manager\CommentManager';
-            $commentRepository = new $pathCommentRepo($this->database);
-            $commentManager = new $pathCommentManager($commentRepository);
-            $pathController = 'App\Controller\Backoffice\CommentController';
-            $instanceController = new $pathController($commentManager, $this->view, $this->session, $this->request);
-            if ($this->page === 'allComments' && $this->action === 'valide') {
-                return $instanceController->valideCommentAction();
-            } elseif ($this->page === 'allComments' && $this->action === 'deleted') {
-                return $instanceController->deleteCommentAction();
-            }
-            $methode = $this->page .'Action';
-            return $instanceController->$methode();
-        } elseif (!in_array($this->page, $userFrontPage, true) || !in_array($this->page, $postFrontPage, true) || !in_array($this->page, $userBackPage, true) || !in_array($this->page, $postBackPage, true) || !in_array($this->page, $commentBackPage, true)) {
-            $this->error->notFound();
+        $page = $this->get->getName('page') ?? 'home';
+        $perPage = $this->get->getName("perpage") ?? 1;
+        $idGlobal = $this->get->getName("id") ?? null;
+        $action = $this->get->getName('action') ?? null;
+
+        switch ($page) {
+            case 'home':
+                //Route: index.php || localhost:8000/?page=home
+                //affiche la page d'accueil
+                $this->frontUserController->homeAction();
+            break;
+
+            case ('posts'):
+                //Route: index.php || localhost:8000/?page=posts&perpage=1
+                //affiche la liste de tous les articles
+                isset($perPage) ? $this->frontPostController->postsAction((int) $perPage) : $this->postController->displayAllPosts((int) $perPage = 1);
+            break;
+
+            // case 'post':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     //affiche 1 post + commentaires associés
+            //     $this->postController->displayOneEpisode((int) $this->get['id']);
+            // break;
+
+            // case 'comment_error':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     //affiche post + commentaire + msg erreur
+            //     $this->postController->commentError((int) $this->get['id'], (string) $this->get['pseudo'], (string) $this->get['comment']);
+            // break;
+
+            // case 'save_com':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     //sauvegarde du commentaire en passant au commentController les éléments du formulaires
+            //     //$this->commentController->saveComment((int) $this->get['id'], $this->post['pseudo'], $this->post['comment']);
+            //     $this->commentController->saveComment((int) $this->get['id'], $this->post);
+            // break;
+
+            // case 'signal':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     //on prend en compte le signalement du commentaire
+            //     $this->commentController->reportComment((int) $this->get['comment_id'], (int) $this->get['id']);
+            // break;
+
+            // case 'new_post':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     //vers l'éditeur de texte
+            //     $this->backPostController->addPost();
+            // break;
+
+            // case 'save_draft':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     //Sauvegarder le brouillon
+            //     $this->draftController->saveDraft((int) $this->post['episode'], (string) $this->post['title'], (string) $this->post['episode_text']);                
+            // break;
+
+            // case 'publish':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     //Enregistrement du post dans la BDD
+            //     $this->backPostController->savePost((int) $this->post['episode'], (string) $this->post['title'], (string) $this->post['episode_text'], $this->post['hidden_input']);
+            // break;
+
+            // case 'publish_draft':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     //Changement de status de l'épisode, qui passe de brouillon à publié
+            //     $this->draftController->publishDraft((int) $this->get['id'], $this->post);
+            // break;
+
+            // case 'drafts':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     $this->draftController->displayDrafts();
+            // break;
+
+            // case 'update_draft':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     $this->draftController->updateDraft((int) $this->get['episode']);
+            // break;
+
+            // case 'save_updated_draft':
+            //     //route: index.php || localhost:8000/?page=home
+            //     //on écrase l'ancien brouillon et enregistre le nouveau
+            //     $this->draftController->saveAndOverwrite((int) $this->get['episode_id'], (int) $this->post['episode'], (string) $this->post['title'], (string) $this->post['episode_text']);
+            // break;
+
+            // case 'delete_draft' :
+            //     //Route: index.php || localhost:8000/?page=home
+            //     $this->draftController->deleteDraft((int) $this->get['episode']);
+            // break;
+
+            // case 'episodes_list':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     $this->backPostController->getEpisodes();
+            // break;
+
+            // case 'update_post':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     $this->backPostController->updateEpisode((int) $this->get['post_id']);
+            // break;
+
+            // case 'save_updated_post':
+            //     //Route: index.php/page=save_updated_post&episode_id
+            //     $this->backPostController->overwritePost((int) $this->get['episode_id'], (int) $this->post['episode'], (string) $this->post['title'], (string) $this->post['episode_text'], $this->post['hidden_input']);
+            // break;
+
+            // case 'delete_post':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     $this->backPostController->deletePost((int) $this->get['post_id']);
+            // break;
+
+            // case 'reported_comments':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     $this->backCommentController->getReportedComments();
+            // break;
+
+            // case 'delete_reported_comment':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     $this->backCommentController->deleteReportedComment((int) $this->get['id']);
+            // break;
+
+            // case 'comments_list':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     isset($this->get['page']) ? $this->backCommentController->getCommentsList((int) $this->get['page']) : $this->backCommentController->getCommentsList((int) $this->get['page'] = 1);
+            // break;
+
+            // case 'validate_comment':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     $this->backCommentController->validateComment((int) $this->get['id']);
+            // break;
+
+            // case 'delete_comment':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     $this->backCommentController->deleteComment((int) $this->get['id']);
+            // break;
+            
+            // case 'get_form_data':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     $this->backPostController->getPostData((int) $this->get["episode"], $this->get["title"], $this->get["episode_text"]);
+            // break;
+
+            // case 'get_draft_data':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     $this->draftController->getDraftData((int) $this->get['episode'], $this->get['title'], $this->get['content']);
+            // break;
+
+            // case 'authentification':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     $this->userController->authentification();
+            // break;
+
+            // case 'log_in':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     $this->userController->logIn($this->post);
+            // break;
+
+            // case 'log_out':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     $this->userController->logOut();
+            // break;
+
+            // case 'user_page':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     $this->userController->userPage();
+            // break;
+
+            // case 'change_username':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     $this->userController->changeUsername($this->post);
+            // break;
+
+            // case 'change_password':
+            //     //Route: index.php || localhost:8000/?page=home
+            //     $this->userController->changePassword($this->post);
+            // break;
+
+            default:
+                //Route: index.php || localhost:8000/?page=home
+                //On affiche une page d'erreur
+                $this->errorController->notFound();
         }
     }
 }

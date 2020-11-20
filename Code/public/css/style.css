@@ -21,8 +21,6 @@ a {
 
 .profile {
     overflow: hidden;
-    -webkit-border-radius: 50px;
-    -moz-border-radius: 50px;
     border-radius: 50px;
     box-shadow: 10px 10px rgba(0, 0, 0, 0.5);
     width: 150px;
@@ -69,7 +67,7 @@ pre {
 }
 
 #mainNav .navbar-nav .nav-item:hover {
-    color: fade(#fff, 80%);
+    color: rgba(255, 255, 255, 0.8);
     outline: none;
     background-color: transparent;
 }
@@ -86,7 +84,7 @@ pre {
 .btn {
     box-shadow: 0 0.1875rem 0.1875rem 0 rgba(0, 0, 0, 0.1);
     padding: 1.25rem 2rem;
-    font-family: "Varela Round", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: "Varela Round", "Segoe UI", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-size: 80%;
     text-transform: uppercase;
     letter-spacing: 0.15rem;
@@ -96,7 +94,6 @@ pre {
 .btn-primary {
     color: #fff;
     background-color: #e95e38;
-    border-color: #e95e38;
 }
 
 .btnConnexion {
@@ -136,14 +133,11 @@ pre {
 }
 
 .masthead h1 {
-    font-family: "Varela Round", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: "Varela Round", "Segoe UI", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-size: 2.5rem;
     line-height: 2.5rem;
     letter-spacing: 0.8rem;
-    background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0));
-    -webkit-text-fill-color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
+    color: #909090;
 }
 
 .masthead h2 {
@@ -166,7 +160,7 @@ main {
 
 .signup-section .form-inline input {
     box-shadow: 0 0.1875rem 0.1875rem 0 rgba(0, 0, 0, 0.1);
-    font-family: "Varela Round", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: "Varela Round", "Segoe UI", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-size: 80%;
     border: 0;
 }
@@ -250,8 +244,6 @@ main {
     position: absolute;
     top: 0;
     opacity: 0.95;
-    -webkit-transition: all 0.4s ease-out 0s;
-    -o-transition: all 0.4s ease-out 0s;
     transition: all 0.4s ease-out 0s;
 }
 
@@ -332,8 +324,6 @@ main {
     position: absolute;
     top: 0;
     opacity: 0.0;
-    -webkit-transition: all 0.4s ease-out 0s;
-    -o-transition: all 0.4s ease-out 0s;
     transition: all 0.4s ease-out 0s;
     text-align: center;
     padding-top: 180px;
@@ -421,7 +411,6 @@ main {
     padding: 0 0 1em;
     border-bottom: 1px solid #ddd;
     margin: 0 0 1em;
-    *zoom: 1;
 }
 
 .comment-body {
