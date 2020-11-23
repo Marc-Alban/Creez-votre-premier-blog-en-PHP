@@ -25,7 +25,7 @@ final class FrontCommentController
     /**
      * Send a comment in the page post
      */
-    public function sendAction(UserManager $userManager)
+    public function sendAction(UserManager $userManager): void
     {
         // $idPost = (int) $this->request->getGet()->getName('id') ?? null;
         // $this->userSession = ($this->session->getSessionName('user'))? $this->session->getSessionName('user') : $this->session->getSessionName('admin');

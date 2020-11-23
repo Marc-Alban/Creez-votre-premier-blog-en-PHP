@@ -74,14 +74,14 @@ final class UserManager
      */
     public function userLogIn(Session $session, Token $token, Request $request): array
     {
-        $userBdd = $this->userRepository->findByEmail($request->getGet()->getName('email'));
+        $userBdd = $this->userRepository->findByEmail($request->getPost()->getName('email'));
         $verifUserBdd = $this->accessControl->userAction($session, $request, $userBdd);
-        if (empty($request->getGet()->getName('email')) && empty($request->getGet()->getName('password'))) {
+        if (empty($request->getPost()->getName('email')) && empty($request->getPost()->getName('password'))) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
         } elseif ($verifUserBdd !== null) {
             $this->errors = $verifUserBdd;
         }
-        if ($token->compareTokens($session->getSessionName('token'), $request->getGet()->getName('token')) !== false) {
+        if ($token->compareTokens($session->getSessionName('token'), $request->getPost()->getName('token')) !== false) {
             $this->errors['error']['formRegister'] = "Formulaire incorrect";
         }
         if (empty($this->errors)) {
@@ -159,15 +159,15 @@ final class UserManager
     public function userRegister(Session $session, Token $token, Request $request): array
     {
         $dataPost = $request->getPost() ?? null;
-        $pseudo = $dataPost->get('userName') ?? null;
-        $email = $dataPost->get('email') ?? null;
-        $password =  $dataPost->get('password') ?? null;
-        $passwordConfirmation = $dataPost->get('passwordConfirmation') ?? null;
+        $pseudo = $dataPost->getName('userName') ?? null;
+        $email = $dataPost->getName('email') ?? null;
+        $password =  $dataPost->getName('password') ?? null;
+        $passwordConfirmation = $dataPost->getName('passwordConfirmation') ?? null;
         $userName = $this->userRepository->findByPseudo($pseudo);
         $userEmail = $this->userRepository->findByEmail($email);
         if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-        } elseif (empty($pseudo) || $userName !== null ||  !preg_match("#[a-zA-Z0-9ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ_\-\s]#", $pseudo)) {
+        } elseif (empty($pseudo) || $userName !== null ||  !preg_match("#[a-zA-Z\pL\']+[\s-]?[a-zA-Z\pL\']*#", $pseudo)) {
             $this->errors['error']["pseudoEmpty"] = 'Le champs pseudo ne doit pas être vide, ni déjà pris, les caractères spéciaux ne sont pas accepté pour ce champs !';
         } elseif (empty($email) || $userEmail !== null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
             $this->errors['error']["emailEmpty"] = 'Le champs email ne doit pas être vide ou être incorrect';
@@ -176,7 +176,7 @@ final class UserManager
         } elseif (mb_strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password)) {
             $this->errors['error']["passwordEmpty"] = 'Le mot de passe doit avoir des minuscule-majuscule-chiffres-caractères et être supérieur à 8 caractères';
         }
-        if ($token->compareTokens($session->getSessionName('token'), $dataPost->get('token')) !== false) {
+        if ($token->compareTokens($session->getSessionName('token'), $dataPost->getName('token')) !== false) {
             $this->errors['error']['formRegister'] = "Formulaire incorrect";
         }
         if (empty($this->errors)) {
@@ -202,15 +202,15 @@ final class UserManager
         $idUser = $user->getIdUser();
         $passwordBdd = $user->getPasswordUser();
         $postForm = $request->getPost() ?? null;
-        $lastPassword = $postForm->get('lastPassword') ?? null;
-        $password = $postForm->get('password') ?? null;
-        $passwordConf = $postForm->get('passwordConfirmation') ?? null;
+        $lastPassword = $postForm->getName('lastPassword') ?? null;
+        $password = $postForm->getName('password') ?? null;
+        $passwordConf = $postForm->getName('passwordConfirmation') ?? null;
         if (password_verify($lastPassword, $passwordBdd) === false || empty($lastPassword)) {
             $this->errors['error']["passwordConfEmpty"] = 'Ancien mot de passe incorrect ou absent';
-        } elseif (empty($password) || empty($passwordConf) || $password !== $passwordConf || mb_strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password)) {
+        } elseif (empty($password) || empty($passwordConf) || $password !== $passwordConf || mb_strlen($password) < 8 || !preg_match('#[a-zA-Z\pL\']+[\s-]?[a-zA-Z\pL\']*#', $password)) {
             $this->errors['error']["passwordEmpty"] = 'Nouveau mot de passe ou de confirmation absent, les nouveaux mot de passe doit être identique, et doit contenir 8 caractères ou plus et au format minuscule-majuscule-chiffres-caractères ';
         }
-        if ($token->compareTokens($session->getSessionName('token'), $postForm->get('token')) !== false) {
+        if ($token->compareTokens($session->getSessionName('token'), $postForm->getName('token')) !== false) {
             $this->errors['error']['tokenEmpty'] = 'Formulaire incorrect';
         }
         if (empty($this->errors)) {
@@ -244,7 +244,7 @@ final class UserManager
         }
         if (empty($email) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
             $this->errors['error']["emailEmpty"] = 'L\'adresse e-mail est invalide" ';
-        } elseif (empty($userName) || !preg_match("#[a-zA-Z0-9ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ_\-\s]#", $userName)) {
+        } elseif (empty($userName) || !preg_match("#[a-zA-Z\pL\']+[\s-]?[a-zA-Z\pL\']#", $userName)) {
             $this->errors['error']["userEmpty"] = 'Veuillez mettre un nom, caractères spéciaux non accepté';
         } elseif ($userName === $pseudoBdd && $email === $emailBdd) {
             $this->errors['error']['noAction'] = 'Veuillez modifier un champs avant de soumettre !! ';

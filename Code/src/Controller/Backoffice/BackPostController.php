@@ -47,7 +47,7 @@ final class BackPostController
      *
      * @return void
      */
-    public function addPostDashboardAction(UserRepository $userRepository): void
+    public function addPostBddAction(UserRepository $userRepository): void
     {
         $valdel = null;
         $title = null;
@@ -71,9 +71,8 @@ final class BackPostController
      *
      * @return void
      */
-    public function allPostsAction(): void
+    public function allPostsAction(int $perpage): void
     {
-        $perpage = (int) $this->request->getGet()->getName('perpage') ?? null;
         if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
@@ -89,9 +88,8 @@ final class BackPostController
      *
      * @return void
      */
-    public function updatePostAction(): void
+    public function updatePostAction(int $idPost): void
     {
-        $idPost = (int) $this->request->getGet()->getName('id') ?? null;
         $postBbd = $this->postManager->findPostByIdPost($idPost);
         if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
@@ -111,9 +109,8 @@ final class BackPostController
      *
      * @return void
      */
-    public function updatePostBddAction(UserRepository $userRepository): void
+    public function updatePostBddAction(UserRepository $userRepository, int $idPost): void
     {
-        $idPost = (int) $this->request->getGet()->getName('id') ?? null;
         $postBbd = $this->postManager->findPostByIdPost($idPost);
         $post = null;
         $title = null;
@@ -144,12 +141,9 @@ final class BackPostController
      *
      * @return void
      */
-    public function deletePostAction(): void
+    public function deletePostAction(int $idPost, int $perpage): void
     {
-        $idPost = (int) $this->request->getGet()->getName('id') ?? null;
         $postBbd = $this->postManager->findPostByIdPost($idPost);
-        $perpage = (int) $this->request->getGet()->getName('perpage') ?? null;
-
         if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();

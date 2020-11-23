@@ -97,8 +97,8 @@ final class FrontUserController
             header('Location: /?page=accountManagement');
             exit();
         }
-        $this->pseudo = $this->request->getGet()->getName('userName');
-        $this->email = $this->request->getGet()->getName('email');
+        $this->pseudo = $this->request->getPost()->getName('userName');
+        $this->email = $this->request->getPost()->getName('email');
         $this->view->render('Frontoffice', 'register', ["checkRegister" => $checkRegister,'email' => $this->email,'pseudo'=>$this->pseudo]);
     }
     /**
@@ -136,7 +136,7 @@ final class FrontUserController
                 exit();
             }
         }
-        $this->email = $this->request->getGet()->getName('email');
+        $this->email = $this->request->getPost()->getName('email');
         $this->view->render('Frontoffice', 'login', ["checkConnection" => $checkConnection,'email' => $this->email]);
     }
 }

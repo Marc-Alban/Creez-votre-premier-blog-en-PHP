@@ -89,7 +89,8 @@ final class BackUserController
             header('Location: /?page=login');
             exit();
         }
-        $verifPassBdd = $this->userManager->checkPassword($this->session, $this->request, $this->token, $this->userSession);
+        $userSession = $this->userSession ?? $this->adminSession ;
+        $verifPassBdd = $this->userManager->checkPassword($this->session, $this->request, $this->token, $userSession);
         $this->view->render('backoffice', 'password', ['verif' => $verifPassBdd]);
     }
     /**
@@ -115,7 +116,7 @@ final class BackUserController
      *
      * @return void
      */
-    public function userManagementAction(): void
+    public function userManagementAction(int $perpage): void
     {
         if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
@@ -124,7 +125,6 @@ final class BackUserController
             header('Location: /?page=userManagement&perpage=1');
             exit();
         }
-        $perpage = (int) $this->request->getGet()->getName('perpage') ?? null;
         $paginationUser =  $this->userManager->paginationUser($perpage) ?? null;
         $this->view->render('backoffice', 'userManagement', ['paginationUser'=>$paginationUser]);
     }
@@ -134,7 +134,7 @@ final class BackUserController
      *
      * @return void
      */
-    public function userManagementRoleAction(AccessControl $accessControl): void
+    public function userManagementRoleAction(AccessControl $accessControl, int $perpage): void
     {
         if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
@@ -143,7 +143,6 @@ final class BackUserController
             header('Location: /?page=userManagement&perpage=1');
             exit();
         }
-        $perpage = (int) $this->request->getGet()->getName('perpage') ?? null;
         $paginationUser =  $this->userManager->paginationUser($perpage) ?? null;
         $roleMessage = $this->userManager->checkUrlRole($this->request);
         $admin = $this->userManager->findUserByIdUser((int) $this->request->getGet()->getName('id'))->getEmail();

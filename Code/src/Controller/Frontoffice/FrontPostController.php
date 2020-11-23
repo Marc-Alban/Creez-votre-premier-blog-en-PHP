@@ -5,33 +5,30 @@ namespace App\Controller\Frontoffice;
 use App\Model\Manager\CommentManager;
 use App\Model\Manager\PostManager;
 use App\Model\Manager\UserManager;
-use App\Service\Http\Request;
 use App\View\View;
 
 final class FrontPostController
 {
     private PostManager $postManager;
     private View $view;
-    private Request $request;
-    public function __construct(PostManager $postManager, View $view, Request $request)
+    public function __construct(PostManager $postManager, View $view)
     {
         $this->postManager = $postManager;
         $this->view = $view;
-        $this->request = $request;
     }
     /**
-     * diplay the post page
-     *
-     * @param UserManager|null $userManager
-     * @param CommentManager $comments
-     * @return void
-     */
-    public function postAction(?UserManager $userManager,CommentManager $comment): void
+     *diplay the post page
+    *
+    * @param UserManager|null $userManager
+    * @param CommentManager $comment
+    * @param integer $idPost
+    * @return void
+    */
+    public function postAction(?UserManager $userManager, CommentManager $comment, int $idPost): void
     {
         $post = null;
         $user = null;
         $defaultPost = null;
-        $idPost = (int) $this->request->getGet()->getName('id');
         $post = $this->postManager->findPostByIdPost($idPost);
         if ($post !== null) {
             $user = $userManager->findUserByIdUser($post->getUserId());

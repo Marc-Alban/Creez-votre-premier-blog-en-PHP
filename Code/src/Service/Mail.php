@@ -27,8 +27,8 @@ final class Mail
     {
         $entete  = 'MIME-Version: 1.0' . "\r\n";
         $entete .= 'Content-type: text/html; charset=utf-8' . "\r\n";
-        $entete .= 'From: ' . $this->request->getGet()->getName('mail') . "\r\n";
-        $message = $this->view->renderMail(['name'=>$this->request->getGet()->getName('name'),'lastName'=>$this->request->getGet()->getName('lastName'),'mail'=>$this->request->getGet()->getName('mail'),'message'=>$this->request->getGet()->getName('message')]);
+        $entete .= 'From: ' . $this->request->getPost()->getName('mail') . "\r\n";
+        $message = $this->view->renderMail(['name'=>$this->request->getPost()->getName('name'),'lastName'=>$this->request->getPost()->getName('lastName'),'mail'=>$this->request->getPost()->getName('mail'),'message'=>$this->request->getPost()->getName('message')]);
         mail('millet.marcalban@gmail.com', 'E-mail envoyé du site DevDark', $message, $entete);
     }
     /**
