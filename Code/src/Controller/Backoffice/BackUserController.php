@@ -31,11 +31,11 @@ final class BackUserController
         $this->adminSession =  $this->session->getSessionName('admin');
     }
     /**
-     * Display the accountManagement page
+     * Display the managementAccount page
      *
      * @return void
      */
-    public function accountManagementAction(): void
+    public function managementAccountAction(): void
     {
         $this->session->setSession('token', $this->token->createSessionToken());
         if (($this->userSession === null && $this->adminSession === null) || ($this->userSession !== null && $this->adminSession !== null)) {
@@ -47,14 +47,14 @@ final class BackUserController
             header('Location: /?page=login');
             exit();
         }
-        $this->view->render('backoffice', 'accountManagement', ['user'=>$user]);
+        $this->view->render('backoffice', 'managementAccount', ['user'=>$user]);
     }
     /**
      * method to modify a user
      *
      * @return void
      */
-    public function updateUserAction(): void
+    public function managementUpdateAccountAction(): void
     {
         if (($this->userSession === null && $this->adminSession === null) || ($this->userSession !== null && $this->adminSession !== null)) {
             header('Location: /?page=login');
@@ -62,7 +62,7 @@ final class BackUserController
         }
         $verifUser = $this->userManager->checkForm($this->session, $this->request, $this->token);
         $user = $this->userManager->findUserBySession();
-        $this->view->render('backoffice', 'accountManagement', ['verif' => $verifUser,'user'=> $user]);
+        $this->view->render('backoffice', 'managementAccount', ['verif' => $verifUser,'user'=> $user]);
     }
     /**
      * Display the password page
@@ -83,7 +83,7 @@ final class BackUserController
      *
      * @return void
      */
-    public function updatePasswordAction(): void
+    public function passwordUpdateAction(): void
     {
         if (($this->userSession === null && $this->adminSession === null) || ($this->userSession !== null && $this->adminSession !== null)) {
             header('Location: /?page=login');
@@ -96,6 +96,8 @@ final class BackUserController
     /**
      * Display the dashboard page
      *
+     * @param CommentManager $commentManager
+     * @param PostManager $postManager
      * @return void
      */
     public function dashboardAction(CommentManager $commentManager, PostManager $postManager): void
@@ -112,8 +114,9 @@ final class BackUserController
         $this->view->render('backoffice', 'dashboard', ["commentDisable"=>$commentDisable,"comment"=>$comment,"post"=>$post,'user'=>$user]);
     }
     /**
-     * Display the userManagement page
+     *  Display the userManagement page
      *
+     * @param integer $perpage
      * @return void
      */
     public function userManagementAction(int $perpage): void
@@ -130,11 +133,13 @@ final class BackUserController
     }
     
     /**
-     * Action for check role and change this
+     *  Action for check role and change this
      *
+     * @param AccessControl $accessControl
+     * @param integer $perpage
      * @return void
      */
-    public function userManagementRoleAction(AccessControl $accessControl, int $perpage): void
+    public function userManagementRoleAction(AccessControl $accessControl, int $idUserUrl, int $perpage, string $action): void
     {
         if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
@@ -143,9 +148,9 @@ final class BackUserController
             header('Location: /?page=userManagement&perpage=1');
             exit();
         }
-        $paginationUser =  $this->userManager->paginationUser($perpage) ?? null;
-        $roleMessage = $this->userManager->checkUrlRole($this->request);
-        $admin = $this->userManager->findUserByIdUser((int) $this->request->getGet()->getName('id'))->getEmail();
+        $paginationUser =  $this->userManager->paginationUser($perpage);
+        $roleMessage = $this->userManager->checkUrlRole($idUserUrl, $action);
+        $admin = $this->userManager->findUserByIdUser($idUserUrl)->getEmail();
         if (array_key_exists('success', $roleMessage)) {
             header("Refresh: 1;url=/?page=userManagement");
             if ($this->adminSession === $admin) {

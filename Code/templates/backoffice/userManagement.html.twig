@@ -30,8 +30,8 @@
 							<tr>
 								<td scope="row">{{users.userName}}</td>
 								<td scope="row" >{{users.userType}}</td>
-								<td><a href="/?page=userManagement&perpage={{data.paginationUser.current}}&action=admin&id={{users.idUser}}" class="linkHover">Admin</a></td>
-								<td><a href="/?page=userManagement&perpage={{data.paginationUser.current}}&action=user&id={{users.idUser}}" class="linkHover">Utilisateur</a></td>
+								<td><a href="/?page=userManagementRole&perpage={{data.paginationUser.current}}&action=admin&id={{users.idUser}}" class="linkHover">Admin</a></td>
+								<td><a href="/?page=userManagementRole&perpage={{data.paginationUser.current}}&action=user&id={{users.idUser}}" class="linkHover">Utilisateur</a></td>
 							</tr>
 						{% endfor %}
 						</tbody>

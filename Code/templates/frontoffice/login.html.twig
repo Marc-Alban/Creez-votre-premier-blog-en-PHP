@@ -23,7 +23,7 @@
 				{#--------------------------ERROR-MESSAGE----------------------------#}
 				{% endif %}
 				{#--------------------------END-CONDITION-DATA----------------------------#}
-				<form method="POST" action="/?page=login&action=connection">
+				<form method="POST" action="/?page=loginUser">
 					<div class="container mb-5">
 					<label for="email">E-mail</label><br>
 					<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email" {% if data.email %} value="{{data.email|raw}}" {% endif %}><br>

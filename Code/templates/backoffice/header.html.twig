@@ -21,7 +21,7 @@
 					{% if session.user %}{{ session.user }}{% else %}{{ session.admin }}{% endif %}
 					</a>
 					<div class="dropdown-menu sm-menu">
-						<a class="dropdown-item" href="/?page=accountManagement">Gestion de compte</a>
+						<a class="dropdown-item" href="/?page=managementAccount">Gestion de compte</a>
 					</div>
 				</li>
 				{% if session.admin %}
@@ -34,14 +34,14 @@
 						<hr>
 						<a class="dropdown-item" href="/?page=userManagement&perpage=1">Gestion utilisateur</a>
 						<hr>
-						<a class="dropdown-item" href="/?page=allComments&perpage=1">Commentaires</a>
+						<a class="dropdown-item" href="/?page=allCommentsBack&perpage=1">Commentaires</a>
 						<hr>
-						<a class="dropdown-item" href="/?page=allPosts&perpage=1">Articles</a>
+						<a class="dropdown-item" href="/?page=allPostsBack&perpage=1">Articles</a>
 					</div>
 				</li>
 				{% endif %} 
 				<li class="nav-item">
-					<a class="dnav-link" href="/?page=home&action=logout">Se déconnecter</a>
+					<a class="dnav-link" href="/?page=logout">Se déconnecter</a>
 				</li>
 				
 			</ul>

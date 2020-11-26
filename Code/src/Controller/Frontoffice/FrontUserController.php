@@ -86,7 +86,7 @@ final class FrontUserController
      *
      * @return void
      */
-    public function registrationAction(): void
+    public function registerUserAction(): void
     {
         if ($this->userSession !== null || $this->adminSession !== null) {
             header('Location: /?page=home');
@@ -94,7 +94,7 @@ final class FrontUserController
         }
         $checkRegister = $this->userManager->userRegister($this->session, $this->token, $this->request);
         if (array_key_exists('success', $checkRegister) === true) {
-            header('Location: /?page=accountManagement');
+            header('Location: /?page=managementAccount');
             exit();
         }
         $this->pseudo = $this->request->getPost()->getName('userName');
@@ -120,7 +120,7 @@ final class FrontUserController
      *
      * @return void
      */
-    public function connectionAction(): void
+    public function loginUserAction(): void
     {
         if ($this->userSession !== null || $this->adminSession !== null) {
             header('Location: /?page=home');
@@ -129,7 +129,7 @@ final class FrontUserController
         $checkConnection = $this->userManager->userLogIn($this->session, $this->token, $this->request);
         if (array_key_exists('success', $checkConnection) === true) {
             if ($this->session->getSessionName('user') && !$this->session->getSessionName('admin')) {
-                header('Location: /?page=accountManagement');
+                header('Location: /?page=managementAccount');
                 exit();
             } elseif (!$this->session->getSessionName('user') && $this->session->getSessionName('admin')) {
                 header('Location: /?page=dashboard');

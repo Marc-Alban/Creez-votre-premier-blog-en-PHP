@@ -86,7 +86,7 @@ final class Router
         $this->postRepository = new PostRepository($this->database);
         $this->userRepository = new UserRepository($this->database);
         //Manager
-        $this->commentManager = new CommentManager($this->commentRepository);
+        $this->commentManager = new CommentManager($this->commentRepository, $this->userRepository);
         $this->postManager = new PostManager($this->postRepository);
         $this->userManager = new UserManager($this->userRepository, $this->accessControl, $this->session);
         //Controller - Error
@@ -108,131 +108,150 @@ final class Router
         $page = $this->get->getName('page') ?? 'home';
         $perPage = (int) $this->get->getName("perpage") ?? 1;
         $idGlobal = (int) $this->get->getName("id") ?? null;
-        $action = $this->get->getName('action') ?? null;
+        $action = $this->get->getName("action") ?? null;
 
         switch ($page) {
+// Front --------------------------------
             case 'home':
-                //Route: index.php || localhost:8000/?page=home || localhost:8000/?page=home&action=logout || localhost:8000/?page=home&action=sendMessage
-                //affiche la page d'accueil ou se déconnecte de la session utilisateur ou envoie un message
-                switch ($action) {
-                    case 'logout':
-                        $this->frontUserController->logoutAction();
-                    break;
-                    case 'sendMessage':
-                        $this->frontUserController->sendMailAction($this->mail);
-                    break;
-                }
+                //Route: index.php localhost:8000/?page=home
                 $this->frontUserController->homeAction();
             break;
 
-            case 'posts':
-                //Route: index.php || localhost:8000/?page=posts&perpage=1
-                //affiche la liste de tous les articles
-                !empty($perPage) ? $this->frontPostController->postsAction($perPage) : $this->frontPostController->postsAction($perPage = 1);
+            case 'sendMail':
+                //Route: index.php localhost:8000/?page=sendMail
+                $this->frontUserController->sendMailAction($this->mail);
+            break;
+
+            case 'blog':
+                //Route: index.php localhost:8000/?page=blog&perpage=1
+                $this->frontPostController->blogAction($perPage);
             break;
 
             case 'post':
-                //Route: index.php || localhost:8000/?page=post&id=?
-                //affiche 1 post + commentaires associés
-                $this->frontPostController->postAction($this->userManager, $this->commentManager, $idGlobal);
+                //Route: index.php localhost:8000/?page=post&id=?
+                $this->frontPostController->postAction($this->userManager, $this->commentManager, $this->session, $this->get, $idGlobal);
             break;
-            
+
+            case 'sendComment':
+                //Route: index.php localhost:8000/?page=sendComment
+                $this->frontCommentController->sendCommentAction($idGlobal);
+            break;
+// Front --------------------------------
+// User Connection --------------------------------
             case 'register':
-                //Route: index.php || localhost:8000/?page=register
-                //Affiche la page d'inscription ou inscrit l'utilisateur
-                ($action === 'registration') ? $this->frontUserController->registrationAction() : $this->frontUserController->registerAction();
+                //Route: index.php localhost:8000/?page=register
+                $this->frontUserController->registerAction();
             break;
-            
+
+            case 'registerUser':
+                //Route: index.php localhost:8000/?page=registerUser
+                $this->frontUserController->registerUserAction();
+            break;
+
             case 'login':
-                //Route: index.php || localhost:8000/?page=login
-                //Affiche la page de connection ou connecte l'utilisateur
-                ($action === 'connection') ? $this->frontUserController->connectionAction() : $this->frontUserController->loginAction();
+                //Route: index.php localhost:8000/?page=login
+                $this->frontUserController->loginAction();
             break;
 
-            case 'accountManagement':
-                //Route: index.php || localhost:8000/?page=accountManagement
-                //Affiche la page du compte utilisateur et peut modifié le compte
-                ($action === 'sendDatasUser') ? $this->backUserController->updateUserAction() : $this->backUserController->accountManagementAction();
+            case 'loginUser':
+                //Route: index.php localhost:8000/?page=loginUser
+                $this->frontUserController->loginUserAction();
+            break;
+
+            //Route: index.php localhost:8000/?page=logout
+            case 'logout':
+                $this->frontUserController->logoutAction();
+            break;
+// User Connection --------------------------------
+// User Back --------------------------------
+            case 'managementAccount':
+                //Route: index.php localhost:8000/?page=managementAccount
+                $this->backUserController->managementAccountAction();
+            break;
+
+            case 'managementUpdateAccount':
+                //Route: index.php localhost:8000/?page=managementUpdateAccount
+                $this->backUserController->managementUpdateAccountAction();
             break;
             
             case 'password':
-                //Route: index.php || localhost:8000/?page=password
-                //Affiche la page de modification de mot de passe ou le modifie
-                ($action === 'modifPass') ?$this->backUserController->updatePasswordAction() : $this->backUserController->passwordAction();
+                //Route: index.php localhost:8000/?page=password
+                $this->backUserController->passwordAction();
             break;
 
-            case 'password':
-                //Route: index.php || localhost:8000/?page=password
-                //Affiche la page de modification de mot de passe ou le modifie
-                ($action === 'modifPass') ?$this->backUserController->updatePasswordAction() : $this->backUserController->passwordAction();
+            case 'passwordUpdate':
+                //Route: index.php localhost:8000/?page=passwordUpdate
+                $this->backUserController->passwordUpdateAction();
             break;
 
             case 'dashboard':
-                //Route: index.php || localhost:8000/?page=dashboard
-                //Affiche la page dashboard
+                //Route: index.php localhost:8000/?page=dashboard
                 $this->backUserController->dashboardAction($this->commentManager, $this->postManager);
             break;
             
             case 'userManagement':
-                //Route: index.php || localhost:8000/?page=usermanagement
-                //Affiche la page role utilisateur et peut changer le rôle
-                (!empty($perPage) && !empty($idGlobal) && ($action ==='admin' || $action ==='user'))?
-                $this->backUserController->userManagementRoleAction($this->accessControl, $perPage):
-                $this->backUserController->userManagementAction($perPage = 1);
+                //Route: index.php localhost:8000/?page=userManagement
+                $this->backUserController->userManagementAction($perPage);
             break;
 
-            case 'allPosts':
-                //Route: index.php || localhost:8000/?page=allPosts
-                //Affiche la page tous les articles sur le backoffice peut aussi les supprimer
-                if (!empty($perPage) && empty($idGlobal) &&$action === null) {
-                    $this->backPostController->allPostsAction($perPage);
-                    exit();
-                }
-                if (!empty($perPage) && !empty($idGlobal) && $action === 'delete') {
-                    $this->backPostController->deletePostAction($idGlobal, $perPage);
-                    exit();
-                }
-                $this->backPostController->allPostsAction($perPage = 1);
+            case 'userManagementRole':
+                //Route: index.php localhost:8000/?page=userManagementRole
+                $this->backUserController->userManagementRoleAction($this->accessControl, $idGlobal, $perPage, $action);
+            break;
+// User Back --------------------------------
+// Post Back --------------------------------
+            case 'allPostsBack':
+                //Route: index.php localhost:8000/?page=allPostsBack&perpage=?
+                $this->backPostController->allPostsBackAction($perPage);
             break;
 
-            case 'updatePost':
-                //Route: index.php || localhost:8000/?page=updatePost
-                //Affiche la page modification des articles
-                (!empty($idGlobal) && $action ==='updatePostBdd')?
-                $this->backPostController->updatePostBddAction($this->userRepository, $idGlobal):
-                $this->backPostController->updatePostAction($idGlobal);
+            case 'deletePostBack':
+               //Route: index.php localhost:8000/?page=deletePostBack&perpage=?&id=?
+                $this->backPostController->deletePostBackAction($idGlobal, $perPage);
             break;
 
-            case 'addPost':
-                //Route: index.php || localhost:8000/?page=addPost
-                //Affiche la page ajout d'un articles ou l'ajoute en database
-                ($action ==='addPostAction')?
-                $this->backPostController->addPostBddAction($this->userRepository):
-                $this->backPostController->addPostAction();
+            case 'updatePostBack':
+                //Route: index.php localhost:8000/?page=updatePostBack&id=?
+                $this->backPostController->updatePostBackAction($idGlobal);
             break;
 
-            case 'allComments':
-                //Route: index.php || localhost:8000/?page=allComments&perpage=?
-                //Affiche la page tous les commentaires sur le backoffice peut aussi les supprimer ou les valider
-                if (!empty($perPage) && empty($idGlobal) && $action === null) {
-                    $this->backCommentController->allCommentsAction($perPage);
-                    exit();
-                }
-                
-                if ($page && !empty($idGlobal) && $action === 'valide') {
-                    $this->backCommentController->valideCommentAction($idGlobal, $perPage);
-                    exit();
-                } elseif ($page && !empty($idGlobal) && $action === 'deleted') {
-                    $this->backCommentController->deleteCommentAction($idGlobal, $perPage);
-                    exit();
-                }
-                $this->backCommentController->allCommentsAction($perPage = 1);
+            case 'updatePostBddBack':
+                //Route: index.php localhost:8000/?page=updatePostBddBack&id=?
+                $this->backPostController->updatePostBddBackAction($this->userRepository, $idGlobal);
             break;
 
+            case 'addPostBack':
+                //Route: index.php localhost:8000/?page=addPostBack
+                $this->backPostController->addPostBackAction();
+            break;
+
+            case 'addPostBddBack':
+                //Route: index.php localhost:8000/?page=addPostBddBack
+                $this->backPostController->addPostBddBackAction($this->userRepository);
+            break;
+// Post Back --------------------------------
+// Comment Back --------------------------------
+            case 'allCommentsBack':
+                //Route: index.php localhost:8000/?page=allCommentsBack&perpage=?
+                $this->backCommentController->allCommentsBackAction($perPage);
+            break;
+
+            case 'deleteCommentBack':
+                //Route: index.php localhost:8000/?page=deleteCommentBack
+                $this->backCommentController->deleteCommentBackAction($idGlobal, $perPage);
+            break;
+
+            case 'valideCommentBack':
+                //Route: index.php localhost:8000/?page=valideCommentBack
+                $this->backCommentController->valideCommentBackAction($idGlobal, $perPage);
+            break;
+// Comment Back --------------------------------
+// Default Page --------------------------------
             default:
-                //Route: index.php || localhost:8000/?page=erro
+                //Route: index.php localhost:8000/?page=erro
                 //On affiche une page d'erreur
                 $this->errorController->notFound();
+// Default Page --------------------------------
         }
     }
 }

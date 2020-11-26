@@ -3,7 +3,6 @@ declare(strict_types=1);
 namespace App\Controller\Frontoffice;
 
 use App\Model\Manager\CommentManager;
-use App\Model\Manager\UserManager;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
 use App\Service\Security\Token;
@@ -25,18 +24,12 @@ final class FrontCommentController
     /**
      * Send a comment in the page post
      */
-    public function sendAction(UserManager $userManager): void
+    public function sendCommentAction(int $idPost): void
     {
-        // $idPost = (int) $this->request->getGet()->getName('id') ?? null;
-        // $this->userSession = ($this->session->getSessionName('user'))? $this->session->getSessionName('user') : $this->session->getSessionName('admin');
-        // $idUser = (int) $userManager->findUserByEmail($this->userSession)->getIdUser();
-        // $this->session->setSession('token', $this->token->createSessionToken());
-        // $this->commentManager->checkComment($idPost, $idUser, $this->request, $this->session, $this->token);
-        // if (array_key_exists('success', $roleMessage)) {
-        //     header("Refresh: 1;url=/?page=userManagement");
-        //     if ($this->adminSession === $admin) {
-        //         $accessControl->IsAdmin($this->session);
-        //     }
-        // }
+        $this->userSession = ($this->session->getSessionName('user'))? $this->session->getSessionName('user') : $this->session->getSessionName('admin');
+        $validation = $this->commentManager->checkComment($idPost, $this->userSession, $this->request, $this->session, $this->token);
+        $this->session->setSession('validation', $validation);
+        header('Location: /?page=post&validation=valide&id='.$idPost);
+        exit();
     }
 }

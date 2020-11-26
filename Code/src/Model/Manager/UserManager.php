@@ -93,24 +93,23 @@ final class UserManager
     /**
      * Check the role of admin and change with the choice
      *
-     * @param Request $request
+     * @param integer $idUserUrl
+     * @param string $action
      * @return array
      */
-    public function checkUrlRole(Request $request): array
+    public function checkUrlRole(int $idUserUrl, string $action): array
     {
-        $roleUrl = $request->getGet()->getName("action");
-        $idUserUrl = (int) $request->getGet()->getName("id");
         $user = $this->userRepository->findByIdUser($idUserUrl);
         $roleUser = $user->getActivated();
-        if ($roleUrl === 'admin' && $roleUser === 0) {
+        if ($action === 'admin' && $roleUser === 0) {
             $this->userRepository->changeRoleUser(1, 'Admin', $idUserUrl);
             $this->success['success'] = 'Le rôle de l\'utilisateur est bien devenu : <<Admin>>';
             return $this->success;
-        } elseif ($roleUrl === 'user' && $roleUser === 1) {
+        } elseif ($action === 'user' && $roleUser === 1) {
             $this->userRepository->changeRoleUser(0, 'Utilisateur', $idUserUrl);
             $this->success['success'] = 'Le rôle de l\'utilisateur est bien devenu : <<Utilisateur>>';
             return $this->success;
-        } elseif (($roleUrl === 'user' && $roleUser === 0) || ($roleUrl === 'admin' && $roleUser === 1)) {
+        } elseif (($action === 'user' && $roleUser === 0) || ($action === 'admin' && $roleUser === 1)) {
             $this->errors['error'] = 'Utilisateur à déjà le rôle demandé, (admin ou utilisateur) !';
         }
         return $this->errors;
@@ -170,7 +169,7 @@ final class UserManager
         } elseif (empty($pseudo) || $userName !== null ||  !preg_match("#[a-zA-Z\pL\']+[\s-]?[a-zA-Z\pL\']*#", $pseudo)) {
             $this->errors['error']["pseudoEmpty"] = 'Le champs pseudo ne doit pas être vide, ni déjà pris, les caractères spéciaux ne sont pas accepté pour ce champs !';
         } elseif (empty($email) || $userEmail !== null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
-            $this->errors['error']["emailEmpty"] = 'Le champs email ne doit pas être vide ou être incorrect';
+            $this->errors['error']["emailEmpty"] = 'Le champs email ne doit pas être pris ou être vide ou être incorrect';
         } elseif ($password !== $passwordConfirmation || empty($password) || empty($passwordConfirmation)) {
             $this->errors['error']["passwordEmpty"] = 'Les champs mot de passe et mot de passe de confirmation ne doivent pas être vide et doivent correspond';
         } elseif (mb_strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password)) {
@@ -207,7 +206,7 @@ final class UserManager
         $passwordConf = $postForm->getName('passwordConfirmation') ?? null;
         if (password_verify($lastPassword, $passwordBdd) === false || empty($lastPassword)) {
             $this->errors['error']["passwordConfEmpty"] = 'Ancien mot de passe incorrect ou absent';
-        } elseif (empty($password) || empty($passwordConf) || $password !== $passwordConf || mb_strlen($password) < 8 || !preg_match('#[a-zA-Z\pL\']+[\s-]?[a-zA-Z\pL\']*#', $password)) {
+        } elseif (empty($password) || empty($passwordConf) || $password !== $passwordConf || mb_strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password)) {
             $this->errors['error']["passwordEmpty"] = 'Nouveau mot de passe ou de confirmation absent, les nouveaux mot de passe doit être identique, et doit contenir 8 caractères ou plus et au format minuscule-majuscule-chiffres-caractères ';
         }
         if ($token->compareTokens($session->getSessionName('token'), $postForm->getName('token')) !== false) {
@@ -234,7 +233,7 @@ final class UserManager
         $post = $request->getPost() ?? null;
         $email = $post->getName('email') ?? null;
         $userName = $post->getName('userName') ?? null;
-        $userSession =  $session->getSessionName('user') ?? $session->getSessionName('admin');
+        $userSession = $this->userSession ?? $this->adminSession;
         $user = $this->userRepository->findByEmail($userSession);
         $emailBdd = null;
         $pseudoBdd = null;

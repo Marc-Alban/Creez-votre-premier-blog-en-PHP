@@ -2,8 +2,8 @@
 declare(strict_types=1);
 namespace App\Model\Manager;
 
-use App\Model\Entity\User;
 use App\Model\Repository\CommentRepository;
+use App\Model\Repository\UserRepository;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
 use App\Service\Security\Token;
@@ -11,11 +11,13 @@ use App\Service\Security\Token;
 final class CommentManager
 {
     private CommentRepository $commentRepository;
+    private UserRepository $userRepository;
     private $errors = null;
     private $success = null;
-    public function __construct(CommentRepository $commentRepository)
+    public function __construct(CommentRepository $commentRepository, UserRepository $userRepository)
     {
         $this->commentRepository = $commentRepository;
+        $this->userRepository = $userRepository;
     }
     /**
      * Comment validation method
@@ -98,16 +100,6 @@ final class CommentManager
         return null;
     }
     /**
-     * Find userName with id
-     *
-     * @param integer $UserId
-     * @return User|null
-     */
-    public function findNameByUserId(int $UserId): ?User
-    {
-        return $this->commentRepository->findUserNameByUserId($UserId);
-    }
-    /**
      * Get comment with the post id
      *
      * @param integer $postId
@@ -121,27 +113,26 @@ final class CommentManager
      * Checking the comment form and returning an error or not if the form is bad
      *
      * @param integer $idComment
-     * @param integer $idUser
+     * @param string $userSession
      * @param Request $request
      * @param Session $session
      * @param Token $token
-     * @return array|null
+     * @return string|null
      */
-    public function checkComment(int $idComment, int $idUser, Request $request, Session $session, Token $token): ?array
+    public function checkComment(int $idComment, string $userSession, Request $request, Session $session, Token $token): ?string
     {
         $post = $request->getPost() ?? null;
         $comment = $post->getName('comment');
+        $user = $this->userRepository->findByEmail($userSession);
         if (empty($comment)) {
-            $this->errors["error"]['messageEmpty'] = "Veuillez mettre un commentaire";
+            return "Veuillez mettre un commentaire";
         }
         if ($token->compareTokens($session->getSessionName('token'), $post->getName('token')) !== false) {
-            $this->errors['error']['formRegister'] = "Formulaire incorrect";
+            return "Formulaire incorrect";
         }
         if (empty($this->errors)) {
-            $this->success["success"]['send'] = 'Votre commentaire est en attente de validation';
-            $this->commentRepository->create($comment, $idUser, $idComment);
-            return $this->success;
+            $this->commentRepository->create($comment, $user->getIdUser(), $idComment);
+            return  'Votre commentaire est en attente de validation';
         }
-        return $this->errors;
     }
 }
