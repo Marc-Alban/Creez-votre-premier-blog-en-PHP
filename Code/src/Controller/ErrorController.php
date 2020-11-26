@@ -18,7 +18,8 @@ final class ErrorController
      */
     public function errorServer(): void
     {
-        $this->view->render('frontoffice', 'error', []);
+        header("HTTP/1.0 500 Internal Server Error");
+        $this->view->render('execption', 'error500', []);
     }
     /**
      * Error, if the page is not found
@@ -27,6 +28,7 @@ final class ErrorController
      */
     public function notFound(): void
     {
-        $this->view->render('frontoffice', '404', []);
+        header("HTTP/1.0 404 Not Found");
+        $this->view->render('execption', 'error404', []);
     }
 }

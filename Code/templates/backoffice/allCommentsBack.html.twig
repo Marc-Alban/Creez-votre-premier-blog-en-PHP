@@ -1,0 +1,87 @@
+{% extends "backoffice/layout.html.twig" %}
+
+{% block title %}Commentaires
+{% endblock %}
+
+{% block content %}
+	<section class="container">
+		<div class="mainbox mx-auto col-md-12 col-md-offset-3 col-sm-6 col-sm-offset-3 mt-5 overflow-auto">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="panel-title text-center">Commentaires Ajoutés</div>
+				</div>
+				<div class="panel-body mt-5 h-10">
+					{% if data.val.sendValide %}
+							<div class="alert alert-primary" role="alert"> {{ data.val.sendValide}}</div>
+					{% elseif data.del.sendDelete %}
+							<div class="alert alert-danger" role="alert"> {{ data.del.sendDelete}}</div>
+					{% endif %}
+					<table class="table table-bordered table-hover table-responsive-sm ">
+						<thead class="thead-dark">
+							<tr>
+								<th scope="col">Commentaires</th>
+								<th scope="col">Articles</th>
+								<th scope="col">Accepter</th>
+								<th scope="col">Refuser</th>
+							</tr>
+						</thead>
+						<tbody>
+						{% for comment in data.paginationComments.comment %}
+							{% if comment.disabled == 1 and comment.signalComment != 1 %}
+							<tr>
+								<td scope="row">{{comment.content}}</td>
+								<td scope="row" ><a href='/?page=post&id={{comment.PostId}}' class="text-dark">{{comment.PostId - 1}}</a></td>
+								<td><a href="/?page=valideCommentBack&perpage={{data.paginationComments.current}}&id={{comment.idComment}}" class="linkHover">Valider</a></td>
+								<td><a href="/?page=deleteCommentBack&perpage={{data.paginationComments.current}}&id={{comment.idComment}}" class="linkHover">Supprimer</a></td>
+							</tr>
+							{% endif %}
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+					{% if data.paginationComments %}
+					{#--------------------------commentPagination-----------------------------#}
+					<nav aria-label="Page navigation mr-auto">
+						<ul class="paginationPost pg-blue">
+							<li class="page-item
+									{% if data.paginationComments.current == 1
+									or data.paginationComments.current <1 %}
+									disabled
+									{% endif %}">
+								<a class="page-link" aria-label="Previous" href="/?page={% if data.paginationComments.current != 1 %} allCommentsBack&perpage={{data.paginationComments.current - 1 }} {% else %}allCommentsBack&perpage={{data.paginationComments.current }} {% endif %}">
+									<span aria-hidden="true">&laquo;</span>
+									<span class="sr-only">Previous</span>
+								</a>
+							</li>
+							{% for i in 1.. data.paginationComments.nbPage %}
+								{% if i == data.paginationComments.current %}
+									<li class="page-item active">
+										<a class="page-link" href="/?page=allCommentsBack&perpage={{ i }}">{{ i }}</a>
+									</li>
+								{% else %}
+									<li class="page-item
+											{% if data.paginationComments.current <1 %}
+											disabled
+											{% endif %}">
+										<a class="page-link" href="/?page=allCommentsBack&perpage={{ i }}">{{ i }}</a>
+									</li>
+								{% endif %}
+							{% endfor %}
+							<li class="page-item
+									{% if data.paginationComments.current ==
+									data.paginationComments.nbPage %}
+									disabled
+									{% endif %}">
+								<a class="page-link" aria-label="Next" href="/?page={% if data.paginationComments.current != data.paginationComments.nbPage %} allCommentsBack&perpage={{data.paginationComments.current + 1 }} {% else %} allCommentsBack&perpage={{data.paginationComments.current }} {% endif %}">
+									<span aria-hidden="true">&raquo;</span>
+									<span class="sr-only">Next</span>
+								</a>
+							</li>
+						</ul>
+					</nav>
+				{% endif %}
+				{#-------------------------END-PAGINATION-----------------------------#}
+			</div>
+		</div>
+	</section>
+{% endblock %}

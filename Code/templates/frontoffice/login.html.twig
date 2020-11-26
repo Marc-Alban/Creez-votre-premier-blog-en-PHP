@@ -4,36 +4,37 @@
 {% endblock %}
 
 {% block content %}
-	<div class="container">
-		<div id="loginbox" class="mainbox col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<div class="panel-title text-center">Connexion</div>
+<section class="container">
+	<div id="loginbox" class="mainbox col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="panel-title text-center">
+					Connexion
 				</div>
-				<div class="panel-body">
-					{% if data.checkConnection %}
-						{#--------------------------ERROR-MESSAGE----------------------------#}
-						{% for errors in data.checkConnection.error %}
-							<div class="alert alert-danger" role="alert">
-								{{errors}}
-							</div>
-						{% endfor %}
-						{#--------------------------ERROR-MESSAGE----------------------------#}
-					{% endif %}
-					{#--------------------------END-CONDITION-DATA----------------------------#}
-					<form method="POST" action="/?page=login&action=connection">
-						<div class="container mb-5">
-								<label for="email">E-mail</label><br>
-								<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email" {% if data.email %} value="{{data.email|raw}}" {% endif %}><br>
-								<label for="password">Password</label><br>
-								<input id="password" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre mot de passe" type="password" name="password"><br>
-							<input type="hidden" name="token" id="token" value="{{session.token}}"/>
-						</div>
+			</div>
+			<div class="panel-body">
+				{% if data.checkConnection %}
+				{#--------------------------ERROR-MESSAGE----------------------------#}
+				{% for errors in data.checkConnection.error %}
+				<div class="alert alert-danger" role="alert">
+				{{errors}}
+				</div>
+				{% endfor %}
+				{#--------------------------ERROR-MESSAGE----------------------------#}
+				{% endif %}
+				{#--------------------------END-CONDITION-DATA----------------------------#}
+				<form method="POST" action="/?page=loginUser">
+					<div class="container mb-5">
+					<label for="email">E-mail</label><br>
+					<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email" {% if data.email %} value="{{data.email|raw}}" {% endif %}><br>
+					<label for="password">Password</label><br>
+					<input id="password" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre mot de passe" type="password" name="password"><br>
+					<input type="hidden" name="token" id="token" value="{{session.token}}"/>
 					</div>
 					<button class="btn btn-primary mx-auto" type="submit">Se connecter</button>
 				</form>
 			</div>
 		</div>
 	</div>
-</div>
+</section>
 {% endblock %}

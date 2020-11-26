@@ -13,8 +13,8 @@ final class UserManager
 {
     private UserRepository $userRepository;
     private AccessControl $accessControl;
-    private $errors = null;
-    private $success = null;
+    private array $errors = [];
+    private array $success = [];
     private Session $session;
     private ?string $userSession;
     private ?string $adminSession;
@@ -27,12 +27,12 @@ final class UserManager
         $this->adminSession =  $this->session->getSessionName('admin');
     }
     /**
-     * Give the name with the idUser
+     * Give the user with the idUser
      *
      * @param integer $idUser
      * @return User|null
      */
-    public function findNameByIdUser(int $idUser): ?User
+    public function findUserByIdUser(int $idUser): ?User
     {
         return $this->userRepository->findByIdUser($idUser);
     }
@@ -74,14 +74,14 @@ final class UserManager
      */
     public function userLogIn(Session $session, Token $token, Request $request): array
     {
-        $userBdd = $this->userRepository->findByEmail($request->getPost()->get('email'));
+        $userBdd = $this->userRepository->findByEmail($request->getPost()->getName('email'));
         $verifUserBdd = $this->accessControl->userAction($session, $request, $userBdd);
-        if (empty($request->getPost()->get('email')) && empty($request->getPost()->get('password'))) {
+        if (empty($request->getPost()->getName('email')) && empty($request->getPost()->getName('password'))) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
         } elseif ($verifUserBdd !== null) {
             $this->errors = $verifUserBdd;
         }
-        if ($token->compareTokens($session->getSessionName('token'), $request->getPost()->get('token')) !== false) {
+        if ($token->compareTokens($session->getSessionName('token'), $request->getPost()->getName('token')) !== false) {
             $this->errors['error']['formRegister'] = "Formulaire incorrect";
         }
         if (empty($this->errors)) {
@@ -89,6 +89,63 @@ final class UserManager
             return $this->success;
         }
         return $this->errors;
+    }
+    /**
+     * Check the role of admin and change with the choice
+     *
+     * @param integer $idUserUrl
+     * @param string $action
+     * @return array
+     */
+    public function checkUrlRole(int $idUserUrl, string $action): array
+    {
+        $user = $this->userRepository->findByIdUser($idUserUrl);
+        $roleUser = $user->getActivated();
+        if ($action === 'admin' && $roleUser === 0) {
+            $this->userRepository->changeRoleUser(1, 'Admin', $idUserUrl);
+            $this->success['success'] = 'Le rôle de l\'utilisateur est bien devenu : <<Admin>>';
+            return $this->success;
+        } elseif ($action === 'user' && $roleUser === 1) {
+            $this->userRepository->changeRoleUser(0, 'Utilisateur', $idUserUrl);
+            $this->success['success'] = 'Le rôle de l\'utilisateur est bien devenu : <<Utilisateur>>';
+            return $this->success;
+        } elseif (($action === 'user' && $roleUser === 0) || ($action === 'admin' && $roleUser === 1)) {
+            $this->errors['error'] = 'Utilisateur à déjà le rôle demandé, (admin ou utilisateur) !';
+        }
+        return $this->errors;
+    }
+    /**
+     * Pagination of the usermanagement page where all the user are located
+     *
+     * @param integer $perpage
+     * @return array
+     */
+    public function paginationUser(int $perpage = 1): array
+    {
+        $minUser = 10;
+        $total = $this->userRepository->count();
+        $nbPage = (int) ceil($total/$minUser);
+        if (ctype_digit($perpage) === true || $perpage <= 0) {
+            $perpage = 1;
+        } elseif ($perpage > $nbPage) {
+            $perpage = $nbPage;
+        }
+        $page =  ($perpage-1) * $minUser;
+        $user = $this->userRepository->findAll($page, $minUser);
+        return [
+            'current' => $perpage,
+            'nbPage' => $nbPage,
+            'user' => $user
+        ];
+    }
+    /**
+     * return count all user in database
+     *
+     * @return integer
+     */
+    public function countAllUser(): int
+    {
+        return $this->userRepository->count();
     }
     /**
      * method to save users or return an error
@@ -101,24 +158,24 @@ final class UserManager
     public function userRegister(Session $session, Token $token, Request $request): array
     {
         $dataPost = $request->getPost() ?? null;
-        $pseudo = $dataPost->get('userName') ?? null;
-        $email = $dataPost->get('email') ?? null;
-        $password =  $dataPost->get('password') ?? null;
-        $passwordConfirmation = $dataPost->get('passwordConfirmation') ?? null;
+        $pseudo = $dataPost->getName('userName') ?? null;
+        $email = $dataPost->getName('email') ?? null;
+        $password =  $dataPost->getName('password') ?? null;
+        $passwordConfirmation = $dataPost->getName('passwordConfirmation') ?? null;
         $userName = $this->userRepository->findByPseudo($pseudo);
         $userEmail = $this->userRepository->findByEmail($email);
         if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-        } elseif (empty($pseudo) || $userName !== null ||  preg_replace("#~[A-Z][a-z]*(-[A-Z][a-z]?)?~#", '', $pseudo)) {
+        } elseif (empty($pseudo) || $userName !== null ||  !preg_match("#[a-zA-Z\pL\']+[\s-]?[a-zA-Z\pL\']*#", $pseudo)) {
             $this->errors['error']["pseudoEmpty"] = 'Le champs pseudo ne doit pas être vide, ni déjà pris, les caractères spéciaux ne sont pas accepté pour ce champs !';
         } elseif (empty($email) || $userEmail !== null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
-            $this->errors['error']["emailEmpty"] = 'Le champs email ne doit pas être vide ou être incorrect';
+            $this->errors['error']["emailEmpty"] = 'Le champs email ne doit pas être pris ou être vide ou être incorrect';
         } elseif ($password !== $passwordConfirmation || empty($password) || empty($passwordConfirmation)) {
             $this->errors['error']["passwordEmpty"] = 'Les champs mot de passe et mot de passe de confirmation ne doivent pas être vide et doivent correspond';
         } elseif (mb_strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password)) {
             $this->errors['error']["passwordEmpty"] = 'Le mot de passe doit avoir des minuscule-majuscule-chiffres-caractères et être supérieur à 8 caractères';
         }
-        if ($token->compareTokens($session->getSessionName('token'), $dataPost->get('token')) !== false) {
+        if ($token->compareTokens($session->getSessionName('token'), $dataPost->getName('token')) !== false) {
             $this->errors['error']['formRegister'] = "Formulaire incorrect";
         }
         if (empty($this->errors)) {
@@ -144,15 +201,15 @@ final class UserManager
         $idUser = $user->getIdUser();
         $passwordBdd = $user->getPasswordUser();
         $postForm = $request->getPost() ?? null;
-        $lastPassword = $postForm->get('lastPassword') ?? null;
-        $password = $postForm->get('password') ?? null;
-        $passwordConf = $postForm->get('passwordConfirmation') ?? null;
+        $lastPassword = $postForm->getName('lastPassword') ?? null;
+        $password = $postForm->getName('password') ?? null;
+        $passwordConf = $postForm->getName('passwordConfirmation') ?? null;
         if (password_verify($lastPassword, $passwordBdd) === false || empty($lastPassword)) {
             $this->errors['error']["passwordConfEmpty"] = 'Ancien mot de passe incorrect ou absent';
         } elseif (empty($password) || empty($passwordConf) || $password !== $passwordConf || mb_strlen($password) < 8 || !preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{6,}$#', $password)) {
             $this->errors['error']["passwordEmpty"] = 'Nouveau mot de passe ou de confirmation absent, les nouveaux mot de passe doit être identique, et doit contenir 8 caractères ou plus et au format minuscule-majuscule-chiffres-caractères ';
         }
-        if ($token->compareTokens($session->getSessionName('token'), $postForm->get('token')) !== false) {
+        if ($token->compareTokens($session->getSessionName('token'), $postForm->getName('token')) !== false) {
             $this->errors['error']['tokenEmpty'] = 'Formulaire incorrect';
         }
         if (empty($this->errors)) {
@@ -174,9 +231,9 @@ final class UserManager
     public function checkForm(Session $session, Request $request, Token $token): array
     {
         $post = $request->getPost() ?? null;
-        $email = $post->get('email') ?? null;
-        $userName = $post->get('userName') ?? null;
-        $userSession =  $session->getSessionName('user') ?? $session->getSessionName('admin');
+        $email = $post->getName('email') ?? null;
+        $userName = $post->getName('userName') ?? null;
+        $userSession = $this->userSession ?? $this->adminSession;
         $user = $this->userRepository->findByEmail($userSession);
         $emailBdd = null;
         $pseudoBdd = null;
@@ -186,12 +243,12 @@ final class UserManager
         }
         if (empty($email) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
             $this->errors['error']["emailEmpty"] = 'L\'adresse e-mail est invalide" ';
-        } elseif (empty($userName) || preg_match('/[][(){}<>\/+"*%&=?#`^\'!$_:;,-]/', $userName)) {
+        } elseif (empty($userName) || !preg_match("#[a-zA-Z\pL\']+[\s-]?[a-zA-Z\pL\']#", $userName)) {
             $this->errors['error']["userEmpty"] = 'Veuillez mettre un nom, caractères spéciaux non accepté';
         } elseif ($userName === $pseudoBdd && $email === $emailBdd) {
             $this->errors['error']['noAction'] = 'Veuillez modifier un champs avant de soumettre !! ';
         }
-        if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
+        if ($token->compareTokens($session->getSessionName('token'), $post->getName('token')) !== false) {
             $this->errors['error']['tokenEmpty'] = 'Formulaire incorrect';
         }
         if (empty($this->errors)) {

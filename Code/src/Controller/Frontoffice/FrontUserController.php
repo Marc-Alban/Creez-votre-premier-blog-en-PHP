@@ -9,7 +9,7 @@ use App\Service\Mail;
 use App\Service\Security\Token;
 use App\View\View;
 
-final class UserController
+final class FrontUserController
 {
     private UserManager $userManager;
     private View $view;
@@ -86,7 +86,7 @@ final class UserController
      *
      * @return void
      */
-    public function registrationAction(): void
+    public function registerUserAction(): void
     {
         if ($this->userSession !== null || $this->adminSession !== null) {
             header('Location: /?page=home');
@@ -94,11 +94,11 @@ final class UserController
         }
         $checkRegister = $this->userManager->userRegister($this->session, $this->token, $this->request);
         if (array_key_exists('success', $checkRegister) === true) {
-            header('Location: /?page=accountManagement');
+            header('Location: /?page=managementAccount');
             exit();
         }
-        $this->pseudo = $this->request->getPost()->get('userName');
-        $this->email = $this->request->getPost()->get('email');
+        $this->pseudo = $this->request->getPost()->getName('userName');
+        $this->email = $this->request->getPost()->getName('email');
         $this->view->render('Frontoffice', 'register', ["checkRegister" => $checkRegister,'email' => $this->email,'pseudo'=>$this->pseudo]);
     }
     /**
@@ -120,7 +120,7 @@ final class UserController
      *
      * @return void
      */
-    public function connectionAction(): void
+    public function loginUserAction(): void
     {
         if ($this->userSession !== null || $this->adminSession !== null) {
             header('Location: /?page=home');
@@ -128,10 +128,15 @@ final class UserController
         }
         $checkConnection = $this->userManager->userLogIn($this->session, $this->token, $this->request);
         if (array_key_exists('success', $checkConnection) === true) {
-            header('Location: /?page=accountManagement');
-            exit();
+            if ($this->session->getSessionName('user') && !$this->session->getSessionName('admin')) {
+                header('Location: /?page=managementAccount');
+                exit();
+            } elseif (!$this->session->getSessionName('user') && $this->session->getSessionName('admin')) {
+                header('Location: /?page=dashboard');
+                exit();
+            }
         }
-        $this->email = $this->request->getPost()->get('email');
+        $this->email = $this->request->getPost()->getName('email');
         $this->view->render('Frontoffice', 'login', ["checkConnection" => $checkConnection,'email' => $this->email]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Model\Repository;
 
 use App\Model\Entity\User;
 use App\Service\Database;
+use PDO;
 
 final class UserRepository
 {
@@ -28,6 +29,36 @@ final class UserRepository
             ':passwordUser' => password_hash($password, PASSWORD_BCRYPT),
         ];
         $req = $this->database->prepare("INSERT INTO user (userName, email, passwordUser) VALUES (:userName, :email, :passwordUser)");
+        $req->execute($tabUser);
+    }
+    /**
+     * Count all user in database
+     *
+     * @return int
+     */
+    public function count(): int
+    {
+        $pdo = $this->database->query("SELECT count(*) FROM user");
+        $pdo->execute();
+        $execute =$pdo->fetch();
+        return (int) $execute[0];
+    }
+    /**
+     * Change the role with the id user
+     *
+     * @param integer $actived
+     * @param string $userType
+     * @param integer $idUser
+     * @return void
+     */
+    public function changeRoleUser(int $actived, string $userType, int $idUser): void
+    {
+        $tabUser = [
+            ':actived' => $actived,
+            ':userType' => $userType,
+            ':idUser' => $idUser,
+        ];
+        $req = $this->database->prepare("UPDATE `user` SET `activated` = :actived,`userType` = :userType WHERE `user`.`idUser` = :idUser");
         $req->execute($tabUser);
     }
     /**
@@ -63,6 +94,26 @@ final class UserRepository
         ];
         $req = $this->database->prepare("UPDATE user SET passwordUser=:passwordUser WHERE idUser = :idUser");
         $req->execute($reqArray);
+    }
+    /**
+     * Get all user for pagination
+     *
+     * @param integer $pageUser
+     * @param integer $perPage
+     * @return array|null
+     */
+    public function findAll(int $pageUser, int $perPage): ?array
+    {
+        $req = null;
+        if (empty($pageUser) && empty($perPage)) {
+            return null;
+        }
+        $req = $this->database->prepare("SELECT * FROM user ORDER BY idUser DESC LIMIT :pageUser, :perPage");
+        $req->bindValue(":pageUser", $pageUser, PDO::PARAM_INT);
+        $req->bindValue(":perPage", $perPage, PDO::PARAM_INT);
+        $req->execute();
+        $pdoStatement = $req->fetchAll();
+        return $pdoStatement;
     }
     /**
      * Allows to retrieve a user with the id

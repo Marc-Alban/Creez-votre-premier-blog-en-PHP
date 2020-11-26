@@ -3,7 +3,6 @@ declare(strict_types=1);
 namespace App\Model\Repository;
 
 use App\Model\Entity\Comment;
-use App\Model\Entity\User;
 use App\Service\Database;
 use PDO;
 
@@ -57,22 +56,24 @@ final class CommentRepository
         return $commentBdd;
     }
     /**
-     * Get all comments
+     * Get all comments for pagination
      *
+     * @param integer $pageComment
+     * @param integer $perPage
      * @return array|null
      */
-    public function findAll(): ?array
+    public function findAll(int $pageComment, int $perPage): ?array
     {
-        $pdo = $this->database->query("SELECT * FROM comment WHERE disabled = 1");
-        $executeIsOk = $pdo->execute();
-        if ($executeIsOk === true) {
-            $commentBdd = $pdo->fetchAll();
-            if ($commentBdd) {
-                return $commentBdd;
-            }
+        $req = null;
+        if (empty($pageComment) && empty($perPage)) {
             return null;
         }
-        return null;
+        $req = $this->database->prepare("SELECT * FROM comment ORDER BY idComment DESC LIMIT :pageComment, :perPage");
+        $req->bindValue(":pageComment", $pageComment, PDO::PARAM_INT);
+        $req->bindValue(":perPage", $perPage, PDO::PARAM_INT);
+        $req->execute();
+        $pdoStatement = $req->fetchAll();
+        return $pdoStatement;
     }
     /**
      * Count all comment and return a integer
@@ -96,22 +97,16 @@ final class CommentRepository
         return null;
     }
     /**
-     * Return the name of user wher the UserId is passed
+     * Count all comment in database
      *
-     * @param integer $userId
-     * @return User|null
+     * @return int
      */
-    public function findUserNameByUserId(int $userId): ?User
+    public function total(): int
     {
-        $req = [
-            ':UserId' => $userId
-        ];
-        $pdo = $this->database->prepare("SELECT userName FROM user WHERE idUser = :UserId");
-        $executeIsOk = $pdo->execute($req);
-        if ($executeIsOk === false) {
-            return null;
-        }
-        return $pdo->fetchObject(User::class);
+        $pdo = $this->database->query("SELECT count(*) FROM comment");
+        $pdo->execute();
+        $execute =$pdo->fetch();
+        return (int) $execute[0];
     }
     /**
      * Allows you to validate a comment

@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block content %}
-	<div class="container">
+	<section class="container">
 		<div  class="mainbox mx-auto col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 mt-5">
 			<div class="panel panel-default">
 				<div class="panel-heading">
@@ -34,7 +34,7 @@
 					<a href="/?page=password"><button class="btn btn-primary mx-auto mdpBtn">Changer le mot de passe</button></a>
 					<hr>
 					<p class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i>Important<i class="fas fa-exclamation-triangle"></i><br> Pour plus de sécurité le pseudo est rataché à l'adresse e-mail, donc si vous changez le pseudo il faut changer l'email obligatoirement !</p>
-					<form method="POST" action="/?page=accountManagement&action=sendDatasUser">
+					<form method="POST" action="/?page=managementUpdateAccount">
 						<input id="userName" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre Pseudo" type="text" name="userName" value="{{data.user.userName|raw}}"><br>
 						<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email" value="{{data.user.email|raw}}"><br>
 						<input type="hidden" name="token" id="token" value="{{session.token}}"/>
@@ -43,5 +43,5 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</section>
 {% endblock %}

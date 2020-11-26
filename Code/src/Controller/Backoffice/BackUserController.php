@@ -7,10 +7,11 @@ use App\Model\Manager\PostManager;
 use App\Model\Manager\UserManager;
 use App\Service\Http\Request;
 use App\Service\Http\Session;
+use App\Service\Security\AccessControl;
 use App\Service\Security\Token;
 use App\View\View;
 
-final class UserController
+final class BackUserController
 {
     private UserManager $userManager;
     private View $view;
@@ -30,11 +31,11 @@ final class UserController
         $this->adminSession =  $this->session->getSessionName('admin');
     }
     /**
-     * Display the accountManagement page
+     * Display the managementAccount page
      *
      * @return void
      */
-    public function accountManagementAction(): void
+    public function managementAccountAction(): void
     {
         $this->session->setSession('token', $this->token->createSessionToken());
         if (($this->userSession === null && $this->adminSession === null) || ($this->userSession !== null && $this->adminSession !== null)) {
@@ -46,14 +47,14 @@ final class UserController
             header('Location: /?page=login');
             exit();
         }
-        $this->view->render('backoffice', 'accountManagement', ['user'=>$user]);
+        $this->view->render('backoffice', 'managementAccount', ['user'=>$user]);
     }
     /**
      * method to modify a user
      *
      * @return void
      */
-    public function updateUserAction(): void
+    public function managementUpdateAccountAction(): void
     {
         if (($this->userSession === null && $this->adminSession === null) || ($this->userSession !== null && $this->adminSession !== null)) {
             header('Location: /?page=login');
@@ -61,7 +62,7 @@ final class UserController
         }
         $verifUser = $this->userManager->checkForm($this->session, $this->request, $this->token);
         $user = $this->userManager->findUserBySession();
-        $this->view->render('backoffice', 'accountManagement', ['verif' => $verifUser,'user'=> $user]);
+        $this->view->render('backoffice', 'managementAccount', ['verif' => $verifUser,'user'=> $user]);
     }
     /**
      * Display the password page
@@ -82,18 +83,21 @@ final class UserController
      *
      * @return void
      */
-    public function updatePasswordAction(): void
+    public function passwordUpdateAction(): void
     {
         if (($this->userSession === null && $this->adminSession === null) || ($this->userSession !== null && $this->adminSession !== null)) {
             header('Location: /?page=login');
             exit();
         }
-        $verifPassBdd = $this->userManager->checkPassword($this->session, $this->request, $this->token, $this->userSession);
+        $userSession = $this->userSession ?? $this->adminSession ;
+        $verifPassBdd = $this->userManager->checkPassword($this->session, $this->request, $this->token, $userSession);
         $this->view->render('backoffice', 'password', ['verif' => $verifPassBdd]);
     }
     /**
      * Display the dashboard page
      *
+     * @param CommentManager $commentManager
+     * @param PostManager $postManager
      * @return void
      */
     public function dashboardAction(CommentManager $commentManager, PostManager $postManager): void
@@ -106,15 +110,53 @@ final class UserController
         $commentDisable = $commentManager->countAllCommentsDisabled();
         $comment = $commentManager->countAllComments();
         $post = $postManager->countAllPost();
-        $this->view->render('backoffice', 'dashboard', ["commentDisable"=>$commentDisable,"comment"=>$comment,"post"=>$post]);
+        $user = $this->userManager->countAllUser();
+        $this->view->render('backoffice', 'dashboard', ["commentDisable"=>$commentDisable,"comment"=>$comment,"post"=>$post,'user'=>$user]);
     }
-
-    public function userManagementAction(): void
+    /**
+     *  Display the userManagement page
+     *
+     * @param integer $perpage
+     * @return void
+     */
+    public function userManagementAction(int $perpage): void
     {
         if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
             header('Location: /?page=login');
             exit();
+        } elseif (empty($this->request->getGet()->getName('perpage'))) {
+            header('Location: /?page=userManagement&perpage=1');
+            exit();
         }
-        $this->view->render('backoffice', 'userManagement', []);
+        $paginationUser =  $this->userManager->paginationUser($perpage) ?? null;
+        $this->view->render('backoffice', 'userManagement', ['paginationUser'=>$paginationUser]);
+    }
+    
+    /**
+     *  Action for check role and change this
+     *
+     * @param AccessControl $accessControl
+     * @param integer $perpage
+     * @return void
+     */
+    public function userManagementRoleAction(AccessControl $accessControl, int $idUserUrl, int $perpage, string $action): void
+    {
+        if (($this->userSession === null && $this->adminSession === null) || $this->userSession !== null) {
+            header('Location: /?page=login');
+            exit();
+        } elseif (empty($this->request->getGet()->getName('perpage'))) {
+            header('Location: /?page=userManagement&perpage=1');
+            exit();
+        }
+        $paginationUser =  $this->userManager->paginationUser($perpage);
+        $roleMessage = $this->userManager->checkUrlRole($idUserUrl, $action);
+        $admin = $this->userManager->findUserByIdUser($idUserUrl)->getEmail();
+        if (array_key_exists('success', $roleMessage)) {
+            header("Refresh: 1;url=/?page=userManagement");
+            if ($this->adminSession === $admin) {
+                $accessControl->IsAdmin($this->session);
+            }
+        }
+        $this->view->render('backoffice', 'userManagement', ['paginationUser'=>$paginationUser,'roleMessage'=>$roleMessage]);
     }
 }

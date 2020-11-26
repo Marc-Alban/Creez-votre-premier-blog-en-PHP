@@ -27,8 +27,8 @@ final class Mail
     {
         $entete  = 'MIME-Version: 1.0' . "\r\n";
         $entete .= 'Content-type: text/html; charset=utf-8' . "\r\n";
-        $entete .= 'From: ' . $this->request->getPost()->get('mail') . "\r\n";
-        $message = $this->view->renderMail(['name'=>$this->request->getPost()->get('name'),'lastName'=>$this->request->getPost()->get('lastName'),'mail'=>$this->request->getPost()->get('mail'),'message'=>$this->request->getPost()->get('message')]);
+        $entete .= 'From: ' . $this->request->getPost()->getName('mail') . "\r\n";
+        $message = $this->view->renderMail(['name'=>$this->request->getPost()->getName('name'),'lastName'=>$this->request->getPost()->getName('lastName'),'mail'=>$this->request->getPost()->getName('mail'),'message'=>$this->request->getPost()->getName('message')]);
         mail('millet.marcalban@gmail.com', 'E-mail envoyé du site DevDark', $message, $entete);
     }
     /**
@@ -42,10 +42,10 @@ final class Mail
     public function checkMail(Session $session, Token $token, Request $request): ?array
     {
         $post = $request->getPost() ?? null;
-        $mail = $post->get('mail') ?? null;
-        $name = $post->get('name') ?? null;
-        $lastName = $post->get('lastName') ?? null;
-        $message = $post->get('message') ?? null;
+        $mail = $post->getName('mail') ?? null;
+        $name = $post->getName('name') ?? null;
+        $lastName = $post->getName('lastName') ?? null;
+        $message = $post->getName('message') ?? null;
         if (empty($mail) && empty($message) && empty($name) && empty($lastName)) {
             $this->errors['error']['allEmpty'] = "Veuillez remplir le formulaire";
         } elseif (empty($name)) {
@@ -57,7 +57,7 @@ final class Mail
         } elseif (empty($message)) {
             $this->errors['error']['messageEmpty'] = "Veuillez mettre un message";
         }
-        if ($token->compareTokens($session->getSessionName('token'), $post->get('token')) !== false) {
+        if ($token->compareTokens($session->getSessionName('token'), $post->getName('token')) !== false) {
             $this->errors['error']['tokenEmpty'] = 'Formulaire incorrect';
         }
         if (empty($this->errors)) {

@@ -20,8 +20,8 @@ class AccessControl
     public function userAction(Session $session, Request $request, ?User $userbdd): ?array
     {
         $dataPost = $request->getPost();
-        $email = $dataPost->get('email') ?? null;
-        $password = $dataPost->get('password') ?? null;
+        $email = $dataPost->getName('email') ?? null;
+        $password = $dataPost->getName('password') ?? null;
         $emailBdd = null;
         $passwordBdd = null;
         if ($userbdd !== null) {
@@ -40,5 +40,17 @@ class AccessControl
             return null;
         }
         return $this->errors;
+    }
+    /**
+     * Get the admin session and reset this, after create a user session
+     *
+     * @param Session $session
+     * @return void
+     */
+    public function IsAdmin(Session $session): void
+    {
+        $admin = $session->getSessionName('admin');
+        $session->setSession('user', $admin);
+        $session->sessionDestroyName('admin');
     }
 }

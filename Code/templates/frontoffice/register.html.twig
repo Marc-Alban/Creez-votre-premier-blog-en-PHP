@@ -3,7 +3,7 @@
 {% block title %}Inscription
 {% endblock %}
 {% block content %}
-	<div class="container">
+	<section class="container">
 		<div id="registerbox" class="mainbox col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3">
 			<div class="panel panel-default">
 				<div class="panel-heading">
@@ -23,7 +23,7 @@
 						{% endfor %}
 					{% endif %}
 					<p class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i> Attention<i class="fas fa-exclamation-triangle"></i> <br> Bien choisir votre pseudo ! Il sera relié à votre email.<br>Exemple: Si vous voulez changez le pseudo, il faudra changer l'email obligatoirement !!</p>
-					<form method="POST" action="/?page=register&action=registration">
+					<form method="POST" action="/?page=registerUser">
 						<label for="userName">Pseudo</label><br>
 						<input id="userName" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre Pseudo" type="text" name="userName" {% if data.pseudo %} value="{{data.pseudo|raw}}" {% endif %}><br>
 						<label for="email">E-mail</label><br>
@@ -38,6 +38,6 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</section>
 {% endblock %}
 
