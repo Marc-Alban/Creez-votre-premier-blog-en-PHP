@@ -62,6 +62,10 @@ final class BackUserController
         }
         $verifUser = $this->userManager->checkForm($this->session, $this->request, $this->token);
         $user = $this->userManager->findUserBySession();
+        if ($user === null) {
+            header('Location: /?page=managementAccount');
+            exit();
+        }
         $this->view->render('backoffice', 'managementAccount', ['verif' => $verifUser,'user'=> $user]);
     }
     /**

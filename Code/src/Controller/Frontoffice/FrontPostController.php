@@ -32,11 +32,9 @@ final class FrontPostController
         $user = null;
         $defaultPost = null;
         $post = $this->postManager->findPostByIdPost($idPost);
-        if ($session->getSessionName('validation') !== null) {
-            header("Refresh: 1;url=/?page=post&id=".$idPost);
-            if ($Get->getName('validation') === 'valide') {
-                $session->sessionDestroyName('validation');
-            }
+        if ($session->getSessionName('validation') !== null && $Get->getName('validation') === 'valide') {
+            header("Refresh: 1;url=/?page=post&id=".$idPost."&#message");
+            $session->sessionDestroyName("validation");
         }
         if ($post !== null) {
             $user = $userManager->findUserByIdUser($post->getUserId());

@@ -29,7 +29,7 @@ final class FrontCommentController
         $this->userSession = ($this->session->getSessionName('user'))? $this->session->getSessionName('user') : $this->session->getSessionName('admin');
         $validation = $this->commentManager->checkComment($idPost, $this->userSession, $this->request, $this->session, $this->token);
         $this->session->setSession('validation', $validation);
-        header('Location: /?page=post&validation=valide&id='.$idPost);
+        header('Location: /?page=post&validation=valide&id='.$idPost.'&#message');
         exit();
     }
 }
