@@ -25,6 +25,6 @@ host: 'mysql: host = DBAddress;<br>
 dbname: dbname = DBName; (default mom = blog);<br>
 login: 'userDB';<br>
 password: passwordDB ';<br>
-<<Important>>: Please fill in all the fields with your information in the same way as that provided in the example!<br>
+<Important>: Please fill in all the fields with your information in the same way as that provided in the example!<br>
 Note: Your version of Php must be php 7.4<br>
 "Composer" is used as an autoload, as well as the "Whoops" package for displaying errors.<br>
