@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : jeu. 26 nov. 2020 à 10:56
+-- Généré le : mar. 01 déc. 2020 à 08:25
 -- Version du serveur :  8.0.21
 -- Version de PHP : 7.4.9
 
@@ -38,7 +38,15 @@ CREATE TABLE IF NOT EXISTS `comment` (
   PRIMARY KEY (`idComment`),
   KEY `fk_Comment_User1_idx` (`UserId`),
   KEY `fk_Comment_Post1_idx` (`PostId`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `comment`
+--
+
+INSERT INTO `comment` (`idComment`, `content`, `disabled`, `UserId`, `PostId`, `dateCreation`) VALUES
+(24, 'Whoua trop cool le xss &lt;p&gt;tes ^^ &lt;h2&gt;gg&lt;/h2&gt;t&lt;/p&gt;', 1, 12, 24, '2020-12-01 09:08:08'),
+(26, '--/-*/-*&#039;&quot;(&quot;&#039;', 1, 12, 24, '2020-12-01 09:08:38');
 
 -- --------------------------------------------------------
 
@@ -58,14 +66,14 @@ CREATE TABLE IF NOT EXISTS `post` (
   `UserId` int DEFAULT NULL,
   PRIMARY KEY (`idPost`),
   KEY `fk_Post_User_idx` (`UserId`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `post`
 --
 
 INSERT INTO `post` (`idPost`, `title`, `description`, `chapo`, `imagePost`, `datePost`, `statuPost`, `UserId`) VALUES
-(21, '1er article de la saison', 'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of &quot;de Finibus Bonorum et Malorum&quot; (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, &quot;Lorem ipsum dolor sit amet..&quot;, comes from a line in section 1.10.32.\r\n\r\nThe standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from &quot;de Finibus Bonorum et Malorum&quot; by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.', 'Une sortie &agrave; Epinal tr&egrave;s sympas', '1.jpg', '2020-11-16', 1, 5);
+(24, 'je suis un article', 'premiere description \r\nAvec des &lt;h1&gt;pour tester le xss&lt;/h1&gt;', 'premier article', '1.png', '2020-12-01', 1, 12);
 
 -- --------------------------------------------------------
 
@@ -83,15 +91,16 @@ CREATE TABLE IF NOT EXISTS `user` (
   `userType` enum('Admin','Utilisateur') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Utilisateur',
   `dateCreation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idUser`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `user`
 --
 
 INSERT INTO `user` (`idUser`, `userName`, `email`, `passwordUser`, `activated`, `userType`, `dateCreation`) VALUES
-(5, 'tata76', 'tat@live.fr', '$2y$10$5oRQ/LWO.p7YVLK8YfaFOOkkdSahd4lwhKHZ6ARjNvTp3BbAXWIhm', 1, 'Admin', '2020-11-11 14:21:39'),
-(9, 'Jean-paul', 'marc@712live.fr', '$2y$10$EXAcTxmEKfMrzIOj/Ftj5uYlrwNvnZE2NQSBAm6niTIzf1UAojgEK', 1, 'Admin', '2020-11-26 10:21:02');
+(10, 'Élodie', 'tat@live.fr', '$2y$10$D9OHhPa.V5WU1E8hFgtyVe2z0RWH5sDJWYxWPFG6BpLA2KU4CT9Eu', 0, 'Utilisateur', '2020-11-30 11:10:37'),
+(11, 'jean-marc', 'marc76@live.fr', '$2y$10$Mk3sePZJCD9DM.xyf45YAOdok7zDWSbIEfeSWsDX2JwnXWLhVU0ni', 1, 'Admin', '2020-11-30 14:49:34'),
+(12, 'Toto76', 'test76@live.fr', '$2y$10$P9gCi8q56a6v4qc1Lv1p1OxnAFIgUs4ppIxDUXjcCkeGnOObPXMiW', 1, 'Admin', '2020-12-01 08:09:04');
 
 --
 -- Contraintes pour les tables déchargées
