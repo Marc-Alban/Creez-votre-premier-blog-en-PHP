@@ -11,10 +11,14 @@
 					<div class="panel-title text-center">Gestion des utilisateurs</div>
 				</div>
 				<div class="panel-body mt-5 h-10">
-					{% if data.roleMessage.success %}
-							<div class="alert alert-primary" role="alert"> {{  data.roleMessage.success }}</div>
-					{% elseif data.roleMessage.error %}
-							<div class="alert alert-danger" role="alert"> {{  data.roleMessage.error }}</div>
+					{% if data.success %}
+						<div class="alert alert-primary" role="alert">
+							{{data.success}}
+						</div>
+					{% elseif data.error %}
+							<div class="alert alert-danger" role="alert">
+								{{data.error}}
+							</div>
 					{% endif %}
 					<table class="table table-bordered table-hover table-responsive-sm ">
 						<thead class="thead-dark">

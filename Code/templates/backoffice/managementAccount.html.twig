@@ -10,26 +10,15 @@
 				<div class="panel-heading">
 					<div class="panel-title text-center">Gestion de compte</div>
 				</div>
-				<div class="panel-body mt-5">
-				{#--------------------------CONDITION-DATA----------------------------#}
-					{% if data.verif.success %}
-						{#--------------------------SUCCES-MESSAGE----------------------------#}
-						{% for succe in data.verif.success %}
-							<div class="alert alert-primary" role="alert"> {{succe}}
+					<div class="panel-body mt-5">
+					{% if data.success %}
+						<div class="alert alert-primary" role="alert">
+							{{data.success}}
 						</div>
-					{% endfor %}
-						{#-------------------------END-CONDITION-DATA----------------------------#}
-						{#-------------------------END-SUCCES-MESSAGE----------------------------#}
-					{% endif %}
-					{#--------------------------CONDITION-DATA----------------------------#}
-					{% if data.verif.error %}
-						{#--------------------------ERROR-MESSAGE----------------------------#}
-						{% for errors in data.verif.error %}
+					{% elseif data.error %}
 							<div class="alert alert-danger" role="alert">
-								{{errors}}
+								{{data.error}}
 							</div>
-						{% endfor %}
-						{#--------------------------ERROR-MESSAGE----------------------------#}
 					{% endif %}
 					<a href="/?page=password"><button class="btn btn-primary mx-auto mdpBtn">Changer le mot de passe</button></a>
 					<hr>

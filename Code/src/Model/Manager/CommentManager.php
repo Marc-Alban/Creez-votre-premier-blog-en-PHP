@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace App\Model\Manager;
 
+use App\Model\Entity\Comment;
 use App\Model\Repository\CommentRepository;
 use App\Model\Repository\UserRepository;
 use App\Service\Http\Request;
@@ -107,7 +108,8 @@ final class CommentManager
      */
     public function findCommentByPostId(int $postId): ?array
     {
-        return  $this->commentRepository->findByPostId($postId);
+        $comments = $this->commentRepository->findByPostId($postId);
+        return $comments;
     }
     /**
      * Checking the comment form and returning an error or not if the form is bad
@@ -117,22 +119,22 @@ final class CommentManager
      * @param Request $request
      * @param Session $session
      * @param Token $token
-     * @return string|null
+     * @return void
      */
-    public function checkComment(int $idComment, string $userSession, Request $request, Session $session, Token $token): ?string
+    public function checkComment(int $idComment, string $userSession, Request $request, Session $session, Token $token): void
     {
-        $post = $request->getPost() ?? null;
+        $post = $request->getPost();
         $comment = $post->getName('comment');
         $user = $this->userRepository->findByEmail($userSession);
         if (empty($comment)) {
-            return "Veuillez mettre un commentaire";
+            $session->setSession('error', "Veuillez mettre un commentaire") ;
         }
         if ($token->compareTokens($session->getSessionName('token'), $post->getName('token')) !== false) {
-            return "Formulaire incorrect";
+            $session->setSession('error', "Formulaire incorrect") ;
         }
-        if (empty($this->errors)) {
+        if (empty($session->getSessionName('error'))) {
             $this->commentRepository->create($comment, $user->getIdUser(), $idComment);
-            return  'Votre commentaire est en attente de validation';
+            $session->setSession('success', "Votre commentaire est en attente de validation");
         }
     }
 }

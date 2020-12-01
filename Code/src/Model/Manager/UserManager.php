@@ -95,24 +95,21 @@ final class UserManager
      *
      * @param integer $idUserUrl
      * @param string $action
-     * @return array
+     * @return void
      */
-    public function checkUrlRole(int $idUserUrl, string $action): array
+    public function checkUrlRole(int $idUserUrl, string $action): void
     {
         $user = $this->userRepository->findByIdUser($idUserUrl);
         $roleUser = $user->getActivated();
         if ($action === 'admin' && $roleUser === 0) {
             $this->userRepository->changeRoleUser(1, 'Admin', $idUserUrl);
-            $this->success['success'] = 'Le rôle de l\'utilisateur est bien devenu : <<Admin>>';
-            return $this->success;
+            $this->session->setSession('success', 'Le rôle de l\'utilisateur est bien devenu : <<Admin>>');
         } elseif ($action === 'user' && $roleUser === 1) {
             $this->userRepository->changeRoleUser(0, 'Utilisateur', $idUserUrl);
-            $this->success['success'] = 'Le rôle de l\'utilisateur est bien devenu : <<Utilisateur>>';
-            return $this->success;
+            $this->session->setSession('success', 'Le rôle de l\'utilisateur est bien devenu : <<Utilisateur>>');
         } elseif (($action === 'user' && $roleUser === 0) || ($action === 'admin' && $roleUser === 1)) {
-            $this->errors['error'] = 'Utilisateur à déjà le rôle demandé, (admin ou utilisateur) !';
+            $this->session->setSession('error', 'Utilisateur à déjà le rôle demandé, (admin ou utilisateur) !');
         }
-        return $this->errors;
     }
     /**
      * Pagination of the usermanagement page where all the user are located
@@ -226,9 +223,9 @@ final class UserManager
      * @param Session $session
      * @param Request $request
      * @param Token $token
-     * @return array
+     * @return void
      */
-    public function checkForm(Session $session, Request $request, Token $token): array
+    public function checkForm(Session $session, Request $request, Token $token): void
     {
         $post = $request->getPost() ?? null;
         $email = $post->getName('email') ?? null;
@@ -244,27 +241,25 @@ final class UserManager
             $pseudoBdd = $user->getUserName();
         }
         if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $this->errors['error']["emailEmpty"] = 'L\'adresse e-mail est invalide ou est déjà prise ';
+            $session->setSession('error', 'L\'adresse e-mail est invalide ou est déjà prise ');
         } elseif (empty($userName) || !preg_match("#[a-zA-Z0-9._\pL-]{3,20}#", $userName)) {
-            $this->errors['error']["userEmpty"] = 'Veuillez mettre un nom, caractères spéciaux non accepté';
+            $session->setSession('error', 'Veuillez mettre un nom, caractères spéciaux non accepté');
         } elseif ($email === $emailBdd && $userName === $pseudoBdd) {
-            $this->errors['error']["same"] = 'Veuiller changer les champs avant de soumettre';
+            $session->setSession('error', 'Veuiller changer les champs avant de soumettre');
         } elseif ($mailAllBdd !== null || $userAllBdd !== null) {
-            $this->errors['error']["wrong"] = 'Identifiant déjà pris';
+            $session->setSession('error', 'Identifiant déjà pris');
         }
         if ($token->compareTokens($session->getSessionName('token'), $post->getName('token')) !== false) {
-            $this->errors['error']['tokenEmpty'] = 'Formulaire incorrect';
+            $session->setSession('error', 'Formulaire incorrect');
         }
-        if (empty($this->errors)) {
-            $this->success['success']['send'] = 'Utilisateur bien mis à jour:';
+        if (empty($session->getSessionName('error'))) {
+            $session->setSession('success', 'Utilisateur bien mis à jour');
             $this->userRepository->update($email, $userName, $user->getIdUser());
             if ($user->getActivated() === 0) {
                 $session->setSession('user', $email);
             } elseif ($user->getActivated() === 1) {
                 $session->setSession('admin', $email);
             }
-            return $this->success;
         }
-        return $this->errors;
     }
 }

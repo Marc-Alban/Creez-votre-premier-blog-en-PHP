@@ -62,9 +62,13 @@
 						{% if session.user or session.admin %}
 							<div class="container">
 								<div class="raw formComment">
-									{% if session.validation %}
-											<div class="alert alert-warning" id="ancre" role="alert">
-												{{session.validation}}
+									{% if data.error %}
+											<div class="alert alert-danger" id="ancre" role="alert">
+												{{data.error}}
+											</div>
+									{% elseif data.success %}
+											<div class="alert alert-primary" id="ancre" role="alert">
+												{{data.success}}
 											</div>
 									{% endif %}
 									<h3 class="commentTitle mt-4">Laisser un commentaires:</i>
@@ -103,7 +107,7 @@
 											</div>
 											<div class="d-flex bd-highlight">
 												<p class="attribution p-2 bd-highlight">de
-													{# {{data.comments.user.userName}} #}
+													{{text.userName|raw}}
 													à
 													{{text.dateCreation|date('H\\hi\\m')}}</p>
 											</div>
