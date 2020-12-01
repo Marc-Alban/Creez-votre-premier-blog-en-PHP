@@ -40,7 +40,7 @@ final class FrontPostController
         $comments = $comment->findCommentByPostId($idPost);
         $error = $session->getMessage('error');
         $success = $session->getMessage('success');
-        $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, 'comments' => $comments,'defaultPost'=> $defaultPost,'error'=> $error,'success'=> $success]);
+        $this->view->render('frontoffice', 'post', ["post" => $post, "user" => $user, 'comments' => $comments,'defaultPost'=> $defaultPost,'error'=> $error,'success'=> $success]);
     }
     /**
      * Display the blog page
@@ -56,7 +56,7 @@ final class FrontPostController
         if (empty($paginationPost['post'])) {
             $defaultPost = $this->defaultPost();
         }
-        $this->view->render('Frontoffice', 'blog', ['paginationPost' => $paginationPost, 'defaultPost'=> $defaultPost]);
+        $this->view->render('frontoffice', 'blog', ['paginationPost' => $paginationPost, 'defaultPost'=> $defaultPost]);
     }
     /**
      * Display default post

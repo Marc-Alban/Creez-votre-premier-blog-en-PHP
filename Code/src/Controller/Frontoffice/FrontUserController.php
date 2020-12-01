@@ -38,7 +38,7 @@ final class FrontUserController
     public function homeAction(): void
     {
         $this->session->setSession('token', $this->token->createSessionToken());
-        $this->view->render('Frontoffice', 'home', []);
+        $this->view->render('frontoffice', 'home', []);
     }
     /**
      * method to send an email and display the home page
@@ -53,7 +53,7 @@ final class FrontUserController
         if (array_key_exists("send", $mail)) {
             $mailClass->sendMail();
         }
-        $this->view->render('Frontoffice', 'home', ['mail'=>$mail]);
+        $this->view->render('frontoffice', 'home', ['mail'=>$mail]);
     }
     /**
      * method to disconnect the user from his account
@@ -79,7 +79,7 @@ final class FrontUserController
             exit();
         }
         
-        $this->view->render('Frontoffice', 'register', []);
+        $this->view->render('frontoffice', 'register', []);
     }
     /**
      * method to save the user for his account
@@ -99,7 +99,7 @@ final class FrontUserController
         }
         $this->pseudo = $this->request->getPost()->getName('userName');
         $this->email = $this->request->getPost()->getName('email');
-        $this->view->render('Frontoffice', 'register', ["checkRegister" => $checkRegister,'email' => $this->email,'pseudo'=>$this->pseudo]);
+        $this->view->render('frontoffice', 'register', ["checkRegister" => $checkRegister,'email' => $this->email,'pseudo'=>$this->pseudo]);
     }
     /**
      * display the login page
@@ -113,7 +113,7 @@ final class FrontUserController
             header('Location: /?page=home');
             exit();
         }
-        $this->view->render('Frontoffice', 'login', []);
+        $this->view->render('frontoffice', 'login', []);
     }
     /**
      * method to connect a user
@@ -137,6 +137,6 @@ final class FrontUserController
             }
         }
         $this->email = $this->request->getPost()->getName('email');
-        $this->view->render('Frontoffice', 'login', ["checkConnection" => $checkConnection,'email' => $this->email]);
+        $this->view->render('frontoffice', 'login', ["checkConnection" => $checkConnection,'email' => $this->email]);
     }
 }
