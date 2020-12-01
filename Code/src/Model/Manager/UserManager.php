@@ -163,7 +163,7 @@ final class UserManager
         $userEmail = $this->userRepository->findByEmail($email);
         if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-        } elseif (empty($pseudo) || $userName !== null || !preg_match("#[a-zA-Z0-9._\p{L}\P{L}-]{1,20}#", $pseudo)) {
+        } elseif (empty($pseudo) || $userName !== null || !preg_match("#[a-zA-Z0-9._\p{L}-]{1,20}#", $pseudo)) {
             $this->errors['error']["pseudoEmpty"] = 'Le champs pseudo ne doit pas être vide, ni déjà pris, les caractères spéciaux ne sont pas accepté pour ce champs !';
         } elseif (empty($email) || $userEmail !== null || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $this->errors['error']["emailEmpty"] = 'Le champs email ne doit pas être pris ou être vide ou être incorrect';
@@ -242,7 +242,7 @@ final class UserManager
         }
         if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $session->setSession('error', 'L\'adresse e-mail est invalide ou est déjà prise ');
-        } elseif (empty($userName) || !preg_match("#[a-zA-Z0-9._\p{L}\P{L}-]{1,20}#", $userName)) {
+        } elseif (empty($userName) || !preg_match("#[a-zA-Z0-9._\p{L}-]{1,20}#", $userName)) {
             $session->setSession('error', 'Veuillez mettre un nom, caractères spéciaux non accepté');
         } elseif ($email === $emailBdd && $userName === $pseudoBdd) {
             $session->setSession('error', 'Veuiller changer les champs avant de soumettre');
