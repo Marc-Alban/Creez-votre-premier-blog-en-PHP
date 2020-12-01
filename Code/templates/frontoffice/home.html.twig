@@ -13,39 +13,39 @@
 		</div>
 	</header>
 	<main>	
-	<section class="signup-section" id="signup">
-		<div class="container">
-			<div class="row" id="mail">
-				<div class="col-md-10 col-lg-8 mx-auto text-center">
-					<i class="far fa-paper-plane fa-2x mb-2 text-white"></i>
-					<h2 class="text-white mb-5">Contactez-moi !</h2>
-				{% if data.mail.send %}
-					<div class="alert alert-primary" role="alert">
-						{{data.mail.send}}
+		<section class="signup-section" id="signup">
+			<div class="container">
+				<div class="row" id="mail">
+					<div class="col-md-10 col-lg-8 mx-auto text-center">
+							<i class="far fa-paper-plane fa-2x mb-2 text-white"></i>
+							<h2 class="text-white mb-5">Contactez-moi !</h2>
+						{% if data.mail.send %}
+							<div class="alert alert-primary" role="alert">
+								{{data.mail.send}}
+							</div>
+						{% endif %}
+						{% if data.mail.error %}
+							{% for errors in data.mail.error %}
+								<div class="alert alert-danger" role="alert">
+									{{errors}}
+								</div>
+							{% endfor %}
+						{% endif %}
+						<form method="post" action="/?page=sendMail" class="form-inline d-flex">
+								<label for="name">Nom</label>
+								<input id="name" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre nom" type="text" name="name">
+								<label for="lastName">Prenom</label>
+								<input id="lastName" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre prénom" type="text" name="lastName">
+								<label for="email">Email</label>
+								<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="email" name="mail">
+								<label for="message">Message</label>
+								<textarea id="message" class="flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" placeholder="Entrer votre Message" name="message"></textarea>
+							<input type="hidden" name="token" id="token" value="{{session.token}}">
+							<button type="submit" name="submit" class="btn btn-primary mx-auto">Envoyer</button>
+						</form>
 					</div>
-				{% endif %}
-				{% if data.mail.error %}
-					{% for errors in data.mail.error %}
-						<div class="alert alert-danger" role="alert">
-							{{errors}}
-						</div>
-					{% endfor %}
-				{% endif %}
-				<form method="post" action="/?page=sendMail&#mail" class="form-inline d-flex">
-						<label for="name">Nom</label>
-						<input id="name" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre nom" type="text" name="name">
-						<label for="lastName">Prenom</label>
-						<input id="lastName" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre prénom" type="text" name="lastName">
-						<label for="email">Email</label>
-						<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="email" name="mail">
-						<label for="message">Message</label>
-						<textarea id="message" class="flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" placeholder="Entrer votre Message" name="message"></textarea>
-					</div>
-					<input type="hidden" name="token" id="token" value="{{session.token}}">
-					<button type="submit" name="submit" class="btn btn-primary mx-auto">Envoyer</button>
-				</form>
 				</div>
 			</div>
-		</div>
-	</section>
+		</section>
+	</main>
 {% endblock %}

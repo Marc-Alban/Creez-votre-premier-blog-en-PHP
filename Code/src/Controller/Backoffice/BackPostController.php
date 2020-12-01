@@ -40,7 +40,7 @@ final class BackPostController
             header('Location: /?page=login');
             exit();
         }
-        $this->view->render('backoffice', 'addPostback', []);
+        $this->view->render('backoffice', 'addPostBack', []);
     }
     /**
      *  method to add a post in bdd
@@ -65,7 +65,7 @@ final class BackPostController
             $chapo = $post->getName('chapo');
             $description = $post->getName('description');
         }
-        $this->view->render('backoffice', 'addPostback', ["valdel" => $valdel, "title"=>$title,"chapo"=>$chapo,"description"=>$description]);
+        $this->view->render('backoffice', 'addPostBack', ["valdel" => $valdel, "title"=>$title,"chapo"=>$chapo,"description"=>$description]);
     }
     /**
      * Display allPostPage
@@ -83,7 +83,7 @@ final class BackPostController
             exit();
         }
         $post = $this->postManager->paginationPost($perpage);
-        $this->view->render('backoffice', 'allPostsback', ['post' => $post]);
+        $this->view->render('backoffice', 'allPostsBack', ['post' => $post]);
     }
     /**
      * Display the updatePost Page

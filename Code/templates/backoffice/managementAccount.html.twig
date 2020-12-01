@@ -8,7 +8,9 @@
 		<div  class="mainbox mx-auto col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 mt-5">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<div class="panel-title text-center">Gestion de compte</div>
+					<h2 class="panel-title text-center">
+					Gestion de compte
+					</h2>
 				</div>
 					<div class="panel-body mt-5">
 					{% if data.success %}
@@ -24,7 +26,9 @@
 					<hr>
 					<p class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i>Important<i class="fas fa-exclamation-triangle"></i><br> Pour plus de sécurité le pseudo est rataché à l'adresse e-mail, donc si vous changez le pseudo il faut changer l'email obligatoirement !</p>
 					<form method="POST" action="/?page=managementUpdateAccount">
+						<label for="userName">Pseudo</label>
 						<input id="userName" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre Pseudo" type="text" name="userName" value="{{data.user.userName|raw}}"><br>
+						<label for="email">Email</label>
 						<input id="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre e-mail" type="text" name="email" value="{{data.user.email|raw}}"><br>
 						<input type="hidden" name="token" id="token" value="{{session.token}}"/>
 						<button class="btn btn-primary mx-auto" type="submit">Modifier ses infos personnelles</button>

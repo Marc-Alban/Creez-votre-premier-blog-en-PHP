@@ -8,7 +8,9 @@
 		<div  class="mainbox mx-auto col-md-9 col-md-offset-3 col-sm-6 col-sm-offset-3 mt-5">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<div class="panel-title text-center">Modifier un article</div>
+					<h2 class="panel-title text-center">
+					Modifier un article
+					</h2>
 				</div>
 					{% if data.valdel.success %}
 						<div class="alert alert-primary" role="alert">
@@ -23,10 +25,13 @@
 					{% endif %}
 				<div class="panel-body mt-5">
 					<form method="POST" action="/?page=updatePostBddBack&id={{data.id}}" enctype="multipart/form-data">
+						<label for="title">titre</label>
 						<input id="title" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre titre" type="text" name="title" value="{{data.title|raw}}"><br>
-						<p class="alert alert-warning">Veuillez remettre une image</p>
+						<label  class="alert alert-warning" for="image">Veuillez remettre une image</label>
 						<input id="image" class="flex-fill col-sm-2 col-md-12 mr-0 mr-sm-2 mb-3 mb-sm-2"  type="file" name="imagePost"><br>
+						<label for="textAreaChapo">Chapô</label>
 						<textarea id="textAreaChapo" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" placeholder="Entrer le chapo" name="chapo">{{data.chapo|raw}}</textarea><br>
+						<label for="textAreaDescription">Description</label>
 						<textarea id="textAreaDescription" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" placeholder="Entrer votre descrition" name="description">{{data.description|raw}}</textarea><br>
 						<input type="hidden" name="token" id="token" value="{{session.token}}"/>
 						<button class="btn btn-primary mx-auto" type="submit" name="submit">Modifier l'article</button>
