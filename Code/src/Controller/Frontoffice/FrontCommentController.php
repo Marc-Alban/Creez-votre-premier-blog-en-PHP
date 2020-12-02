@@ -27,9 +27,8 @@ final class FrontCommentController
     public function sendCommentAction(int $idPost): void
     {
         $this->userSession = ($this->session->getSessionName('user'))? $this->session->getSessionName('user') : $this->session->getSessionName('admin');
-        $validation = $this->commentManager->checkComment($idPost, $this->userSession, $this->request, $this->session, $this->token);
-        $this->session->setSession('validation', $validation);
-        header('Location: /?page=post&validation=valide&id='.$idPost);
+        $this->commentManager->checkComment($idPost, $this->userSession, $this->request, $this->session, $this->token);
+        header('Location: /?page=post&id='.$idPost.'&#message');
         exit();
     }
 }

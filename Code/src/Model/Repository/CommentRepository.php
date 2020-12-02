@@ -37,7 +37,7 @@ final class CommentRepository
         $req->execute($commentArray);
     }
     /**
-     * Allows to retrieve a comment with the id
+     * Allows to retrieve a comment with the idPost
      *
      * @param integer $postId
      * @return array|null
@@ -47,13 +47,13 @@ final class CommentRepository
         $req = [
                 ':idPost' => $postId
             ];
-        $pdo = $this->database->prepare("SELECT * FROM comment WHERE disabled = 0  AND PostId = :idPost");
-        $executeIsOk = $pdo->execute($req);
+        $pdoStat = $this->database->prepare("SELECT * FROM comment INNER JOIN user ON comment.UserId = user.idUser WHERE  disabled = 0 AND comment.UserId = user.idUser AND PostId = :idPost");
+        $executeIsOk =$pdoStat->execute($req);
         if ($executeIsOk === false) {
             return null;
         }
-        $commentBdd = $pdo->fetchAll(PDO::FETCH_CLASS, Comment::class);
-        return $commentBdd;
+        $comments = $pdoStat->fetchAll();
+        return $comments;
     }
     /**
      * Get all comments for pagination

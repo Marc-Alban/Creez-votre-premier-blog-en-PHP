@@ -60,9 +60,15 @@ final class BackUserController
             header('Location: /?page=login');
             exit();
         }
-        $verifUser = $this->userManager->checkForm($this->session, $this->request, $this->token);
         $user = $this->userManager->findUserBySession();
-        $this->view->render('backoffice', 'managementAccount', ['verif' => $verifUser,'user'=> $user]);
+        if ($user === null) {
+            header('Location: /?page=managementAccount');
+            exit();
+        }
+        $this->userManager->checkForm($this->session, $this->request, $this->token);
+        $error = $this->session->getMessage('error');
+        $success = $this->session->getMessage('success');
+        $this->view->render('backoffice', 'managementAccount', ['user'=> $user,'error'=> $error,'success'=> $success]);
     }
     /**
      * Display the password page
@@ -149,14 +155,13 @@ final class BackUserController
             exit();
         }
         $paginationUser =  $this->userManager->paginationUser($perpage);
-        $roleMessage = $this->userManager->checkUrlRole($idUserUrl, $action);
+        $this->userManager->checkUrlRole($idUserUrl, $action);
         $admin = $this->userManager->findUserByIdUser($idUserUrl)->getEmail();
-        if (array_key_exists('success', $roleMessage)) {
-            header("Refresh: 1;url=/?page=userManagement");
-            if ($this->adminSession === $admin) {
-                $accessControl->IsAdmin($this->session);
-            }
+        if ($this->adminSession === $admin) {
+            $accessControl->IsAdmin($this->session);
         }
-        $this->view->render('backoffice', 'userManagement', ['paginationUser'=>$paginationUser,'roleMessage'=>$roleMessage]);
+        $error = $this->session->getMessage('error');
+        $success = $this->session->getMessage('success');
+        $this->view->render('backoffice', 'userManagement', ['paginationUser'=>$paginationUser,'error'=> $error,'success'=> $success]);
     }
 }

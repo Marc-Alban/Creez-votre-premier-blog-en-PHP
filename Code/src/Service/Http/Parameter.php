@@ -18,7 +18,7 @@ class Parameter
     public function getName(string $name = null): ?string
     {
         if (isset($this->parameter[$name])) {
-            return htmlentities(strip_tags(trim($this->parameter[$name])));
+            return htmlspecialchars(trim($this->parameter[$name]), ENT_QUOTES);
         }
         return null;
     }

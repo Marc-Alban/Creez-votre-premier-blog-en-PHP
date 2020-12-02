@@ -1,11 +1,17 @@
 {% extends "frontoffice/layout.html.twig" %}
+{% block title %}
+	{% if data.post %}
+		{{data.post.title|raw }}
+	{% elseif data.defaultPost %}
+		{{data.defaultPost.title|raw }}
+	{% endif %}
+{% endblock %}
 {% block content %}
 	<section class="container postPage">
-		<div class="raw">
 			{% if data.post == null %}
-				<h1 class="text-left h1 pt-4 mb-3">
-					<strong>{{data.defaultPost.title }}</strong>
-				</h1>
+				<h2 class="text-left h2 pt-4 mb-3">
+					{{data.defaultPost.title }}
+				</h2>
 				<article class="col-md-12">
 					<div class="pb-5 mx-md-3">
 						<img class="image-responsive" src="images/post/{{ data.defaultPost.imagePost }}" alt="">
@@ -32,60 +38,61 @@
 				</article>
 			{% endif %}
 			{% if data.post != null %}
-				<article>
-					<h1 class="text-left h1 pt-4 mb-3">
+				<article class="col-md-12">
+					<h2 class="text-left h2 pt-4 mb-3">
 						<strong>{{data.post.title|raw }}</strong>
-					</h1>
-					<div class="col-md-12">
-						<div class="pb-5 mx-md-3">
-							<img class="image-responsive" src="images/post/{{ data.post.imagePost }}" alt="">
-							<div class="container">
-								<div class="row">
-									<div class="col-md-12 col-xl-12 d-flex justify-content-left">
-										<p class="font-small grey-text mb-0">
-											{{ data.user.userName }}
-										</p>
-										<pre>|</pre>
-										<p class="font-small grey-text mb-0">
-											{{ data.post.datePost|date('d/m/Y') }}
-										</p>
-									</div>
+					</h2>
+					<div class="pb-5 mx-md-3">
+						<img class="image-responsive" src="images/post/{{ data.post.imagePost }}" alt="">
+						<div class="container">
+							<div class="row">
+								<div class="col-md-12 col-xl-12 d-flex justify-content-left">
+									<p class="font-small grey-text mb-0">
+										{{ data.user.userName }}
+									</p>
+									<pre>|</pre>
+									<p class="font-small grey-text mb-0">
+										{{ data.post.datePost|date('d/m/Y') }}
+									</p>
 								</div>
-								<p class="text-justify">
-									{{ data.post.chapo|raw }}
-								</p>
-								<p class="text-justify">
-									{{ data.post.description|raw }}
-								</p>
 							</div>
-						</div>
-						{% if session.user or session.admin %}
-							<div class="container">
-								<div class="raw formComment">
-									{% if session.validation %}
-											<div class="alert alert-warning" id="ancre" role="alert">
-												{{session.validation}}
-											</div>
-									{% endif %}
-									<h3 class="commentTitle mt-4">Laisser un commentaires:</i>
-								</span>
-							</h3>
-							<form id="myForm" class="col-md-8 col-12 dp-" method="POST" action="/?page=sendComment&id={{data.post.idPost}}">
-								<textarea id="message " name="comment" placeholder="Laissez un commentaire" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" require></textarea>
-								<input type="hidden" name="token" id="token" value="{{session.token}}">
-								<button type="submit" name="submit" class="btn btn-primary mx-auto">Envoyer</button>
-							</form>
+							<p class="text-justify">
+								{{ data.post.chapo|raw }}
+							</p>
+							<p class="text-justify">
+								{{ data.post.description|raw }}
+							</p>
 						</div>
 					</div>
 				</article>
+				{% if session.user or session.admin %}
+				<div class="container">
+						<div class="raw formComment">
+							{% if data.error %}
+								<div class="alert alert-danger" id="ancre" role="alert">
+									{{data.error}}
+								</div>
+							{% elseif data.success %}
+								<div class="alert alert-primary" id="ancre" role="alert">
+									{{data.success}}
+								</div>
+							{% endif %}
+							<h3 class="commentTitle mt-4">Laisser un commentaires:</i></h3>
+                        <form id="myForm" class="col-md-8 col-12 dp-" method="POST" action="/?page=sendComment&id={{data.post.idPost}}">
+                            <textarea id="message " name="comment" placeholder="Laissez un commentaire" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" require></textarea>
+                            <input type="hidden" name="token" id="token" value="{{session.token}}">
+                            <button type="submit" name="submit" class="btn btn-primary mx-auto">Envoyer</button>
+                        </form>
+					</div>
+				</div>
 			{% else %}
 				<div class="container">
 					<div class="raw">
 						<p>Connectez-vous pour mettre un commentaire:
 						</p>
 						<div class="btnConnexion">
-							<a href="/?page=login">
-								<button class="btn btn-primary mx-auto">Se connecter</button>
+							<a href="/?page=login" class="btn btn-primary mx-auto">
+								Se connecter
 							</a>
 						</div>
 					</div>
@@ -93,27 +100,27 @@
 			{% endif %}
 			<div class="container">
 				<div class="raw">
-					<section class="comments">
-							{% if data.comments %}
-								{% for text in data.comments %}
-									<div class="comment border border-white p-3">
-										<div class="comment-body">
-											<div class="text text-white p-0 border-0">
-												<p class="bg-black">{{text.content}}</p>
-											</div>
-											<div class="d-flex bd-highlight">
-												<p class="attribution p-2 bd-highlight">de
-													{# {{data.comments.user.userName}} #}
-													à
-													{{text.dateCreation|date('H\\hi\\m')}}</p>
-											</div>
+					<div class="comments">
+						{% if data.comments %}
+							{% for text in data.comments %}
+								<div class="comment border border-white p-3">
+									<div class="comment-body">
+										<div class="text text-white p-0 border-0">
+											<p class="bg-black">{{text.content|raw}}</p>
+										</div>
+										<div class="d-flex bd-highlight">
+											<p class="attribution p-2 bd-highlight">de
+												{{text.userName|raw}}
+												à
+												{{text.dateCreation|date('H\\hi\\m')}}</p>
 										</div>
 									</div>
-								{% endfor %}
-							{% endif %}
-					</section>
+								</div>
+							{% endfor %}
+						{% endif %}
+					</div>
 				</div>
 			</div>
 		{% endif %}
-	</div>
-</div></section>{% endblock %}
+	</section>
+{% endblock %}

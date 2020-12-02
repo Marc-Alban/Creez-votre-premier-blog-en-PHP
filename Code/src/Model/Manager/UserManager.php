@@ -95,24 +95,21 @@ final class UserManager
      *
      * @param integer $idUserUrl
      * @param string $action
-     * @return array
+     * @return void
      */
-    public function checkUrlRole(int $idUserUrl, string $action): array
+    public function checkUrlRole(int $idUserUrl, string $action): void
     {
         $user = $this->userRepository->findByIdUser($idUserUrl);
         $roleUser = $user->getActivated();
         if ($action === 'admin' && $roleUser === 0) {
             $this->userRepository->changeRoleUser(1, 'Admin', $idUserUrl);
-            $this->success['success'] = 'Le rôle de l\'utilisateur est bien devenu : <<Admin>>';
-            return $this->success;
+            $this->session->setSession('success', 'Le rôle de l\'utilisateur est bien devenu : <<Admin>>');
         } elseif ($action === 'user' && $roleUser === 1) {
             $this->userRepository->changeRoleUser(0, 'Utilisateur', $idUserUrl);
-            $this->success['success'] = 'Le rôle de l\'utilisateur est bien devenu : <<Utilisateur>>';
-            return $this->success;
+            $this->session->setSession('success', 'Le rôle de l\'utilisateur est bien devenu : <<Utilisateur>>');
         } elseif (($action === 'user' && $roleUser === 0) || ($action === 'admin' && $roleUser === 1)) {
-            $this->errors['error'] = 'Utilisateur à déjà le rôle demandé, (admin ou utilisateur) !';
+            $this->session->setSession('error', 'Utilisateur à déjà le rôle demandé, (admin ou utilisateur) !');
         }
-        return $this->errors;
     }
     /**
      * Pagination of the usermanagement page where all the user are located
@@ -166,9 +163,9 @@ final class UserManager
         $userEmail = $this->userRepository->findByEmail($email);
         if (empty($pseudo) && empty($email) && empty($password) && empty($passwordConfirmation)) {
             $this->errors['error']["formEmpty"] = 'Veuillez mettre un contenu';
-        } elseif (empty($pseudo) || $userName !== null ||  !preg_match("#[a-zA-Z\pL\']+[\s-]?[a-zA-Z\pL\']*#", $pseudo)) {
+        } elseif (empty($pseudo) || $userName !== null || !preg_match("#[a-zA-Z0-9._\p{L}-]{1,20}#", $pseudo)) {
             $this->errors['error']["pseudoEmpty"] = 'Le champs pseudo ne doit pas être vide, ni déjà pris, les caractères spéciaux ne sont pas accepté pour ce champs !';
-        } elseif (empty($email) || $userEmail !== null || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
+        } elseif (empty($email) || $userEmail !== null || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $this->errors['error']["emailEmpty"] = 'Le champs email ne doit pas être pris ou être vide ou être incorrect';
         } elseif ($password !== $passwordConfirmation || empty($password) || empty($passwordConfirmation)) {
             $this->errors['error']["passwordEmpty"] = 'Les champs mot de passe et mot de passe de confirmation ne doivent pas être vide et doivent correspond';
@@ -226,41 +223,43 @@ final class UserManager
      * @param Session $session
      * @param Request $request
      * @param Token $token
-     * @return array
+     * @return void
      */
-    public function checkForm(Session $session, Request $request, Token $token): array
+    public function checkForm(Session $session, Request $request, Token $token): void
     {
         $post = $request->getPost() ?? null;
         $email = $post->getName('email') ?? null;
         $userName = $post->getName('userName') ?? null;
         $userSession = $this->userSession ?? $this->adminSession;
         $user = $this->userRepository->findByEmail($userSession);
+        $userAllBdd =  $this->userRepository->findByPseudo($userName);
+        $mailAllBdd =$this->userRepository->findByEmail($email);
         $emailBdd = null;
         $pseudoBdd = null;
         if ($user !== null) {
             $emailBdd = $user->getEmail();
             $pseudoBdd = $user->getUserName();
         }
-        if (empty($email) || !preg_match(" /^.+@.+\.[a-zA-Z]{2,}$/ ", $email)) {
-            $this->errors['error']["emailEmpty"] = 'L\'adresse e-mail est invalide" ';
-        } elseif (empty($userName) || !preg_match("#[a-zA-Z\pL\']+[\s-]?[a-zA-Z\pL\']#", $userName)) {
-            $this->errors['error']["userEmpty"] = 'Veuillez mettre un nom, caractères spéciaux non accepté';
-        } elseif ($userName === $pseudoBdd && $email === $emailBdd) {
-            $this->errors['error']['noAction'] = 'Veuillez modifier un champs avant de soumettre !! ';
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $session->setSession('error', 'L\'adresse e-mail est invalide ou est déjà prise ');
+        } elseif (empty($userName) || !preg_match("#[a-zA-Z0-9._\p{L}-]{1,20}#", $userName)) {
+            $session->setSession('error', 'Veuillez mettre un nom, caractères spéciaux non accepté');
+        } elseif ($email === $emailBdd && $userName === $pseudoBdd) {
+            $session->setSession('error', 'Veuiller changer les champs avant de soumettre');
+        } elseif ($mailAllBdd !== null || $userAllBdd !== null) {
+            $session->setSession('error', 'Identifiant déjà pris');
         }
         if ($token->compareTokens($session->getSessionName('token'), $post->getName('token')) !== false) {
-            $this->errors['error']['tokenEmpty'] = 'Formulaire incorrect';
+            $session->setSession('error', 'Formulaire incorrect');
         }
-        if (empty($this->errors)) {
-            $this->success['success']['send'] = 'Utilisateur bien mis à jour:';
+        if (empty($session->getSessionName('error'))) {
+            $session->setSession('success', 'Utilisateur bien mis à jour');
             $this->userRepository->update($email, $userName, $user->getIdUser());
             if ($user->getActivated() === 0) {
                 $session->setSession('user', $email);
             } elseif ($user->getActivated() === 1) {
                 $session->setSession('admin', $email);
             }
-            return $this->success;
         }
-        return $this->errors;
     }
 }

@@ -32,19 +32,15 @@ final class FrontPostController
         $user = null;
         $defaultPost = null;
         $post = $this->postManager->findPostByIdPost($idPost);
-        if ($session->getSessionName('validation') !== null) {
-            header("Refresh: 1;url=/?page=post&id=".$idPost);
-            if ($Get->getName('validation') === 'valide') {
-                $session->sessionDestroyName('validation');
-            }
-        }
         if ($post !== null) {
             $user = $userManager->findUserByIdUser($post->getUserId());
         } elseif ($post === null) {
             $defaultPost = $this->defaultPost();
         }
         $comments = $comment->findCommentByPostId($idPost);
-        $this->view->render('Frontoffice', 'post', ["post" => $post, "user" => $user, 'comments' => $comments,'defaultPost'=> $defaultPost]);
+        $error = $session->getMessage('error');
+        $success = $session->getMessage('success');
+        $this->view->render('frontoffice', 'post', ["post" => $post, "user" => $user, 'comments' => $comments,'defaultPost'=> $defaultPost,'error'=> $error,'success'=> $success]);
     }
     /**
      * Display the blog page
@@ -56,11 +52,11 @@ final class FrontPostController
     public function blogAction(int $perpage): void
     {
         $defaultPost = null;
-        $paginationPost =  $this->postManager->paginationPost($perpage) ?? null;
-        if ($paginationPost['post'] === null) {
+        $paginationPost =  $this->postManager->paginationPost($perpage);
+        if (empty($paginationPost['post'])) {
             $defaultPost = $this->defaultPost();
         }
-        $this->view->render('Frontoffice', 'blog', ['paginationPost' => $paginationPost, 'defaultPost'=> $defaultPost]);
+        $this->view->render('frontoffice', 'blog', ['paginationPost' => $paginationPost, 'defaultPost'=> $defaultPost]);
     }
     /**
      * Display default post

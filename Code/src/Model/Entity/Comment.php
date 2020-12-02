@@ -12,7 +12,7 @@ final class Comment
     private int $UserId;
     private int $PostId;
     private string $dateCreation;
-    private User $user;
+    
     /**
      * Get the value of idComment
      */
@@ -113,26 +113,6 @@ final class Comment
     public function setDateCreation($dateCreation): self
     {
         $this->dateCreation = $dateCreation;
-        return $this;
-    }
-
-    /**
-     * Get the value of user
-     */
-    public function getUser(): User
-    {
-        return $this->user;
-    }
-
-    /**
-     * Set the value of user
-     *
-     * @return  self
-     */
-    public function setUser(User $user): self
-    {
-        $this->user = $user;
-
         return $this;
     }
 }

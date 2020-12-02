@@ -8,7 +8,9 @@
 		<div class="mainbox mx-auto col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 mt-5">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<div class="panel-title text-center">Ajouter un article</div>
+					<h2 class="panel-title text-center">
+					Ajouter un article
+					</h2>
 				</div>
 				<div class="panel-body mt-5">
 					{% if data.valdel.success %}
@@ -23,9 +25,13 @@
 						{% endfor %}
 					{% endif %}
 					<form method="POST" action="/?page=addPostBddBack" enctype="multipart/form-data">
+						<label for="title">Titre</label>
 						<input id="title" class="form-control flex-fill  mr-0 mr-sm-2 mb-3 mb-sm-0" placeholder="Entrer votre titre" type="text" name="title" {% if data.title %}value='{{data.title|raw}}'{% endif %}><br>
+						<label for="image">Mettre une image</label>
 						<input id="image" class="flex-fill col-sm-2 col-md-12 mr-0 mr-sm-2 mb-3 mb-sm-2" type="file" name="imagePost"><br>
+						<label for="textAreaChapo">Chapô</label>
 						<textarea id="textAreaChapo" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" placeholder="Entrer le chapo" name="chapo">{% if data.chapo %}{{data.chapo|raw}}{% endif %}</textarea><br>
+						<label for="textAreaDescription">Description</label>
 						<textarea id="textAreaDescription" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0 textAreaForm" placeholder="Entrer votre descrition" name="description">{% if data.description %}{{data.description|raw}}{% endif %}</textarea><br>
 						<input type="hidden" name="token" id="token" value="{{session.token}}"/>
 						<button class="btn btn-primary mx-auto" type="submit" name="submit">Ajouter l'article</button>

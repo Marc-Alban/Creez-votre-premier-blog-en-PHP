@@ -35,6 +35,22 @@ class Session
         return null;
     }
     /**
+     * Get index in session with the name on parameter
+     *
+     * @param string $type
+     * @return string|null
+     */
+    public function getMessage(string $type): ?string
+    {
+        if (isset($this->session[$type])) {
+            $message = $this->session[$type];
+            unset($this->session[$type]);
+            return $message;
+        }
+        return null;
+    }
+
+    /**
      * Create a paramter in session
      *
      * @param string $name
