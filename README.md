@@ -1,5 +1,4 @@
 # Créez votre premier blog en PHP
-
 Codacy Badge
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7d1ab7ae8a544209b8d85f7cf4aadb77)](https://app.codacy.com/manual/Marc-Alban/Creez-votre-premier-blog-en-PHP?utm_source=github.com&utm_medium=referral&utm_content=Marc-Alban/Creez-votre-premier-blog-en-PHP&utm_campaign=Badge_Grade_Settings)
 
@@ -23,3 +22,4 @@ password: passwordDB ';
 Important: Please fill in all the fields with your information in the same way as that provided in the example!
 Note: Your version of Php must be php 7.4
 "Composer" is used as an autoload, as well as the "Whoops" package for displaying errors.
+
