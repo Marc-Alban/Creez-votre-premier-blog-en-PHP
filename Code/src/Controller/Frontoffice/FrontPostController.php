@@ -63,8 +63,8 @@ final class FrontPostController
      *
      * @return array
      */
-    public function defaultPost(): array
+    private function defaultPost(): array
     {
-        return $this->postManager->defaultPost();
+        return $this->postManager->defaultPostManager();
     }
 }
