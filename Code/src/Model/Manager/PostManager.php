@@ -93,7 +93,7 @@ final class PostManager
      *
      * @return array
      */
-    public function defaultPost(): array
+    public function defaultPostManager(): array
     {
         return [
             'title' => 'Article par défault',
